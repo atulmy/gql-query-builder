@@ -6,11 +6,11 @@ A simple helper function to generate GraphQL queries
 
 npm
 
-`npm install query-builder --save`
+`npm install gql-query-builder --save`
 
 yarn
 
-`yarn add query-builder`
+`yarn add gql-query-builder`
 
 ### Example
 
