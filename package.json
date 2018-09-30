@@ -1,6 +1,6 @@
 {
   "name": "gql-query-builder",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simple GraphQL Query Builder",
   "repository": {
     "type": "git",
@@ -11,9 +11,10 @@
     "test": "jest"
   },
   "keywords": [
-    "gralhql",
+    "graphql",
     "query",
-    "builder"
+    "builder",
+    "javascript"
   ],
   "author": "Atul Yadav <atul.12788@gmail.com>",
   "license": "MIT",
