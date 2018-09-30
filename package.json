@@ -1,12 +1,20 @@
 {
   "name": "gql-query-builder",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Simple GraphQL Query Builder",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:atulmy/gql-query-builder.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["gralhql", "query", "builder"],
   "author": "Atul Yadav <atul.12788@gmail.com>",
-  "license": "ISC"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/atulmy/gql-query-builder/issues"
+  },
+  "homepage": "https://github.com/atulmy/gql-query-builder"
 }

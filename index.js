@@ -1,5 +1,14 @@
-"use strict";
+"use strict"
 
+/**
+ * GraphQL Query Builder
+ * @param {Object} options - Query data
+ * @param {String} options.type - Operation type { query, mutation}
+ * @param {String} options.operation - Operation name
+ * @param {Array} options.fields - Selection of fields to be returned by the operation
+ * @param {Object} options.data - Data sent to the operation
+ * @param {Object} options.variables - Any variables for the operation
+ */
 module.exports = function queryBuilder(options) {
   options.type = options.type ? options.type : 'query'
   options.operation = options.operation ? options.operation : ''
