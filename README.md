@@ -26,6 +26,7 @@ const query = queryBuilder({
 
 console.log(query)
 
+// Output
 query {
   thoughts {
     id,
@@ -48,6 +49,7 @@ const query = queryBuilder({
 
 console.log(query)
 
+// Output
 query {
   thought(id: 1) {
     id,
@@ -73,6 +75,7 @@ const query = queryBuilder({
 
 console.log(query)
 
+// Output
 mutation {
   thoughtCreate(
     name: "Tyrion Lannister", 
