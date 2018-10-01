@@ -86,3 +86,8 @@ mutation {
 }
 ```
 
+# Showcase
+Following projects are using [gql-query-builder](https://github.com/atulmy/gql-query-builder)
+- Crate - Get monthly subscription of trendy clothes and accessories - [GitHub](https://github.com/atulmy/crate)
+- HIRESMART - Application to streamline hiring process - [GitHub](https://github.com/atulmy/hire-smart)
+- Would really appreciate if you add your project to this list by sending a PR
