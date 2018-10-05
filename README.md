@@ -22,7 +22,7 @@ const query = queryBuilder({
   type: 'query',
   operation: 'thoughts',
   fields: ['id', 'name', 'thought']
-}))
+})
 
 console.log(query)
 
