@@ -3,7 +3,7 @@
 /**
  * GraphQL Query Builder
  * @param {Object} options - Query data
- * @param {String} options.type - Operation type { query, mutation}
+ * @param {String} options.type - Operation type { query, mutation }
  * @param {String} options.operation - Operation name
  * @param {Array} options.fields - Selection of fields to be returned by the operation
  * @param {Object} options.data - Data sent to the operation
@@ -28,15 +28,19 @@ module.exports = function queryBuilder (options) {
 
 // Convert object to name and argument map eg: (id: $id)
 function queryDataNameAndArgumentMap (data) {
-  return Object.keys(data).length ? `(${ Object.keys(data).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }${ key }: $${ key }`, '') })` : ''
+  return Object.keys(data).length
+    ? `(${ Object.keys(data).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }${ key }: $${ key }`, '') })`
+    : ''
 }
 
 // Convert object to argument and type map eg: ($id: Int)
 function queryDataArgumentAndTypeMap (data) {
-  return Object.keys(data).length ? `(${ Object.keys(data).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }$${ key }: ${ queryDataType(data[key]) }`, '') })` : ''
+  return Object.keys(data).length
+    ? `(${ Object.keys(data).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }$${ key }: ${ queryDataType(data[key]) }`, '') })`
+    : ''
 }
 
-// Private - Get GraphQL equivalent type of data passed (String, Int, Float, Boolean)
+// Get GraphQL equivalent type of data passed (String, Int, Float, Boolean)
 function queryDataType (data) {
   switch (typeof data) {
     case 'object':
