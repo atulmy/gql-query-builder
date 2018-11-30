@@ -15,7 +15,7 @@ yarn
 ### Example
 
 Query
-```
+```javascript
 import queryBuilder from 'gql-query-builder'
 
 const query = queryBuilder({
@@ -37,7 +37,7 @@ query {
 ```
 
 Query (with data)
-```
+```javascript
 import queryBuilder from 'gql-query-builder'
 
 const query = queryBuilder({
@@ -60,7 +60,7 @@ query {
 ```
 
 Mutation
-```
+```javascript
 import queryBuilder from 'gql-query-builder'
 
 const query = queryBuilder({
