@@ -4,17 +4,11 @@ A simple helper function to generate GraphQL queries
 # Usage
 ### Install
 
-npm
-
-`npm install gql-query-builder --save`
-
-yarn
-
-`yarn add gql-query-builder`
+`npm install gql-query-builder --save` or `yarn add gql-query-builder`
 
 ### Example
 
-Query
+Query:
 ```javascript
 import queryBuilder from 'gql-query-builder'
 
@@ -36,7 +30,7 @@ query {
 }
 ```
 
-Query (with data)
+Query (with data):
 ```javascript
 import queryBuilder from 'gql-query-builder'
 
@@ -59,7 +53,7 @@ query {
 }
 ```
 
-Mutation
+Mutation:
 ```javascript
 import queryBuilder from 'gql-query-builder'
 
