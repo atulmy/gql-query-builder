@@ -83,4 +83,5 @@ mutation {
 # Showcase
 Following projects are using [gql-query-builder](https://github.com/atulmy/gql-query-builder)
 - Crate - Get monthly subscription of trendy clothes and accessories - [GitHub](https://github.com/atulmy/crate)
+- Fullstack GraphQL Application - [GitHub](https://github.com/atulmy/fullstack-graphql)
 - Would really appreciate if you add your project to this list by sending a PR
