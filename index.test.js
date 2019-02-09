@@ -46,8 +46,6 @@ test('generates mutation query', () => {
     fields: ['id']
   })
 
-  console.log(query)
-
   expect(query).toEqual({
     query: `mutation ($name: String, $thought: String) {
               thoughtCreate (name: $name, thought: $thought) {
@@ -55,5 +53,38 @@ test('generates mutation query', () => {
               }
             }`,
     variables: { name: "Tyrion Lannister", thought: "I drink and I know things." }
+  })
+})
+
+test('generates query with sub fields selection', () => {
+  const query = queryBuilder({
+    type: 'query',
+    operation: 'orders',
+    fields: [
+      'id',
+      'amount',
+      {
+        user: [
+          'id',
+          'name',
+          'email',
+          {
+            address: [
+              'city',
+              'country'
+            ]
+          }
+        ]
+      }
+    ]
+  })
+
+  expect(query).toEqual({
+    query: `query  {
+              orders  {
+                id, amount, user { id, name, email, address { city, country } }
+              }
+            }`,
+    variables: {}
   })
 })

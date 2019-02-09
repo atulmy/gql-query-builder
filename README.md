@@ -59,6 +59,42 @@ query {
 }
 ```
 
+Query (with sub fields selection)
+```
+import queryBuilder from 'gql-query-builder'
+
+const query = queryBuilder({
+  type: 'query',
+  operation: 'orders',
+  fields: [
+    'id',
+    'amount',
+    {
+     user: [
+        'id',
+        'name',
+        'email',
+        {
+          address: [
+            'city',
+            'country'
+          ]
+        }
+      ]
+    }
+  ]
+})
+
+console.log(query)
+
+// Output
+query  {
+  orders  {
+    id, amount, user { id, name, email, address { city, country } }
+  }
+}
+```
+
 Mutation
 ```
 import queryBuilder from 'gql-query-builder'
@@ -86,8 +122,30 @@ mutation {
 }
 ```
 
+#### Example with [Axios](https://github.com/axios/axios)
+
+```
+import axios from 'axios'
+import queryBuilder from 'gql-query-builder'
+
+async function getThoughts() {
+  try {
+    const response = await axios.post('http://api.example.com/graphql', queryBuilder({
+      type: 'query',
+      operation: 'thoughts',
+      fields: ['id', 'name', 'thought']
+    }))
+    
+    console.log(response)
+  } catch(error) {
+    console.log(error)
+  }
+}
+
+```
+
 # Showcase
 Following projects are using [gql-query-builder](https://github.com/atulmy/gql-query-builder)
 - Crate - Get monthly subscription of trendy clothes and accessories - [GitHub](https://github.com/atulmy/crate)
-- HIRESMART - Application to streamline hiring process - [GitHub](https://github.com/atulmy/hire-smart)
+- Fullstack GraphQL Application - [GitHub](https://github.com/atulmy/fullstack-graphql)
 - Would really appreciate if you add your project to this list by sending a PR

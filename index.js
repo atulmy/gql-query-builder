@@ -19,7 +19,7 @@ module.exports = function queryBuilder (options) {
   return {
     query: `${ options.type } ${ queryDataArgumentAndTypeMap(options.data) } {
               ${ options.operation } ${ queryDataNameAndArgumentMap(options.data) } {
-                ${ options.fields.join(', ') }
+                ${ queryFieldsMap(options.fields) }
               }
             }`,
     variables: Object.assign(options.data, options.variables)
@@ -38,6 +38,11 @@ function queryDataArgumentAndTypeMap (data) {
   return Object.keys(data).length
     ? `(${ Object.keys(data).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }$${ key }: ${ queryDataType(data[key]) }`, '') })`
     : ''
+}
+
+//
+function queryFieldsMap(fields) {
+  return fields.map(field => typeof field === 'object' ? `${ Object.keys(field)[0] } { ${ queryFieldsMap(Object.values(field)[0]) } }` : `${ field }`).join(', ')
 }
 
 // Get GraphQL equivalent type of data passed (String, Int, Float, Boolean)
