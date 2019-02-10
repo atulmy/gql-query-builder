@@ -84,7 +84,17 @@ console.log(query)
 // Output
 query  {
   orders  {
-    id, amount, user { id, name, email, address { city, country } }
+    id, 
+    amount, 
+    user { 
+      id, 
+      name, 
+      email, 
+      address { 
+        city, 
+        country 
+      } 
+    }
   }
 }
 ```
