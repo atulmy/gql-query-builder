@@ -304,3 +304,20 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 - Crate - Get monthly subscription of trendy clothes and accessories - [GitHub](https://github.com/atulmy/crate)
 - Fullstack GraphQL Application - [GitHub](https://github.com/atulmy/fullstack-graphql)
 - Would really appreciate if you add your project to this list by sending a PR
+
+
+## Authors
+- Atul Yadav - [GitHub](https://github.com/atulmy) · [Twitter](https://twitter.com/atulmy)
+- [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
+
+
+## Donate
+If you liked this project, you can donate to support it ❤️
+
+[![Donate via PayPal](https://raw.githubusercontent.com/atulmy/atulmy.github.io/master/images/mix/paypal-me-smaller.png)](http://paypal.me/atulmy)
+
+
+## License
+Copyright (c) 2018 Atul Yadav http://github.com/atulmy
+
+The MIT License (http://www.opensource.org/licenses/mit-license.php)
