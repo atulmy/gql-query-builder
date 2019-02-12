@@ -1,6 +1,6 @@
 {
   "name": "gql-query-builder",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Simple GraphQL Query Builder",
   "repository": {
     "type": "git",
