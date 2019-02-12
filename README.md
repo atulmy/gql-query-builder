@@ -32,7 +32,7 @@ where `options` is `{ type, operation, fields, variables }`
       </td>
     </tr>
     <tr>
-      <td>`</td>
+      <td>operation</td>
       <td>Name of operation to be executed on server</td>
       <td>String</td>
       <td>Yes</td>
