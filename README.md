@@ -43,8 +43,8 @@ where `options` is `{ type, operation, fields, variables }`
     <tr>
       <td>fields</td>
       <td>Selection of fields</td>
-      <td>Array/td>
-      <td>No</td>
+      <td>Array</td>
+      <td>Yes</td>
       <td>
         ['id', 'name', 'thought'] <br/><br />
         ['id', 'name', 'thought', { user: ['id', 'email'] }]
