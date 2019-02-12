@@ -298,6 +298,7 @@ async function saveThought() {
     console.log(error)
   }
 }
+```
 
 # Showcase
 Following projects are using [gql-query-builder](https://github.com/atulmy/gql-query-builder)
