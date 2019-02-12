@@ -2,62 +2,84 @@
 
 /**
  * GraphQL Query Builder
- * @param {Object} options - Query data
- * @param {String} options.type - Operation type { query, mutation }
- * @param {String} options.operation - Operation name
- * @param {Array} options.fields - Selection of fields to be returned by the operation
- * @param {Object} options.data - Data sent to the operation
- * @param {Object} options.variables - Any variables for the operation
+ * @param {Object} options - Query data (required)
+ * @param {String} options.type - Operation type { query, mutation } (required)
+ * @param {String} options.operation - Operation name (required)
+ * @param {Array}  options.fields - Selection of fields to be returned by the operation (optional)
+ * @param {Object} options.variables - Any variables for the operation (optional)
  */
 module.exports = function queryBuilder (options) {
-  options.type = options.type ? options.type : 'query'
-  options.operation = options.operation ? options.operation : ''
-  options.fields = options.fields ? options.fields : []
-  options.data = options.data ? options.data : {}
-  options.variables = options.variables ? options.variables : {}
+  options.type = options.type || 'query'
+  options.operation = options.operation || ''
+  options.fields = options.fields || []
+  options.variables = options.variables || {}
 
-  return {
-    query: `${ options.type } ${ queryDataArgumentAndTypeMap(options.data) } {
-              ${ options.operation } ${ queryDataNameAndArgumentMap(options.data) } {
-                ${ queryFieldsMap(options.fields) }
-              }
-            }`,
-    variables: Object.assign(options.data, options.variables)
-  }
+return {
+  query: `${ options.type } ${ queryDataArgumentAndTypeMap(options.variables) } {
+      ${ options.operation } ${ queryDataNameAndArgumentMap(options.variables) } {
+        ${ queryFieldsMap(options.fields) }
+      }
+    }`,
+  variables: queryVariablesMap(options.variables)
+}
 }
 
-// Convert object to name and argument map eg: (id: $id)
-function queryDataNameAndArgumentMap (data) {
-  return Object.keys(data).length
-    ? `(${ Object.keys(data).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }${ key }: $${ key }`, '') })`
+// Convert object to name and argument map. eg: (id: $id)
+function queryDataNameAndArgumentMap (variables) {
+  return Object.keys(variables).length
+    ? `(${ Object.keys(variables).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }${ key }: $${ key }`, '') })`
     : ''
 }
 
-// Convert object to argument and type map eg: ($id: Int)
-function queryDataArgumentAndTypeMap (data) {
-  return Object.keys(data).length
-    ? `(${ Object.keys(data).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }$${ key }: ${ queryDataType(data[key]) }`, '') })`
+// Convert object to argument and type map. eg: ($id: Int)
+function queryDataArgumentAndTypeMap (variables) {
+  return Object.keys(variables).length
+    ? `(${ Object.keys(variables).reduce((dataString, key, i) => `${ dataString }${ i !== 0 ? ', ' : '' }$${ key }: ${ queryDataType(variables[key]) }`, '') })`
     : ''
 }
 
-//
+// Fields selection map. eg: { id, name }
 function queryFieldsMap(fields) {
-  return fields.map(field => typeof field === 'object' ? `${ Object.keys(field)[0] } { ${ queryFieldsMap(Object.values(field)[0]) } }` : `${ field }`).join(', ')
+  return fields.map(field => typeof field === 'object'
+    ? `${ Object.keys(field)[0] } { ${ queryFieldsMap(Object.values(field)[0]) } }`
+    : `${ field }`).join(', ')
+}
+
+// Variables map. eg: { "id": 1, "name": "Jon Doe" }
+function queryVariablesMap(variables) {
+  const variablesMapped = {}
+
+  Object.keys(variables).map(key => {
+    variablesMapped[key] = typeof variables[key] === 'object' ? variables[key].value : variables[key]
+  })
+
+  return variablesMapped
 }
 
 // Get GraphQL equivalent type of data passed (String, Int, Float, Boolean)
-function queryDataType (data) {
-  switch (typeof data) {
+function queryDataType (variable) {
+  let type = 'String'
+
+  const value = typeof variable === 'object' ? variable.value : variable
+
+  switch (typeof value) {
     case 'object':
-      const type = data._type
-      delete data._type
-      return type
+      type = value._type
+      delete value._type
+      break
+
     case 'boolean':
-      return 'Boolean'
+      type = 'Boolean'
+      break
+
     case 'number':
-      return (data % 1 === 0) ? 'Int' : 'Float'
-    case 'string':
-    default:
-      return 'String'
+      type = (value % 1 === 0) ? 'Int' : 'Float'
+      break
   }
+
+  if(typeof variable === 'object' && variable.required) {
+    type += '!'
+  }
+
+  return type
 }
