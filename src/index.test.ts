@@ -86,7 +86,7 @@ describe("Query", () => {
 
 describe("Queries", () => {
   test("generates queries", () => {
-    const query = queryBuilder.queries([
+    const query = queryBuilder.query([
       {
         operation: "thoughts",
         fields: ["id", "name", "thought"]
@@ -163,7 +163,7 @@ describe("Mutation", () => {
 
 describe("Mutations", () => {
   test("generates mutations", () => {
-    const query = queryBuilder.mutations([
+    const query = queryBuilder.mutation([
       {
         operation: "thoughtCreate",
         variables: {

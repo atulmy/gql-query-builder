@@ -12,11 +12,7 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 
 ```javascript
 const { query, mutation } = queryBuilder(options: object);
-// where `options` is `{ operation, fields, variables }`
-
-const { queries, mutations } = queryBuilder([options]: object);
-// Same except this time an array of options is accepted.
-// The result is merged together within a single operation.
+// where `options` is `{ operation, fields, variables }` or an array of `options`
 ```
 
 <table width="100%">
@@ -189,8 +185,6 @@ query ($email: String!, $password: String!) {
 }
 ```
 
-> The same works for `queries`. In this case you should pass an array.
-
 **Mutation:**
 
 ```javascript
@@ -253,8 +247,6 @@ mutation ($name: String, $email: String!, $password: String!) {
 }
 ```
 
-> The same works for `mutations`. In this case you should pass an array.
-
 #### Example with [Axios](https://github.com/axios/axios)
 
 **Query:**
@@ -279,8 +271,6 @@ async function getThoughts() {
   }
 }
 ```
-
-> The same works for `queries`. In this case you should pass an array.
 
 **Mutation:**
 
@@ -308,8 +298,6 @@ async function saveThought() {
   }
 }
 ```
-
-> The same works for `mutations`. In this case you should pass an array.
 
 # Showcase
 

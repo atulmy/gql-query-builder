@@ -18,6 +18,16 @@ enum OperationType {
   Query = "query"
 }
 
+function queryOperation(
+  options: IQueryBuilderOptions | IQueryBuilderOptions[]
+) {
+  if (Array.isArray(options)) {
+    return queriesBuilder(options);
+  }
+
+  return queryBuilder(options);
+}
+
 function queryBuilder({
   operation,
   fields = [],
@@ -36,6 +46,16 @@ function queriesBuilder(queries: IQueryBuilderOptions[]) {
     resolveVariables(queries),
     queries.map(operationTemplate).join("\n  ")
   );
+}
+
+function mutationOperation(
+  options: IQueryBuilderOptions | IQueryBuilderOptions[]
+) {
+  if (Array.isArray(options)) {
+    return mutationsBuilder(options);
+  }
+
+  return mutationBuilder(options);
 }
 
 function mutationBuilder({
@@ -168,9 +188,4 @@ function queryDataType(variable: IVariable) {
   return type;
 }
 
-export {
-  mutationBuilder as mutation,
-  mutationsBuilder as mutations,
-  queryBuilder as query,
-  queriesBuilder as queries
-};
+export { mutationOperation as mutation, queryOperation as query };
