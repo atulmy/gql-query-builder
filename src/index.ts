@@ -13,16 +13,29 @@ interface IQueryBuilderOptions {
   variables?: IVariables /* Any variables for the operation */;
 }
 
-type BaseQueryOptions = IQueryBuilderOptions & {
-  type: "query" | "mutation";
-};
+enum OperationType {
+  Mutation = "mutation",
+  Query = "query"
+}
 
 function queryBuilder({
   operation,
   fields = [],
   variables = {}
 }: IQueryBuilderOptions) {
-  return baseQuery({ type: "query", operation, fields, variables });
+  return operationWrapperTemplate(
+    OperationType.Query,
+    variables,
+    operationTemplate({ variables, operation, fields })
+  );
+}
+
+function queriesBuilder(queries: IQueryBuilderOptions[]) {
+  return operationWrapperTemplate(
+    OperationType.Query,
+    resolveVariables(queries),
+    queries.map(operationTemplate).join("\n  ")
+  );
 }
 
 function mutationBuilder({
@@ -30,28 +43,57 @@ function mutationBuilder({
   fields = [],
   variables = {}
 }: IQueryBuilderOptions) {
-  return baseQuery({ type: "mutation", operation, fields, variables });
+  return operationWrapperTemplate(
+    OperationType.Mutation,
+    variables,
+    operationTemplate({ variables, operation, fields })
+  );
 }
 
-function baseQuery({
-  type,
-  operation,
-  fields = [],
-  variables = {}
-}: BaseQueryOptions) {
+function mutationsBuilder(mutations: IQueryBuilderOptions[]) {
+  return operationWrapperTemplate(
+    OperationType.Mutation,
+    resolveVariables(mutations),
+    mutations.map(operationTemplate).join("\n  ")
+  );
+}
+
+function resolveVariables(operations: IQueryBuilderOptions[]): IVariables {
+  let ret: IVariables = {};
+
+  operations.forEach(({ variables }) => {
+    ret = { ...ret, ...variables };
+  });
+
+  return ret;
+}
+
+function operationWrapperTemplate(
+  type: OperationType,
+  variables: IVariables,
+  content: string
+) {
   return {
     query: `${type} ${queryDataArgumentAndTypeMap(variables)} {
-  ${operation} ${queryDataNameAndArgumentMap(variables)} {
-    ${queryFieldsMap(fields)}
-  }
+  ${content}
 }`,
     variables: queryVariablesMap(variables)
   };
 }
 
+function operationTemplate({
+  variables,
+  operation,
+  fields
+}: IQueryBuilderOptions) {
+  return `${operation} ${queryDataNameAndArgumentMap(variables)} {
+    ${queryFieldsMap(fields)}
+  }`;
+}
+
 // Convert object to name and argument map. eg: (id: $id)
-function queryDataNameAndArgumentMap(variables: IVariables) {
-  return Object.keys(variables).length
+function queryDataNameAndArgumentMap(variables?: IVariables) {
+  return variables && Object.keys(variables).length
     ? `(${Object.keys(variables).reduce(
         (dataString, key, i) =>
           `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
@@ -74,16 +116,18 @@ function queryDataArgumentAndTypeMap(variables: IVariables): string {
 }
 
 // Fields selection map. eg: { id, name }
-function queryFieldsMap(fields: Fields): string {
+function queryFieldsMap(fields?: Fields): string {
   return fields
-    .map(field =>
-      typeof field === "object"
-        ? `${Object.keys(field)[0]} { ${queryFieldsMap(
-            Object.values(field)[0]
-          )} }`
-        : `${field}`
-    )
-    .join(", ");
+    ? fields
+        .map(field =>
+          typeof field === "object"
+            ? `${Object.keys(field)[0]} { ${queryFieldsMap(
+                Object.values(field)[0]
+              )} }`
+            : `${field}`
+        )
+        .join(", ")
+    : "";
 }
 
 // Variables map. eg: { "id": 1, "name": "Jon Doe" }
@@ -124,4 +168,9 @@ function queryDataType(variable: IVariable) {
   return type;
 }
 
-export { mutationBuilder as mutation, queryBuilder as query };
+export {
+  mutationBuilder as mutation,
+  mutationsBuilder as mutations,
+  queryBuilder as query,
+  queriesBuilder as queries
+};
