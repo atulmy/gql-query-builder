@@ -6,7 +6,7 @@
     "type": "git",
     "url": "git+https://github.com:atulmy/gql-query-builder.git"
   },
-  "main": "./src",
+  "main": "./build",
   "files": [
     "build"
   ],
@@ -50,11 +50,15 @@
       "git add"
     ]
   },
+  "jest": {
+    "preset": "ts-jest"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
       "pre-push": "npm run lint && npm run build && npm run test",
-      "pre-version": "npm run lint && npm run build && npm test && git commit --allow-empty -am \"Update lib\""
+      "pre-version": "npm run lint && npm run build && npm test"
     }
-  }
+  },
+  "dependencies": {}
 }
