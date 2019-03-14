@@ -50,6 +50,9 @@
       "git add"
     ]
   },
+  "jest": {
+    "preset": "ts-jest"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
