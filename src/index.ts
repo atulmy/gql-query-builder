@@ -8,18 +8,37 @@ interface IVariables {
 type Fields = Array<string | object>;
 
 interface IQueryBuilderOptions {
-  type: "query" | "mutation";
   operation: string /* Operation name */;
   fields?: Fields /* Selection of fields to be returned by the operation */;
   variables?: IVariables /* Any variables for the operation */;
 }
 
+type BaseQueryOptions = IQueryBuilderOptions & {
+  type: "query" | "mutation";
+};
+
 function queryBuilder({
-  type,
   operation,
   fields = [],
   variables = {}
 }: IQueryBuilderOptions) {
+  return baseQuery({ type: "query", operation, fields, variables });
+}
+
+function mutationBuilder({
+  operation,
+  fields = [],
+  variables = {}
+}: IQueryBuilderOptions) {
+  return baseQuery({ type: "mutation", operation, fields, variables });
+}
+
+function baseQuery({
+  type,
+  operation,
+  fields = [],
+  variables = {}
+}: BaseQueryOptions) {
   return {
     query: `${type} ${queryDataArgumentAndTypeMap(variables)} {
   ${operation} ${queryDataNameAndArgumentMap(variables)} {
@@ -105,4 +124,4 @@ function queryDataType(variable: IVariable) {
   return type;
 }
 
-export default queryBuilder;
+export { mutationBuilder as mutation, queryBuilder as query };

@@ -1,9 +1,8 @@
-import queryBuilder from "./";
+import * as queryBuilder from "./";
 
 describe("Queries", () => {
   test("generates query", () => {
-    const query = queryBuilder({
-      type: "query",
+    const query = queryBuilder.query({
       operation: "thoughts",
       fields: ["id", "name", "thought"]
     });
@@ -19,8 +18,7 @@ describe("Queries", () => {
   });
 
   test("generates query with variables", () => {
-    const query = queryBuilder({
-      type: "query",
+    const query = queryBuilder.query({
       operation: "thought",
       variables: { id: { value: 1 } },
       fields: ["id", "name", "thought"]
@@ -37,8 +35,7 @@ describe("Queries", () => {
   });
 
   test("generates query with sub fields selection", () => {
-    const query = queryBuilder({
-      type: "query",
+    const query = queryBuilder.query({
       operation: "orders",
       fields: [
         "id",
@@ -67,8 +64,7 @@ describe("Queries", () => {
   });
 
   test("generates query with required variables", () => {
-    const query = queryBuilder({
-      type: "query",
+    const query = queryBuilder.query({
       operation: "userLogin",
       variables: {
         email: { value: "jon.doe@example.com", required: true },
@@ -90,8 +86,7 @@ describe("Queries", () => {
 
 describe("Mutations", () => {
   test("generates mutation query", () => {
-    const query = queryBuilder({
-      type: "mutation",
+    const query = queryBuilder.mutation({
       operation: "thoughtCreate",
       variables: {
         name: { value: "Tyrion Lannister" },
@@ -114,8 +109,7 @@ describe("Mutations", () => {
   });
 
   test("generates mutation query with required variables", () => {
-    const query = queryBuilder({
-      type: "mutation",
+    const query = queryBuilder.mutation({
       operation: "userSignup",
       variables: {
         name: { value: "Jon Doe" },
