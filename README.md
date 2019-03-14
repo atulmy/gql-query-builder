@@ -15,8 +15,9 @@ import * as gql from 'gql-query-builder'
 
 const query = gql.query(options: object)
 const mutation = gql.mutation(options: object)
-// where `options` is `{ operation, fields, variables }` or an array of `options`
 ```
+
+where `options` is `{ operation, fields, variables }` or an array of `options`
 
 <table width="100%">
   <thead>
