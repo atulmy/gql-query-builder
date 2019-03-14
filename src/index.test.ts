@@ -20,7 +20,7 @@ describe("Query", () => {
   test("generates query with variables", () => {
     const query = queryBuilder.query({
       operation: "thought",
-      variables: { id: { value: 1 } },
+      variables: { id: 1 },
       fields: ["id", "name", "thought"]
     });
 
@@ -116,8 +116,8 @@ describe("Mutation", () => {
     const query = queryBuilder.mutation({
       operation: "thoughtCreate",
       variables: {
-        name: { value: "Tyrion Lannister" },
-        thought: { value: "I drink and I know things." }
+        name: "Tyrion Lannister",
+        thought: "I drink and I know things."
       },
       fields: ["id"]
     });
@@ -139,7 +139,7 @@ describe("Mutation", () => {
     const query = queryBuilder.mutation({
       operation: "userSignup",
       variables: {
-        name: { value: "Jon Doe" },
+        name: "Jon Doe",
         email: { value: "jon.doe@example.com", required: true },
         password: { value: "123456", required: true }
       },
@@ -167,8 +167,8 @@ describe("Mutations", () => {
       {
         operation: "thoughtCreate",
         variables: {
-          name: { value: "Tyrion Lannister" },
-          thought: { value: "I drink and I know things." }
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things."
         },
         fields: ["id"]
       },
@@ -195,6 +195,31 @@ describe("Mutations", () => {
         name: "Tyrion Lannister",
         thought: "I drink and I know things.",
         prayer: "I wish for winter."
+      }
+    });
+  });
+
+  test("generates mutation with required variables", () => {
+    const query = queryBuilder.mutation({
+      operation: "userSignup",
+      variables: {
+        name: "Jon Doe",
+        email: { value: "jon.doe@example.com", required: true },
+        password: { value: "123456", required: true }
+      },
+      fields: ["id"]
+    });
+
+    expect(query).toEqual({
+      query: `mutation ($name: String, $email: String!, $password: String!) {
+  userSignup (name: $name, email: $email, password: $password) {
+    id
+  }
+}`,
+      variables: {
+        name: "Jon Doe",
+        email: "jon.doe@example.com",
+        password: "123456"
       }
     });
   });

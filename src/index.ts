@@ -1,16 +1,9 @@
-interface IVariable {
-  value: unknown;
-  required?: boolean;
-}
-interface IVariables {
-  [key: string]: IVariable;
-}
 type Fields = Array<string | object>;
 
 interface IQueryBuilderOptions {
   operation: string /* Operation name */;
   fields?: Fields /* Selection of fields to be returned by the operation */;
-  variables?: IVariables /* Any variables for the operation */;
+  variables?: any /* Any variables for the operation */;
 }
 
 enum OperationType {
@@ -78,8 +71,8 @@ function mutationsBuilder(mutations: IQueryBuilderOptions[]) {
   );
 }
 
-function resolveVariables(operations: IQueryBuilderOptions[]): IVariables {
-  let ret: IVariables = {};
+function resolveVariables(operations: IQueryBuilderOptions[]): any {
+  let ret: any = {};
 
   operations.forEach(({ variables }) => {
     ret = { ...ret, ...variables };
@@ -90,7 +83,7 @@ function resolveVariables(operations: IQueryBuilderOptions[]): IVariables {
 
 function operationWrapperTemplate(
   type: OperationType,
-  variables: IVariables,
+  variables: any,
   content: string
 ) {
   return {
@@ -112,7 +105,7 @@ function operationTemplate({
 }
 
 // Convert object to name and argument map. eg: (id: $id)
-function queryDataNameAndArgumentMap(variables?: IVariables) {
+function queryDataNameAndArgumentMap(variables?: any) {
   return variables && Object.keys(variables).length
     ? `(${Object.keys(variables).reduce(
         (dataString, key, i) =>
@@ -123,7 +116,7 @@ function queryDataNameAndArgumentMap(variables?: IVariables) {
 }
 
 // Convert object to argument and type map. eg: ($id: Int)
-function queryDataArgumentAndTypeMap(variables: IVariables): string {
+function queryDataArgumentAndTypeMap(variables: any): string {
   return Object.keys(variables).length
     ? `(${Object.keys(variables).reduce(
         (dataString, key, i) =>
@@ -151,21 +144,24 @@ function queryFieldsMap(fields?: Fields): string {
 }
 
 // Variables map. eg: { "id": 1, "name": "Jon Doe" }
-function queryVariablesMap(variables: IVariables) {
+function queryVariablesMap(variables: any) {
   const variablesMapped: { [key: string]: unknown } = {};
 
   Object.keys(variables).map(key => {
-    variablesMapped[key] = variables[key].value;
+    variablesMapped[key] =
+      typeof variables[key] === "object"
+        ? variables[key].value
+        : variables[key];
   });
 
   return variablesMapped;
 }
 
 // Get GraphQL equivalent type of data passed (String, Int, Float, Boolean)
-function queryDataType(variable: IVariable) {
+function queryDataType(variable: any) {
   let type = "String";
 
-  const { value } = variable;
+  const value = typeof variable === "object" ? variable.value : variable;
 
   switch (typeof value) {
     case "object":
