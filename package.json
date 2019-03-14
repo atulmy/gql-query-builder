@@ -54,7 +54,7 @@
     "hooks": {
       "pre-commit": "lint-staged",
       "pre-push": "npm run lint && npm run build && npm run test",
-      "pre-version": "npm run lint && npm run build && npm test && git commit --allow-empty -am \"Update lib\""
+      "pre-version": "npm run lint && npm run build && npm test"
     }
   },
   "dependencies": {}
