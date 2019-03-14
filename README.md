@@ -11,7 +11,10 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 ### API
 
 ```javascript
-const { query, mutation } = queryBuilder(options: object);
+import * as gql from 'gql-query-builder'
+
+const query = gql.query(options: object)
+const mutation = gql.mutation(options: object)
 // where `options` is `{ operation, fields, variables }` or an array of `options`
 ```
 
@@ -51,6 +54,7 @@ const { query, mutation } = queryBuilder(options: object);
       <td>Object</td>
       <td>No</td>
       <td>
+        { key: value } eg: { id: 1 }<br/><br/>
         { key: { value: value, required: true } eg:<br />
         {
           email: { value: "user@example.com", required: true },
@@ -61,14 +65,23 @@ const { query, mutation } = queryBuilder(options: object);
   </tbody>
 </table>
 
+You can also import `query` or `mutation` individually:
+
+```javascript
+import  { query, mutation } from 'gql-query-builder'
+
+query(options: object)
+mutation(options: object)
+```
+
 ### Examples
 
 **Query:**
 
 ```javascript
-import * as builder from 'gql-query-builder'
+import * as gql from 'gql-query-builder'
 
-const query = builder.query({
+const query = gql.query({
   operation: 'thoughts',
   fields: ['id', 'name', 'thought']
 })
@@ -88,9 +101,9 @@ query {
 **Query (with variables):**
 
 ```javascript
-import * as builder from 'gql-query-builder'
+import * as gql from 'gql-query-builder'
 
-const query = builder.query({
+const query = gql.query({
   operation: 'thought',
   variables: { id: { value: 1 } },
   fields: ['id', 'name', 'thought']
@@ -112,9 +125,9 @@ query ($id: Int) {
 **Query (with nested fields selection)**
 
 ```javascript
-import * as Builder from 'gql-query-builder'
+import * as gql from 'gql-query-builder'
 
-const query = builder({
+const query = gql({
   operation: 'orders',
   fields: [
     'id',
@@ -158,13 +171,13 @@ query {
 **Query (with required variables):**
 
 ```javascript
-import * as builder from 'gql-query-builder'
+import * as gql from 'gql-query-builder'
 
-const query = builder.query({
+const query = gql.query({
   operation: 'userLogin',
   variables: {
-    email: { value: "jon.doe@example.com", required: true },
-    password: { value: "123456", required: true }
+    email: { value: 'jon.doe@example.com', required: true },
+    password: { value: '123456', required: true }
   },
   fields: ['userId', 'token']
 })
@@ -188,13 +201,13 @@ query ($email: String!, $password: String!) {
 **Mutation:**
 
 ```javascript
-import * as builder from 'gql-query-builder'
+import * as gql from 'gql-query-builder'
 
-const query = builder.mutation({
+const query = gql.mutation({
   operation: 'thoughtCreate',
   variables: {
-    name: { value: "Tyrion Lannister" },
-    thought: { value: "I drink and I know things." }
+    name: 'Tyrion Lannister',
+    thought: 'I drink and I know things.'
   },
   fields: ['id']
 })
@@ -218,14 +231,14 @@ mutation ($name: String, $thought: String) {
 **Mutation (with required variables):**
 
 ```javascript
-import * as builder from 'gql-query-builder'
+import * as gql from 'gql-query-builder'
 
-const query = builder.mutation({
+const query = gql.mutation({
   operation: 'userSignup',
   variables: {
-    name: { value: "Jon Doe" },
-    email: { value: "jon.doe@example.com", required: true },
-    password: { value: "123456", required: true }
+    name: { value: 'Jon Doe' },
+    email: { value: 'jon.doe@example.com', required: true },
+    password: { value: '123456', required: true }
   },
   fields: ['userId']
 })
@@ -253,13 +266,13 @@ mutation ($name: String, $email: String!, $password: String!) {
 
 ```javascript
 import axios from "axios";
-import * as builder from "gql-query-builder";
+import { query } from "gql-query-builder";
 
 async function getThoughts() {
   try {
     const response = await axios.post(
       "http://api.example.com/graphql",
-      builder.query({
+      query({
         operation: "thoughts",
         fields: ["id", "name", "thought"]
       })
@@ -276,17 +289,17 @@ async function getThoughts() {
 
 ```javascript
 import axios from "axios";
-import * as builder from "gql-query-builder";
+import { mutation } from "gql-query-builder";
 
 async function saveThought() {
   try {
     const response = await axios.post(
       "http://api.example.com/graphql",
-      builder.mutation({
+      mutation({
         operation: "thoughtCreate",
         variables: {
-          name: { value: "Tyrion Lannister" },
-          thought: { value: "I drink and I know things." }
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things."
         },
         fields: ["id"]
       })
