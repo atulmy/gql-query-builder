@@ -106,7 +106,7 @@ import * as gql from 'gql-query-builder'
 
 const query = gql.query({
   operation: 'thought',
-  variables: { id: { value: 1 } },
+  variables: { id: 1 },
   fields: ['id', 'name', 'thought']
 })
 
