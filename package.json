@@ -6,7 +6,8 @@
     "type": "git",
     "url": "git+https://github.com:atulmy/gql-query-builder.git"
   },
-  "main": "./build",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "files": [
     "build"
   ],
