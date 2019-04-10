@@ -261,6 +261,40 @@ mutation ($name: String, $email: String!, $password: String!) {
 }
 ```
 
+**Mutation (with custom types):**
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+const query = gql.mutation({
+  operation: "userPhoneNumber",
+  variables: {
+    phone: {
+      value: { prefix: "+91", number: "9876543210" },
+      type: "PhoneNumber",
+      required: true
+    }
+  },
+  fields: ["id"]
+})
+
+console.log(query)
+
+// Output
+mutation ($phone: PhoneNumber!) {
+  userPhoneNumber (phone: $phone) {
+    id
+  }
+}
+
+// Variables
+{
+  phone: {
+    prefix: "+91", number: "9876543210"
+  }
+}
+```
+
 #### Example with [Axios](https://github.com/axios/axios)
 
 **Query:**
@@ -325,6 +359,7 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 
 - Atul Yadav - [GitHub](https://github.com/atulmy) · [Twitter](https://twitter.com/atulmy)
 - Juho Vepsäläinen - [GitHub](https://github.com/bebraw) · [Twitter](https://twitter.com/bebraw)
+- Daniel Hreben - [GitHub](https://github.com/DanielHreben) · [Twitter](https://twitter.com/DanielHreben)
 - [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
 
 ## Donate
