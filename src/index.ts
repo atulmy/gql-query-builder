@@ -163,18 +163,22 @@ function queryDataType(variable: any) {
 
   const value = typeof variable === "object" ? variable.value : variable;
 
-  switch (typeof value) {
-    case "object":
-      type = "Object";
-      break;
+  if (variable.type !== undefined) {
+    type = variable.type;
+  } else {
+    switch (typeof value) {
+      case "object":
+        type = "Object";
+        break;
 
-    case "boolean":
-      type = "Boolean";
-      break;
+      case "boolean":
+        type = "Boolean";
+        break;
 
-    case "number":
-      type = value % 1 === 0 ? "Int" : "Float";
-      break;
+      case "number":
+        type = value % 1 === 0 ? "Int" : "Float";
+        break;
+    }
   }
 
   if (typeof variable === "object" && variable.required) {

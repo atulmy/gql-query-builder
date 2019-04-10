@@ -223,4 +223,29 @@ describe("Mutations", () => {
       }
     });
   });
+
+  test("generates mutation custom type", () => {
+    const query = queryBuilder.mutation({
+      operation: "userPhoneNumber",
+      variables: {
+        phone: {
+          value: { prefix: "+91", number: "9876543210" },
+          type: "PhoneNumber",
+          required: true
+        }
+      },
+      fields: ["id"]
+    });
+
+    expect(query).toEqual({
+      query: `mutation ($phone: PhoneNumber!) {
+  userPhoneNumber (phone: $phone) {
+    id
+  }
+}`,
+      variables: {
+        phone: { prefix: "+91", number: "9876543210" }
+      }
+    });
+  });
 });
