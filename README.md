@@ -355,11 +355,13 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 - Fullstack GraphQL Application - [GitHub](https://github.com/atulmy/fullstack-graphql)
 - Would really appreciate if you add your project to this list by sending a PR
 
-## Authors
-
+## Author
 - Atul Yadav - [GitHub](https://github.com/atulmy) · [Twitter](https://twitter.com/atulmy)
+
+## Contributors
 - Juho Vepsäläinen - [GitHub](https://github.com/bebraw) · [Twitter](https://twitter.com/bebraw)
 - Daniel Hreben - [GitHub](https://github.com/DanielHreben) · [Twitter](https://twitter.com/DanielHreben)
+- Todd Baur - [GitHub](https://github.com/toadkicker) · [Twitter](https://twitter.com/toadkicker)
 - [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
 
 ## Donate
