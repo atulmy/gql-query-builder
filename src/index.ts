@@ -12,7 +12,8 @@ enum OperationType {
 }
 
 function queryOperation(
-  options: IQueryBuilderOptions | IQueryBuilderOptions[]
+  options: IQueryBuilderOptions | IQueryBuilderOptions[],
+  adapter?: IQueryAdapter
 ) {
   if (Array.isArray(options)) {
     return queriesBuilder(options);

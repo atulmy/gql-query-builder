@@ -5,35 +5,38 @@ import Utils from "../Utils";
 import IQueryAdapter from "./IQueryAdapter";
 
 export default class DefaultQueryAdapter implements IQueryAdapter {
-  private readonly variables: any | undefined;
-  private readonly fields: Fields | undefined;
-  private readonly operation: string;
+  private variables!: any | undefined;
+  private fields: Fields | undefined;
+  private operation!: string;
 
   constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
       this.variables = Utils.resolveVariables(options);
-      this.operation = OperationType.Query;
     } else {
       this.variables = options.variables;
-      this.fields = options.fields;
-      this.operation = OperationType.Query;
+      this.fields = options.fields || [];
+      this.operation = options.operation;
     }
   }
   // kicks off building for a single query
   public queryBuilder() {
-    return this.operationWrapperTemplate(
-      OperationType.Query,
-      this.variables,
-      this.operationTemplate()
-    );
+    return this.operationWrapperTemplate(this.operationTemplate());
   }
   // if we have an array of options, call this
   public queriesBuilder(queries: IQueryBuilderOptions[]) {
-    return this.operationWrapperTemplate(
-      OperationType.Query,
-      Utils.resolveVariables(queries),
-      queries.map(this.operationTemplate).join("\n  ")
-    );
+    const content = () => {
+      const tmpl: string[] = [];
+      queries.forEach(query => {
+        if (query) {
+          this.operation = query.operation;
+          this.fields = query.fields;
+          this.variables = query.variables;
+          tmpl.push(this.operationTemplate());
+        }
+      });
+      return tmpl.join(" ");
+    };
+    return this.operationWrapperTemplate(content());
   }
 
   // Convert object to name and argument map. eg: (id: $id)
@@ -46,23 +49,10 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
         )})`
       : "";
   }
-  // Variables map. eg: { "id": 1, "name": "Jon Doe" }
-  public queryVariablesMap() {
-    const variablesMapped: { [key: string]: unknown } = {};
-
-    Object.keys(this.variables).map(key => {
-      variablesMapped[key] =
-        typeof this.variables[key] === "object"
-          ? this.variables[key].value
-          : this.variables[key];
-    });
-
-    return variablesMapped;
-  }
 
   // Convert object to argument and type map. eg: ($id: Int)
   private queryDataArgumentAndTypeMap(): string {
-    return Object.keys(this.variables).length
+    return this.variables && Object.keys(this.variables).length
       ? `(${Object.keys(this.variables).reduce(
           (dataString, key, i) =>
             `${dataString}${i !== 0 ? ", " : ""}$${key}: ${this.queryDataType(
@@ -103,37 +93,22 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     return type;
   };
 
-  // Fields selection map. eg: { id, name }
-  private queryFieldsMap(fields?: Fields): string {
-    return fields
-      ? fields
-          .map(field =>
-            typeof field === "object"
-              ? `${Object.keys(field)[0]} { ${this.queryFieldsMap(
-                  Object.values(field)[0]
-                )} }`
-              : `${field}`
-          )
-          .join(", ")
-      : "";
-  }
-
   private operationWrapperTemplate(
-    type: OperationType,
-    variables: any,
     content: string
-  ): { variables: any; query: string } {
+  ): { variables: { [p: string]: unknown }; query: string } {
     return {
-      query: `${type} ${this.queryDataArgumentAndTypeMap()} {
-  ${content}
-}`,
-      variables: this.queryVariablesMap()
+      query: `${
+        OperationType.Query
+      } ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
+      variables: Utils.queryVariablesMap(this.variables)
     };
   }
   // query
   private operationTemplate() {
-    return `${this.operation} ${this.queryDataNameAndArgumentMap()} {
-    ${this.queryFieldsMap(this.fields)}
-  }`;
+    return `${
+      this.operation
+    } ${this.queryDataNameAndArgumentMap()} { ${Utils.queryFieldsMap(
+      this.fields
+    )} }`;
   }
 }

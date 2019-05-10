@@ -8,11 +8,7 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: `query  {
-  thoughts  {
-    id, name, thought
-  }
-}`,
+      query: `query  { thoughts  { id, name, thought } }`,
       variables: {}
     });
   });
@@ -25,11 +21,7 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: `query ($id: Int) {
-  thought (id: $id) {
-    id, name, thought
-  }
-}`,
+      query: `query ($id: Int) { thought (id: $id) { id, name, thought } }`,
       variables: { id: 1 }
     });
   });
@@ -54,11 +46,7 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: `query  {
-  orders  {
-    id, amount, user { id, name, email, address { city, country } }
-  }
-}`,
+      query: `query  { orders  { id, amount, user { id, name, email, address { city, country } } } }`,
       variables: {}
     });
   });
@@ -74,11 +62,7 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: `query ($email: String!, $password: String!) {
-  userLogin (email: $email, password: $password) {
-    userId, token
-  }
-}`,
+      query: `query ($email: String!, $password: String!) { userLogin (email: $email, password: $password) { userId, token } }`,
       variables: { email: "jon.doe@example.com", password: "123456" }
     });
   });
@@ -98,14 +82,7 @@ describe("Queries", () => {
     ]);
 
     expect(query).toEqual({
-      query: `query  {
-  thoughts  {
-    id, name, thought
-  }
-  prayers  {
-    id, name, prayer
-  }
-}`,
+      query: `query  { thoughts  { id, name, thought } prayers  { id, name, prayer } }`,
       variables: {}
     });
   });
