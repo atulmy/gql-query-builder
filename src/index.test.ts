@@ -1,3 +1,4 @@
+import DefaultAppSyncQueryAdapter from "../src/adapters/DefaultAppSyncQueryAdapter";
 import * as queryBuilder from "./";
 
 describe("Query", () => {
@@ -9,6 +10,21 @@ describe("Query", () => {
 
     expect(query).toEqual({
       query: `query  { thoughts  { id, name, thought } }`,
+      variables: {}
+    });
+  });
+
+  test("generates query when adapter argument is provided", () => {
+    const query = queryBuilder.query(
+      {
+        operation: "thoughts",
+        fields: ["id", "name", "thought"]
+      },
+      DefaultAppSyncQueryAdapter
+    );
+
+    expect(query).toEqual({
+      query: `query Thoughts  { thoughts  { id, name, thought } }`,
       variables: {}
     });
   });
