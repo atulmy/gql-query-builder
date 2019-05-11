@@ -1,3 +1,7 @@
+/*
+@interface IQueryBuilderOptions
+@desc defines public methods for building a full mutation template
+ */
 import Fields from "./Fields";
 
 interface IQueryBuilderOptions {

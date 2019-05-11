@@ -1,3 +1,8 @@
+/*
+@class DefaultAppSyncQueryAdapter
+@desc A basic implementation to use with AWS AppSync
+@desc modify the output of the query template by passing a second argument to query(options, DefaultAppSyncQueryAdapter)
+ */
 import Fields from "../Fields";
 import IQueryBuilderOptions from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";

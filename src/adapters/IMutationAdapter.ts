@@ -1,3 +1,7 @@
+/*
+@interface IMutationAdapter
+@desc defines public methods for building a full mutation template
+ */
 import IQueryBuilderOptions from "../IQueryBuilderOptions";
 
 export default interface IMutationAdapter {

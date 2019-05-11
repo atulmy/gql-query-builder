@@ -1,3 +1,8 @@
+/*
+@class DefaultMutationAdapter
+@desc A basic implementation to use
+@desc modify the output of the mutation template by passing a second argument to mutation(options, AdapterClass)
+ */
 import Fields from "../Fields";
 import IQueryBuilderOptions from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
