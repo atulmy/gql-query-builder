@@ -234,7 +234,7 @@ query SomethingIDidInMyAdapter {
 }
 ```
 
-Take a peek at [DefaultQueryAdapter]('src/adapters/DefaultQueryAdapter.ts') to get an understanding of how to make a new adapter.
+Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get an understanding of how to make a new adapter.
 
 **Mutation:**
 
@@ -409,7 +409,7 @@ mutation SomethingIDidInMyAdapter {
 }
 ```
 
-Take a peek at [DefaultMutationAdapter]('src/adapters/DefaultMutationAdapter.ts') to get an understanding of how to make a new adapter.
+Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
 
 # Showcase
 
