@@ -24,7 +24,7 @@ describe("Query", () => {
     );
 
     expect(query).toEqual({
-      query: `query Thoughts  { thoughts  { id, name, thought } }`,
+      query: `query Thoughts  { thoughts  { nodes { id, name, thought } } }`,
       variables: {}
     });
   });

@@ -102,10 +102,11 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
     content: string
   ): { variables: { [p: string]: unknown }; query: string } {
     return {
-      query: `${OperationType.Query} ${this.operation.charAt(0).toUpperCase() +
-        this.operation.slice(
-          1
-        )} ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
+      query: `${OperationType.Query} ${this.operation
+        .charAt(0)
+        .toUpperCase()}${this.operation.slice(
+        1
+      )} ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
       variables: Utils.queryVariablesMap(this.variables)
     };
   }
@@ -113,8 +114,8 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   private operationTemplate() {
     return `${
       this.operation
-    } ${this.queryDataNameAndArgumentMap()} { ${Utils.queryFieldsMap(
+    } ${this.queryDataNameAndArgumentMap()} { nodes { ${Utils.queryFieldsMap(
       this.fields
-    )} }`;
+    )} } }`;
   }
 }

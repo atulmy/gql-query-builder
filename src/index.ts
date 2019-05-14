@@ -1,3 +1,4 @@
+import adapters from "./adapters";
 import DefaultMutationAdapter from "./adapters/DefaultMutationAdapter";
 import DefaultQueryAdapter from "./adapters/DefaultQueryAdapter";
 import IMutationAdapter from "./adapters/IMutationAdapter";
@@ -17,7 +18,6 @@ function queryOperation(
     }
   }
   if (adapter) {
-    // @ts-ignore
     const adapt: IQueryAdapter = new adapter(options);
     return adapt.queryBuilder();
   } else {
@@ -39,7 +39,6 @@ function mutationOperation(
     }
   }
   if (adapter) {
-    // @ts-ignore
     const adapt: IMutationAdapter = new adapter(options);
     return adapt.mutationBuilder();
   } else {
@@ -48,4 +47,4 @@ function mutationOperation(
   }
 }
 
-export { mutationOperation as mutation, queryOperation as query };
+export { mutationOperation as mutation, queryOperation as query, adapters };
