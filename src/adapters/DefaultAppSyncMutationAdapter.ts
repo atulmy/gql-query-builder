@@ -9,7 +9,7 @@ import OperationType from "../OperationType";
 import Utils from "../Utils";
 import IMutationAdapter from "./IMutationAdapter";
 
-export default class DefaultMutationAdapter implements IMutationAdapter {
+export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;
   private fields: Fields | undefined;
   private operation!: string;
