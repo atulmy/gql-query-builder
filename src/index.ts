@@ -9,42 +9,45 @@ function queryOperation(
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
   adapter?: any
 ) {
+  let defaultAdapter: IQueryAdapter;
   if (Array.isArray(options)) {
     if (adapter) {
-      return adapter.queriesBuilder(options);
-    } else {
-      const adapt: IQueryAdapter = new DefaultQueryAdapter(options);
-      return adapt.queriesBuilder(options);
+      const customAdapter: IQueryAdapter = new adapter(options);
+      return customAdapter.queriesBuilder(options);
     }
+    defaultAdapter = new DefaultQueryAdapter(options);
+    return defaultAdapter.queriesBuilder(options);
   }
   if (adapter) {
-    const adapt: IQueryAdapter = new adapter(options);
-    return adapt.queryBuilder();
-  } else {
-    const adapt: IQueryAdapter = new DefaultQueryAdapter(options);
-    return adapt.queryBuilder();
+    const customAdapter: IQueryAdapter = new adapter(options);
+    return customAdapter.queryBuilder();
   }
+  defaultAdapter = new DefaultQueryAdapter(options);
+  return defaultAdapter.queryBuilder();
 }
 
 function mutationOperation(
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  adapter?: any
+  adapter?: IMutationAdapter
 ) {
+  let customAdapter: IMutationAdapter;
+  let defaultAdapter: IMutationAdapter;
   if (Array.isArray(options)) {
     if (adapter) {
-      return adapter.mutationsBuilder(options);
-    } else {
-      const adapt: IMutationAdapter = new DefaultMutationAdapter(options);
-      return adapt.mutationsBuilder(options);
+      // @ts-ignore
+      customAdapter = new adapter(options);
+      return customAdapter.mutationsBuilder(options);
     }
+    defaultAdapter = new DefaultMutationAdapter(options);
+    return defaultAdapter.mutationsBuilder(options);
   }
   if (adapter) {
-    const adapt: IMutationAdapter = new adapter(options);
-    return adapt.mutationBuilder();
-  } else {
-    const adapt: IMutationAdapter = new DefaultMutationAdapter(options);
-    return adapt.mutationBuilder();
+    // @ts-ignore
+    customAdapter = new adapter(options);
+    return customAdapter.mutationBuilder();
   }
+  defaultAdapter = new DefaultMutationAdapter(options);
+  return defaultAdapter.mutationBuilder();
 }
 
 export { mutationOperation as mutation, queryOperation as query, adapters };
