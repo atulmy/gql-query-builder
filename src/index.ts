@@ -1,8 +1,10 @@
 import adapters from "./adapters";
 import DefaultMutationAdapter from "./adapters/DefaultMutationAdapter";
 import DefaultQueryAdapter from "./adapters/DefaultQueryAdapter";
+import DefaultSubscriptionAdapter from "./adapters/DefaultSubscriptionAdapter";
 import IMutationAdapter from "./adapters/IMutationAdapter";
 import IQueryAdapter from "./adapters/IQueryAdapter";
+import ISubscriptionAdapter from "./adapters/ISubscriptionAdapter";
 import IQueryBuilderOptions from "./IQueryBuilderOptions";
 
 function queryOperation(
@@ -50,4 +52,33 @@ function mutationOperation(
   return defaultAdapter.mutationBuilder();
 }
 
-export { mutationOperation as mutation, queryOperation as query, adapters };
+function subscriptionOperation(
+  options: IQueryBuilderOptions | IQueryBuilderOptions[],
+  adapter?: ISubscriptionAdapter
+) {
+  let customAdapter: ISubscriptionAdapter;
+  let defaultAdapter: ISubscriptionAdapter;
+  if (Array.isArray(options)) {
+    if (adapter) {
+      // @ts-ignore
+      customAdapter = new adapter(options);
+      return customAdapter.subscriptionsBuilder(options);
+    }
+    defaultAdapter = new DefaultSubscriptionAdapter(options);
+    return defaultAdapter.subscriptionsBuilder(options);
+  }
+  if (adapter) {
+    // @ts-ignore
+    customAdapter = new adapter(options);
+    return customAdapter.subscriptionBuilder();
+  }
+  defaultAdapter = new DefaultSubscriptionAdapter(options);
+  return defaultAdapter.subscriptionBuilder();
+}
+
+export {
+  subscriptionOperation as subscription,
+  mutationOperation as mutation,
+  queryOperation as query,
+  adapters
+};

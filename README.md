@@ -10,22 +10,24 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 
 ### Getting Started
 
-You can also import `query` or `mutation` individually:
+You can also import `query` or `mutation` or `subscription` individually:
 
-```javascript
-import  { query, mutation } from 'gql-query-builder'
+```typescript
+import  { query, mutation, subscription } from 'gql-query-builder'
 
 query(options: object)
 mutation(options: object)
+subscription(options: object)
 ```
 
 ## API
 
-```javascript
+```typescript
 import * as gql from 'gql-query-builder'
 
 const query = gql.query(options: object, adapter?: MyCustomQueryAdapter)
 const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
+const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
 ```
 
 #### Options
@@ -410,6 +412,60 @@ mutation SomethingIDidInMyAdapter {
 ```
 
 Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
+
+**Subscription:**
+
+```javascript
+import axios from "axios";
+import { subscription } from "gql-query-builder";
+
+async function saveThought() {
+  try {
+    const response = await axios.post(
+      "http://api.example.com/graphql",
+      subscription({
+        operation: "thoughtCreate",
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things."
+        },
+        fields: ["id"]
+      })
+    );
+
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
+
+**Subscription (with adapter defined):**
+
+For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
+
+```javascript
+import * as gql from 'gql-query-builder'
+import MySubscriptionAdapter from 'where/adapters/live/MyQueryAdapter'
+
+const query = gql.subscription({
+  operation: 'thoughts',
+  fields: ['id', 'name', 'thought']
+}, MySubscriptionAdapter)
+
+console.log(query)
+
+// Output
+subscription SomethingIDidInMyAdapter {
+  thoughts {
+    id,
+    name,
+    thought
+  }
+}
+```
+
+Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdapter.ts) to get an understanding of how to make a new adapter.
 
 # Showcase
 
