@@ -67,7 +67,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
   }
 
   // start of mutation building
-  private operationWrapperTemplate(variables: any, content: string) {
+  private operationWrapperTemplate(variables: any, content: string): any {
     return {
       query: `${OperationType.Mutation} ${this.operation
         .charAt(0)
@@ -81,7 +81,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
     };
   }
 
-  private operationTemplate(operation: string) {
+  private operationTemplate(operation: string): string {
     return `${operation} ${this.queryDataNameAndArgumentMap()} {
     ${this.queryFieldsMap(this.fields)}
   }`;
@@ -89,7 +89,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
 
   // Fields selection map. eg: { id, name }
   private queryFieldsMap(fields?: Fields): string {
-    return fields
+    return Array.isArray(fields)
       ? fields
           .map(field =>
             typeof field === "object"
