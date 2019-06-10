@@ -43,7 +43,7 @@ where `options` is `{ operation, fields, variables }` or an array of `options`
       <td>fields</td>
       <td>Selection of fields</td>
       <td>Array</td>
-      <td>Yes</td>
+      <td>No</td>
       <td>
         ['id', 'name', 'thought'] <br/><br />
         ['id', 'name', 'thought', { user: ['id', 'email'] }]
@@ -356,9 +356,11 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 - Would really appreciate if you add your project to this list by sending a PR
 
 ## Author
+
 - Atul Yadav - [GitHub](https://github.com/atulmy) · [Twitter](https://twitter.com/atulmy)
 
 ## Contributors
+
 - Juho Vepsäläinen - [GitHub](https://github.com/bebraw) · [Twitter](https://twitter.com/bebraw)
 - Daniel Hreben - [GitHub](https://github.com/DanielHreben) · [Twitter](https://twitter.com/DanielHreben)
 - Todd Baur - [GitHub](https://github.com/toadkicker) · [Twitter](https://twitter.com/toadkicker)

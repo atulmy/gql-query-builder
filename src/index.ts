@@ -99,8 +99,12 @@ function operationTemplate({
   operation,
   fields
 }: IQueryBuilderOptions) {
-  return `${operation} ${queryDataNameAndArgumentMap(variables)} {
+  return `${operation} ${queryDataNameAndArgumentMap(variables)} ${
+    fields && fields.length > 0
+      ? `{
     ${queryFieldsMap(fields)}
+  }`
+      : ""
   }`;
 }
 
