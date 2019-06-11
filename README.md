@@ -8,16 +8,31 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 
 `npm install gql-query-builder --save` or `yarn add gql-query-builder`
 
-### API
+### Getting Started
 
-```javascript
-import * as gql from 'gql-query-builder'
+You can also import `query` or `mutation` or `subscription` individually:
 
-const query = gql.query(options: object)
-const mutation = gql.mutation(options: object)
+```typescript
+import  { query, mutation, subscription } from 'gql-query-builder'
+
+query(options: object)
+mutation(options: object)
+subscription(options: object)
 ```
 
-where `options` is `{ operation, fields, variables }` or an array of `options`
+## API
+
+```typescript
+import * as gql from 'gql-query-builder'
+
+const query = gql.query(options: object, adapter?: MyCustomQueryAdapter)
+const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
+const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
+```
+
+#### Options
+
+`options` is `{ operation, fields, variables }` or an array of `options`
 
 <table width="100%">
   <thead>
@@ -66,14 +81,11 @@ where `options` is `{ operation, fields, variables }` or an array of `options`
   </tbody>
 </table>
 
-You can also import `query` or `mutation` individually:
+## Adapter
 
-```javascript
-import  { query, mutation } from 'gql-query-builder'
+An optional second argument `adapter` is a typescript/javascript class that implements `src/adapters/IQueryAdapter` or `src/adapters/IMutationAdapter`.
 
-query(options: object)
-mutation(options: object)
-```
+If adapter is undefined then `src/adapters/DefaultQueryAdapter` or `src/adapters/DefaultMutationAdapter` is used.
 
 ### Examples
 
@@ -198,6 +210,33 @@ query ($email: String!, $password: String!) {
   password: "123456"
 }
 ```
+
+**Query (with adapter defined):**
+
+For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
+
+```javascript
+import * as gql from 'gql-query-builder'
+import MyQueryAdapter from 'where/adapters/live/MyQueryAdapter'
+
+const query = gql.query({
+  operation: 'thoughts',
+  fields: ['id', 'name', 'thought']
+}, MyQueryAdapter)
+
+console.log(query)
+
+// Output
+query SomethingIDidInMyAdapter {
+  thoughts {
+    id,
+    name,
+    thought
+  }
+}
+```
+
+Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get an understanding of how to make a new adapter.
 
 **Mutation:**
 
@@ -347,6 +386,87 @@ async function saveThought() {
 }
 ```
 
+**Mutation (with adapter defined):**
+
+For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
+
+```javascript
+import * as gql from 'gql-query-builder'
+import MyMutationAdapter from 'where/adapters/live/MyQueryAdapter'
+
+const query = gql.mutation({
+  operation: 'thoughts',
+  fields: ['id', 'name', 'thought']
+}, MyMutationAdapter)
+
+console.log(query)
+
+// Output
+mutation SomethingIDidInMyAdapter {
+  thoughts {
+    id,
+    name,
+    thought
+  }
+}
+```
+
+Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
+
+**Subscription:**
+
+```javascript
+import axios from "axios";
+import { subscription } from "gql-query-builder";
+
+async function saveThought() {
+  try {
+    const response = await axios.post(
+      "http://api.example.com/graphql",
+      subscription({
+        operation: "thoughtCreate",
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things."
+        },
+        fields: ["id"]
+      })
+    );
+
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
+
+**Subscription (with adapter defined):**
+
+For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
+
+```javascript
+import * as gql from 'gql-query-builder'
+import MySubscriptionAdapter from 'where/adapters/live/MyQueryAdapter'
+
+const query = gql.subscription({
+  operation: 'thoughts',
+  fields: ['id', 'name', 'thought']
+}, MySubscriptionAdapter)
+
+console.log(query)
+
+// Output
+subscription SomethingIDidInMyAdapter {
+  thoughts {
+    id,
+    name,
+    thought
+  }
+}
+```
+
+Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdapter.ts) to get an understanding of how to make a new adapter.
+
 # Showcase
 
 Following projects are using [gql-query-builder](https://github.com/atulmy/gql-query-builder)
@@ -374,6 +494,6 @@ If you liked this project, you can donate to support it ❤️
 
 ## License
 
-Copyright (c) 2018 Atul Yadav http://github.com/atulmy
+Copyright (c) 2018 Atul Yadav <http://github.com/atulmy>
 
-The MIT License (http://www.opensource.org/licenses/mit-license.php)
+The MIT License (<http://www.opensource.org/licenses/mit-license.php>)
