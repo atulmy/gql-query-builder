@@ -58,7 +58,7 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
       <td>fields</td>
       <td>Selection of fields</td>
       <td>Array</td>
-      <td>Yes</td>
+      <td>No</td>
       <td>
         ['id', 'name', 'thought'] <br/><br />
         ['id', 'name', 'thought', { user: ['id', 'email'] }]

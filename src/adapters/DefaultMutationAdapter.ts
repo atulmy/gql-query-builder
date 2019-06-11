@@ -57,6 +57,9 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   }
 
   private queryDataArgumentAndTypeMap(variables: any): string {
+    if (!variables) {
+      return "";
+    }
     return Object.keys(variables).length
       ? `(${Object.keys(variables).reduce(
           (dataString, key, i) =>
@@ -83,9 +86,13 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   }
 
   private operationTemplate(operation: string) {
-    return `${operation} ${this.queryDataNameAndArgumentMap()} {
+    return `${operation} ${this.queryDataNameAndArgumentMap()} ${
+      this.fields && this.fields.length > 0
+        ? `{
     ${this.queryFieldsMap(this.fields)}
-  }`;
+  }`
+        : ""
+    }`;
   }
 
   // Fields selection map. eg: { id, name }

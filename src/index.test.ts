@@ -82,10 +82,8 @@ describe("Query", () => {
       variables: { email: "jon.doe@example.com", password: "123456" }
     });
   });
-});
 
-describe("Queries", () => {
-  test("generates queries", () => {
+  test("generates multiple queries", () => {
     const query = queryBuilder.query([
       {
         operation: "thoughts",
@@ -152,10 +150,8 @@ describe("Mutation", () => {
       }
     });
   });
-});
 
-describe("Mutations", () => {
-  test("generates mutations", () => {
+  test("generates multiple mutations", () => {
     const query = queryBuilder.mutation([
       {
         operation: "thoughtCreate",
@@ -239,6 +235,19 @@ describe("Mutations", () => {
       variables: {
         phone: { prefix: "+91", number: "9876543210" }
       }
+    });
+  });
+
+  test("generate mutation without fields selection", () => {
+    const query = queryBuilder.mutation({
+      operation: "logout"
+    });
+
+    expect(query).toEqual({
+      query: `mutation  {
+  logout  
+}`,
+      variables: {}
     });
   });
 });
