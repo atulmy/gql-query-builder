@@ -60,43 +60,13 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     return this.variables && Object.keys(this.variables).length
       ? `(${Object.keys(this.variables).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${this.queryDataType(
+            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
               this.variables[key]
             )}`,
           ""
         )})`
       : "";
   }
-
-  private queryDataType = (variable: any) => {
-    let type = "String";
-
-    const value = typeof variable === "object" ? variable.value : variable;
-
-    if (variable.type !== undefined) {
-      type = variable.type;
-    } else {
-      switch (typeof value) {
-        case "object":
-          type = "Object";
-          break;
-
-        case "boolean":
-          type = "Boolean";
-          break;
-
-        case "number":
-          type = value % 1 === 0 ? "Int" : "Float";
-          break;
-      }
-    }
-
-    if (typeof variable === "object" && variable.required) {
-      type += "!";
-    }
-
-    return type;
-  };
 
   private operationWrapperTemplate(
     content: string
