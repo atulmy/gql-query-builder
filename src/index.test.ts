@@ -83,6 +83,36 @@ describe("Query", () => {
     });
   });
 
+  test("generate query with array variable (array items are not nullable)", () => {
+    const query = queryBuilder.query({
+      operation: "search",
+      variables: {
+        tags: { value: ["a", "b", "c"], list: [true], type: "String" }
+      },
+      fields: ["id", "title", "content", "tag"]
+    });
+
+    expect(query).toEqual({
+      query: `query ($tags: [String!]) { search (tags: $tags) { id, title, content, tag } }`,
+      variables: { tags: ["a", "b", "c"] }
+    });
+  });
+
+  test("generate query with array variable (array items are nullable)", () => {
+    const query = queryBuilder.query({
+      operation: "search",
+      variables: {
+        tags: { value: ["a", "b", "c", null], list: true }
+      },
+      fields: ["id", "title", "content", "tag"]
+    });
+
+    expect(query).toEqual({
+      query: `query ($tags: [String]) { search (tags: $tags) { id, title, content, tag } }`,
+      variables: { tags: ["a", "b", "c", null] }
+    });
+  });
+
   test("generates multiple queries", () => {
     const query = queryBuilder.query([
       {

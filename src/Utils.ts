@@ -48,7 +48,9 @@ export default class Utils {
     if (variable.type !== undefined) {
       type = variable.type;
     } else {
-      switch (typeof value) {
+      // TODO: Should handle the undefined value (either in array value or single value)
+      const candidateValue = Array.isArray(value) ? value[0] : value;
+      switch (typeof candidateValue) {
         case "object":
           type = "Object";
           break;
@@ -58,13 +60,22 @@ export default class Utils {
           break;
 
         case "number":
-          type = value % 1 === 0 ? "Int" : "Float";
+          type = candidateValue % 1 === 0 ? "Int" : "Float";
           break;
       }
     }
 
-    if (typeof variable === "object" && variable.required) {
-      type += "!";
+    // set object based variable properties
+    if (typeof variable === "object") {
+      if (variable.list === true) {
+        type = `[${type}]`;
+      } else if (Array.isArray(variable.list)) {
+        type = `[${type}${variable.list[0] ? "!" : ""}]`;
+      }
+
+      if (variable.required) {
+        type += "!";
+      }
     }
 
     return type;
