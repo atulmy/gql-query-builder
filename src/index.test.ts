@@ -5,12 +5,12 @@ describe("Query", () => {
   test("generates query", () => {
     const query = queryBuilder.query({
       operation: "thoughts",
-      fields: ["id", "name", "thought"]
+      fields: ["id", "name", "thought"],
     });
 
     expect(query).toEqual({
       query: `query  { thoughts  { id, name, thought } }`,
-      variables: {}
+      variables: {},
     });
   });
 
@@ -18,14 +18,14 @@ describe("Query", () => {
     const query = queryBuilder.query(
       {
         operation: "thoughts",
-        fields: ["id", "name", "thought"]
+        fields: ["id", "name", "thought"],
       },
       DefaultAppSyncQueryAdapter
     );
 
     expect(query).toEqual({
       query: `query Thoughts  { thoughts  { nodes { id, name, thought } } }`,
-      variables: {}
+      variables: {},
     });
   });
 
@@ -33,12 +33,12 @@ describe("Query", () => {
     const query = queryBuilder.query({
       operation: "thought",
       variables: { id: 1 },
-      fields: ["id", "name", "thought"]
+      fields: ["id", "name", "thought"],
     });
 
     expect(query).toEqual({
       query: `query ($id: Int) { thought (id: $id) { id, name, thought } }`,
-      variables: { id: 1 }
+      variables: { id: 1 },
     });
   });
 
@@ -54,16 +54,16 @@ describe("Query", () => {
             "name",
             "email",
             {
-              address: ["city", "country"]
-            }
-          ]
-        }
-      ]
+              address: ["city", "country"],
+            },
+          ],
+        },
+      ],
     });
 
     expect(query).toEqual({
       query: `query  { orders  { id, amount, user { id, name, email, address { city, country } } } }`,
-      variables: {}
+      variables: {},
     });
   });
 
@@ -72,14 +72,14 @@ describe("Query", () => {
       operation: "userLogin",
       variables: {
         email: { value: "jon.doe@example.com", required: true },
-        password: { value: "123456", required: true }
+        password: { value: "123456", required: true },
       },
-      fields: ["userId", "token"]
+      fields: ["userId", "token"],
     });
 
     expect(query).toEqual({
       query: `query ($email: String!, $password: String!) { userLogin (email: $email, password: $password) { userId, token } }`,
-      variables: { email: "jon.doe@example.com", password: "123456" }
+      variables: { email: "jon.doe@example.com", password: "123456" },
     });
   });
 
@@ -87,14 +87,14 @@ describe("Query", () => {
     const query = queryBuilder.query({
       operation: "search",
       variables: {
-        tags: { value: ["a", "b", "c"], list: [true], type: "String" }
+        tags: { value: ["a", "b", "c"], list: [true], type: "String" },
       },
-      fields: ["id", "title", "content", "tag"]
+      fields: ["id", "title", "content", "tag"],
     });
 
     expect(query).toEqual({
       query: `query ($tags: [String!]) { search (tags: $tags) { id, title, content, tag } }`,
-      variables: { tags: ["a", "b", "c"] }
+      variables: { tags: ["a", "b", "c"] },
     });
   });
 
@@ -102,14 +102,14 @@ describe("Query", () => {
     const query = queryBuilder.query({
       operation: "search",
       variables: {
-        tags: { value: ["a", "b", "c", null], list: true }
+        tags: { value: ["a", "b", "c", null], list: true },
       },
-      fields: ["id", "title", "content", "tag"]
+      fields: ["id", "title", "content", "tag"],
     });
 
     expect(query).toEqual({
       query: `query ($tags: [String]) { search (tags: $tags) { id, title, content, tag } }`,
-      variables: { tags: ["a", "b", "c", null] }
+      variables: { tags: ["a", "b", "c", null] },
     });
   });
 
@@ -117,17 +117,17 @@ describe("Query", () => {
     const query = queryBuilder.query([
       {
         operation: "thoughts",
-        fields: ["id", "name", "thought"]
+        fields: ["id", "name", "thought"],
       },
       {
         operation: "prayers",
-        fields: ["id", "name", "prayer"]
-      }
+        fields: ["id", "name", "prayer"],
+      },
     ]);
 
     expect(query).toEqual({
       query: `query  { thoughts  { id, name, thought } prayers  { id, name, prayer } }`,
-      variables: {}
+      variables: {},
     });
   });
 });
@@ -138,9 +138,9 @@ describe("Mutation", () => {
       operation: "thoughtCreate",
       variables: {
         name: "Tyrion Lannister",
-        thought: "I drink and I know things."
+        thought: "I drink and I know things.",
       },
-      fields: ["id"]
+      fields: ["id"],
     });
 
     expect(query).toEqual({
@@ -151,8 +151,8 @@ describe("Mutation", () => {
 }`,
       variables: {
         name: "Tyrion Lannister",
-        thought: "I drink and I know things."
-      }
+        thought: "I drink and I know things.",
+      },
     });
   });
 
@@ -162,9 +162,9 @@ describe("Mutation", () => {
       variables: {
         name: "Jon Doe",
         email: { value: "jon.doe@example.com", required: true },
-        password: { value: "123456", required: true }
+        password: { value: "123456", required: true },
       },
-      fields: ["userId"]
+      fields: ["userId"],
     });
 
     expect(query).toEqual({
@@ -176,8 +176,8 @@ describe("Mutation", () => {
       variables: {
         name: "Jon Doe",
         email: "jon.doe@example.com",
-        password: "123456"
-      }
+        password: "123456",
+      },
     });
   });
 
@@ -187,18 +187,18 @@ describe("Mutation", () => {
         operation: "thoughtCreate",
         variables: {
           name: "Tyrion Lannister",
-          thought: "I drink and I know things."
+          thought: "I drink and I know things.",
         },
-        fields: ["id"]
+        fields: ["id"],
       },
       {
         operation: "prayerCreate",
         variables: {
           name: { value: "Tyrion Lannister" },
-          prayer: { value: "I wish for winter." }
+          prayer: { value: "I wish for winter." },
         },
-        fields: ["id"]
-      }
+        fields: ["id"],
+      },
     ]);
 
     expect(query).toEqual({
@@ -213,8 +213,8 @@ describe("Mutation", () => {
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things.",
-        prayer: "I wish for winter."
-      }
+        prayer: "I wish for winter.",
+      },
     });
   });
 
@@ -224,9 +224,9 @@ describe("Mutation", () => {
       variables: {
         name: "Jon Doe",
         email: { value: "jon.doe@example.com", required: true },
-        password: { value: "123456", required: true }
+        password: { value: "123456", required: true },
       },
-      fields: ["id"]
+      fields: ["id"],
     });
 
     expect(query).toEqual({
@@ -238,8 +238,8 @@ describe("Mutation", () => {
       variables: {
         name: "Jon Doe",
         email: "jon.doe@example.com",
-        password: "123456"
-      }
+        password: "123456",
+      },
     });
   });
 
@@ -250,10 +250,10 @@ describe("Mutation", () => {
         phone: {
           value: { prefix: "+91", number: "9876543210" },
           type: "PhoneNumber",
-          required: true
-        }
+          required: true,
+        },
       },
-      fields: ["id"]
+      fields: ["id"],
     });
 
     expect(query).toEqual({
@@ -263,21 +263,21 @@ describe("Mutation", () => {
   }
 }`,
       variables: {
-        phone: { prefix: "+91", number: "9876543210" }
-      }
+        phone: { prefix: "+91", number: "9876543210" },
+      },
     });
   });
 
   test("generate mutation without fields selection", () => {
     const query = queryBuilder.mutation({
-      operation: "logout"
+      operation: "logout",
     });
 
     expect(query).toEqual({
       query: `mutation  {
   logout  
 }`,
-      variables: {}
+      variables: {},
     });
   });
 });
@@ -288,18 +288,18 @@ describe("Subscriptions", () => {
         operation: "thoughtCreate",
         variables: {
           name: "Tyrion Lannister",
-          thought: "I drink and I know things."
+          thought: "I drink and I know things.",
         },
-        fields: ["id"]
+        fields: ["id"],
       },
       {
         operation: "prayerCreate",
         variables: {
           name: { value: "Tyrion Lannister" },
-          prayer: { value: "I wish for winter." }
+          prayer: { value: "I wish for winter." },
         },
-        fields: ["id"]
-      }
+        fields: ["id"],
+      },
     ]);
 
     expect(query).toEqual({
@@ -314,8 +314,8 @@ describe("Subscriptions", () => {
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things.",
-        prayer: "I wish for winter."
-      }
+        prayer: "I wish for winter.",
+      },
     });
   });
 
@@ -325,9 +325,9 @@ describe("Subscriptions", () => {
       variables: {
         name: "Jon Doe",
         email: { value: "jon.doe@example.com", required: true },
-        password: { value: "123456", required: true }
+        password: { value: "123456", required: true },
       },
-      fields: ["id"]
+      fields: ["id"],
     });
 
     expect(query).toEqual({
@@ -339,8 +339,8 @@ describe("Subscriptions", () => {
       variables: {
         name: "Jon Doe",
         email: "jon.doe@example.com",
-        password: "123456"
-      }
+        password: "123456",
+      },
     });
   });
 
@@ -351,10 +351,10 @@ describe("Subscriptions", () => {
         phone: {
           value: { prefix: "+91", number: "9876543210" },
           type: "PhoneNumber",
-          required: true
-        }
+          required: true,
+        },
       },
-      fields: ["id"]
+      fields: ["id"],
     });
 
     expect(query).toEqual({
@@ -364,8 +364,8 @@ describe("Subscriptions", () => {
   }
 }`,
       variables: {
-        phone: { prefix: "+91", number: "9876543210" }
-      }
+        phone: { prefix: "+91", number: "9876543210" },
+      },
     });
   });
 });

@@ -31,7 +31,7 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   public queriesBuilder(queries: IQueryBuilderOptions[]) {
     const content = () => {
       const tmpl: string[] = [];
-      queries.forEach(query => {
+      queries.forEach((query) => {
         if (query) {
           this.operation = query.operation;
           this.fields = query.fields;
@@ -107,7 +107,7 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
         .toUpperCase()}${this.operation.slice(
         1
       )} ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
-      variables: Utils.queryVariablesMap(this.variables)
+      variables: Utils.queryVariablesMap(this.variables),
     };
   }
   // query

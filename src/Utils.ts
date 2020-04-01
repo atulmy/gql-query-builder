@@ -15,7 +15,7 @@ export default class Utils {
   public static queryFieldsMap(fields?: Fields): string {
     return fields
       ? fields
-          .map(field =>
+          .map((field) =>
             typeof field === "object"
               ? `${Object.keys(field)[0]} { ${this.queryFieldsMap(
                   Object.values(field)[0]
@@ -30,7 +30,7 @@ export default class Utils {
   public static queryVariablesMap(variables: any) {
     const variablesMapped: { [key: string]: unknown } = {};
     if (variables) {
-      Object.keys(variables).map(key => {
+      Object.keys(variables).map((key) => {
         variablesMapped[key] =
           typeof variables[key] === "object"
             ? variables[key].value

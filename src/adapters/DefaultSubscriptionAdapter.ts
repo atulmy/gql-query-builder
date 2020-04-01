@@ -34,7 +34,7 @@ export default class DefaultSubscriptionAdapter
   }
 
   public subscriptionsBuilder(subscriptions: IQueryBuilderOptions[]) {
-    const content = subscriptions.map(opts => {
+    const content = subscriptions.map((opts) => {
       this.operation = opts.operation;
       this.variables = opts.variables;
       this.fields = opts.fields;
@@ -79,7 +79,7 @@ export default class DefaultSubscriptionAdapter
       query: `${type} ${this.queryDataArgumentAndTypeMap(variables)} {
   ${content}
 }`,
-      variables: Utils.queryVariablesMap(variables)
+      variables: Utils.queryVariablesMap(variables),
     };
   }
 
@@ -93,7 +93,7 @@ export default class DefaultSubscriptionAdapter
   private queryFieldsMap(fields?: Fields): string {
     return fields
       ? fields
-          .map(field =>
+          .map((field) =>
             typeof field === "object"
               ? `${Object.keys(field)[0]} { ${this.queryFieldsMap(
                   Object.values(field)[0]

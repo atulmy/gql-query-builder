@@ -1,7 +1,7 @@
 enum OperationType {
   Mutation = "mutation",
   Query = "query",
-  Subscription = "subscription"
+  Subscription = "subscription",
 }
 
 export default OperationType;

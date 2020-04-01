@@ -80,5 +80,5 @@ export {
   subscriptionOperation as subscription,
   mutationOperation as mutation,
   queryOperation as query,
-  adapters
+  adapters,
 };

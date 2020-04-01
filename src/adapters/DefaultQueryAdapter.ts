@@ -31,7 +31,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   public queriesBuilder(queries: IQueryBuilderOptions[]) {
     const content = () => {
       const tmpl: string[] = [];
-      queries.forEach(query => {
+      queries.forEach((query) => {
         if (query) {
           this.operation = query.operation;
           this.fields = query.fields;
@@ -75,7 +75,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
       query: `${
         OperationType.Query
       } ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
-      variables: Utils.queryVariablesMap(this.variables)
+      variables: Utils.queryVariablesMap(this.variables),
     };
   }
   // query
