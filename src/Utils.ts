@@ -45,7 +45,7 @@ export default class Utils {
 
     const value = typeof variable === "object" ? variable.value : variable;
 
-    if (variable.type !== undefined) {
+    if (variable?.type != null) {
       type = variable.type;
     } else {
       // TODO: Should handle the undefined value (either in array value or single value)
