@@ -32,7 +32,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
   }
 
   public mutationsBuilder(mutations: IQueryBuilderOptions[]) {
-    const content = mutations.map(opts => {
+    const content = mutations.map((opts) => {
       this.operation = opts.operation;
       this.variables = opts.variables;
       this.fields = opts.fields;
@@ -69,15 +69,12 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
   // start of mutation building
   private operationWrapperTemplate(variables: any, content: string): any {
     return {
-      query: `${OperationType.Mutation} ${this.operation
-        .charAt(0)
-        .toUpperCase() +
-        this.operation.slice(1)} ${this.queryDataArgumentAndTypeMap(
-        variables
-      )} {
+      query: `${OperationType.Mutation} ${
+        this.operation.charAt(0).toUpperCase() + this.operation.slice(1)
+      } ${this.queryDataArgumentAndTypeMap(variables)} {
   ${content}
 }`,
-      variables: Utils.queryVariablesMap(variables)
+      variables: Utils.queryVariablesMap(variables),
     };
   }
 
@@ -91,7 +88,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
   private queryFieldsMap(fields?: Fields): string {
     return Array.isArray(fields)
       ? fields
-          .map(field =>
+          .map((field) =>
             typeof field === "object"
               ? `${Object.keys(field)[0]} { ${this.queryFieldsMap(
                   Object.values(field)[0]

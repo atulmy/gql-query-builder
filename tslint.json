@@ -3,6 +3,7 @@
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
+    "array-type": false,
     "object-literal-sort-keys": false,
     "prettier": true
   }

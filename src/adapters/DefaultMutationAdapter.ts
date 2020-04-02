@@ -33,7 +33,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   }
 
   public mutationsBuilder(mutations: IQueryBuilderOptions[]) {
-    const content = mutations.map(opts => {
+    const content = mutations.map((opts) => {
       this.operation = opts.operation;
       this.variables = opts.variables;
       this.fields = opts.fields;
@@ -81,7 +81,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
       query: `${type} ${this.queryDataArgumentAndTypeMap(variables)} {
   ${content}
 }`,
-      variables: Utils.queryVariablesMap(variables)
+      variables: Utils.queryVariablesMap(variables),
     };
   }
 
@@ -99,7 +99,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   private queryFieldsMap(fields?: Fields): string {
     return fields
       ? fields
-          .map(field =>
+          .map((field) =>
             typeof field === "object"
               ? `${Object.keys(field)[0]} { ${this.queryFieldsMap(
                   Object.values(field)[0]

@@ -348,7 +348,7 @@ async function getThoughts() {
       "http://api.example.com/graphql",
       query({
         operation: "thoughts",
-        fields: ["id", "name", "thought"]
+        fields: ["id", "name", "thought"],
       })
     );
 
@@ -373,9 +373,9 @@ async function saveThought() {
         operation: "thoughtCreate",
         variables: {
           name: "Tyrion Lannister",
-          thought: "I drink and I know things."
+          thought: "I drink and I know things.",
         },
-        fields: ["id"]
+        fields: ["id"],
       })
     );
 
@@ -427,9 +427,9 @@ async function saveThought() {
         operation: "thoughtCreate",
         variables: {
           name: "Tyrion Lannister",
-          thought: "I drink and I know things."
+          thought: "I drink and I know things.",
         },
-        fields: ["id"]
+        fields: ["id"],
       })
     );
 
@@ -484,6 +484,7 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 - Juho Vepsäläinen - [GitHub](https://github.com/bebraw) · [Twitter](https://twitter.com/bebraw)
 - Daniel Hreben - [GitHub](https://github.com/DanielHreben) · [Twitter](https://twitter.com/DanielHreben)
 - Todd Baur - [GitHub](https://github.com/toadkicker) · [Twitter](https://twitter.com/toadkicker)
+- Alireza Hariri - [GitHub](https://github.com/ARHariri)
 - [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
 
 ## Donate
