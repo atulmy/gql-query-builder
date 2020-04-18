@@ -29,6 +29,19 @@ describe("Query", () => {
     });
   });
 
+  test("generate query with undefined variables", () => {
+    const query = queryBuilder.query({
+      operation: "user",
+      fields: ["id", "name", "email"],
+      variables: { id: { type: "Int" }, name: undefined },
+    });
+
+    expect(query).toEqual({
+      query: `query ($id: Int, $name: String) { user (id: $id, name: $name) { id, name, email } }`,
+      variables: { id: undefined, name: undefined },
+    });
+  });
+
   test("generates query with variables", () => {
     const query = queryBuilder.query({
       operation: "thought",
