@@ -51,7 +51,7 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
       <td>String</td>
       <td>Yes</td>
       <td>
-        getThougts, createThought
+        getThoughts, createThought
       </td>
     </tr>
     <tr>
@@ -60,8 +60,9 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
       <td>Array</td>
       <td>No</td>
       <td>
-        ['id', 'name', 'thought'] <br/><br />
-        ['id', 'name', 'thought', { user: ['id', 'email'] }]
+        <code>['id', 'name', 'thought']</code>
+        <br/><br />
+        <code>['id', 'name', 'thought', { user: ['id', 'email'] }]</code>
       </td>
     </tr>
     <tr>
@@ -70,12 +71,17 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
       <td>Object</td>
       <td>No</td>
       <td>
-        { key: value } eg: { id: 1 }<br/><br/>
-        { key: { value: value, required: true } eg:<br />
+        { key: value } eg: <code>{ id: 1 }</code>
+        <br/><br/>
+        { key: { value: value, required: true, type: GQL type, list: true } eg:
+        <br />
+        <code>
         {
           email: { value: "user@example.com", required: true },
-          password: { value: "123456", required: true }
+          password: { value: "123456", required: true },
+          secondaryEmails: { value: [], required: false, type: 'String', list: true }
         }
+        </code>
       </td>
     </tr>
   </tbody>
