@@ -143,6 +143,26 @@ describe("Query", () => {
       variables: {},
     });
   });
+
+  test("generates query with variables nested in fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getPublicationNames",
+        fields: [
+          {
+            operation: "publication",
+            variables: { id: 12 },
+            fields: ["id", "name"],
+          },
+        ],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query ($id: ID) { getPublicationNames { publication (id: $id) { id, name } } }`,
+      variables: { id: 12 },
+    });
+  });
 });
 
 describe("Mutation", () => {
@@ -294,6 +314,7 @@ describe("Mutation", () => {
     });
   });
 });
+
 describe("Subscriptions", () => {
   test("generates subscriptions", () => {
     const query = queryBuilder.subscription([
