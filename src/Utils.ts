@@ -12,7 +12,7 @@ export default class Utils {
     return ret;
   }
 
-  public static getVariables(variables: IQueryBuilderOptions[]) {
+  public static createVariableString(variables: IQueryBuilderOptions[]) {
     return Object.keys(variables).length
       ? `(${Object.keys(variables).reduce(
           (dataString, key, i) =>
@@ -30,7 +30,7 @@ export default class Utils {
               ? field.hasOwnProperty("operation")
                 ? `${
                     (field as { operation: String }).operation
-                  } ${this.getVariables(
+                  } ${this.createVariableString(
                     (field as { variables: IQueryBuilderOptions[] }).variables
                   )} { ${this.queryFieldsMap(
                     (field as { fields: Fields }).fields
@@ -45,8 +45,8 @@ export default class Utils {
   }
 
   // Variables map. eg: { "id": 1, "name": "Jon Doe" }
-  public static queryVariablesMap(variables: any) {
-    const variablesMapped: { [key: string]: unknown } = {};
+  public static queryVariablesMap(variables: any, fields?: any) {
+    let variablesMapped: { [key: string]: unknown } = {};
     if (variables) {
       Object.keys(variables).map((key) => {
         variablesMapped[key] =
@@ -55,6 +55,14 @@ export default class Utils {
             : variables[key];
       });
     }
+    fields?.forEach((field: any) => {
+      if ((field as { variables: IQueryBuilderOptions[] }).variables) {
+        variablesMapped = {
+          ...(field as { variables: IQueryBuilderOptions[] }).variables,
+          ...variablesMapped,
+        };
+      }
+    });
     return variablesMapped;
   }
 
