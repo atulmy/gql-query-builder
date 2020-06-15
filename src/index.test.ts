@@ -159,12 +159,7 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: `query ($id: ID)
-      { getPublicationNames 
-        { 
-          publication (id: $id) { id, name } 
-        } 
-      }`,
+      query: `query ($id: Int) { getPublicationNames  { publication (id: $id) { id, name } } }`,
       variables: { id: 12 },
     });
   });
