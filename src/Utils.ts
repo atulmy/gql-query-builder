@@ -12,14 +12,32 @@ export default class Utils {
     return ret;
   }
 
+  public static getVariables(variables: IQueryBuilderOptions[]) {
+    return Object.keys(variables).length
+      ? `(${Object.keys(variables).reduce(
+          (dataString, key, i) =>
+            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
+          ""
+        )})`
+      : "";
+  }
+
   public static queryFieldsMap(fields?: Fields): string {
     return fields
       ? fields
           .map((field) =>
             typeof field === "object"
-              ? `${Object.keys(field)[0]} { ${this.queryFieldsMap(
-                  Object.values(field)[0]
-                )} }`
+              ? field.hasOwnProperty("operation")
+                ? `${
+                    (field as { operation: String }).operation
+                  } ${this.getVariables(
+                    (field as { variables: IQueryBuilderOptions[] }).variables
+                  )} { ${this.queryFieldsMap(
+                    (field as { fields: Fields }).fields
+                  )} }`
+                : `${Object.keys(field)[0]} { ${this.queryFieldsMap(
+                    Object.values(field)[0]
+                  )} }`
               : `${field}`
           )
           .join(", ")
