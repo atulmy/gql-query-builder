@@ -13,8 +13,9 @@ export default class Utils {
     return ret;
   }
 
-  public static createVariableString(variables: IQueryBuilderOptions[]) {
-    return Object.keys(variables).length
+  // Convert object to name and argument map. eg: (id: $id)
+  public static queryDataNameAndArgumentMap(variables: IQueryBuilderOptions[]) {
+    return variables && Object.keys(variables).length
       ? `(${Object.keys(variables).reduce(
           (dataString, key, i) =>
             `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
@@ -42,13 +43,13 @@ export default class Utils {
   }
 
   public static queryNestedFieldMap(field: NestedField) {
-    return `${field.operation} ${this.createVariableString(
+    return `${field.operation} ${this.queryDataNameAndArgumentMap(
       field.variables
     )} { ${this.queryFieldsMap(field.fields)} }`;
   }
 
   // Variables map. eg: { "id": 1, "name": "Jon Doe" }
-  public static queryVariablesMap(variables: any, fields?: any) {
+  public static queryVariablesMap(variables: any, fields?: Fields) {
     let variablesMapped: { [key: string]: unknown } = {};
     if (variables) {
       Object.keys(variables).map((key) => {
@@ -58,6 +59,7 @@ export default class Utils {
             : variables[key];
       });
     }
+    // get nested variables in field
     fields?.forEach((field: any) => {
       if ((field as { variables: IQueryBuilderOptions[] }).variables) {
         variablesMapped = {
