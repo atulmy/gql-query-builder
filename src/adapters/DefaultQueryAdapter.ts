@@ -44,28 +44,16 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     return this.operationWrapperTemplate(content());
   }
 
-  // Convert object to name and argument map. eg: (id: $id)
-  public queryDataNameAndArgumentMap() {
-    return this.variables && Object.keys(this.variables).length
-      ? `(${Object.keys(this.variables).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
-          ""
-        )})`
-      : "";
-  }
-
   // Convert object to argument and type map. eg: ($id: Int)
   private queryDataArgumentAndTypeMap(): string {
     let variablesUsed: { [key: string]: unknown } = this.variables;
-    this.fields?.forEach((field: any) => {
-      if ((field as { variables: IQueryBuilderOptions[] }).variables) {
-        variablesUsed = {
-          ...(field as { variables: IQueryBuilderOptions[] }).variables,
-          ...variablesUsed,
-        };
-      }
-    });
+
+    if (this.fields && typeof this.fields === "object") {
+      variablesUsed = {
+        ...Utils.getNestedVariables(this.fields),
+        ...variablesUsed,
+      };
+    }
     return variablesUsed && Object.keys(variablesUsed).length
       ? `(${Object.keys(variablesUsed).reduce(
           (dataString, key, i) =>
@@ -89,10 +77,8 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   }
   // query
   private operationTemplate() {
-    return `${
-      this.operation
-    } ${this.queryDataNameAndArgumentMap()} { ${Utils.queryFieldsMap(
-      this.fields
-    )} }`;
+    return `${this.operation} ${Utils.queryDataNameAndArgumentMap(
+      this.variables
+    )} { ${Utils.queryFieldsMap(this.fields)} }`;
   }
 }

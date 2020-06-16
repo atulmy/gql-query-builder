@@ -151,7 +151,7 @@ describe("Query", () => {
         fields: [
           {
             operation: "publication",
-            variables: { id: 12 },
+            variables: { id: { value: 12, type: "ID" } },
             fields: ["id", "name"],
           },
         ],
@@ -159,8 +159,8 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: `query ($id: Int) { getPublicationNames  { publication (id: $id) { id, name } } }`,
-      variables: { id: 12 },
+      query: `query ($id: ID) { getPublicationNames  { publication (id: $id) { id, name } } }`,
+      variables: { id: { type: "ID", value: 12 } },
     });
   });
 });
