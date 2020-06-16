@@ -1,5 +1,6 @@
 import Fields from "./Fields";
 import IQueryBuilderOptions from "./IQueryBuilderOptions";
+import NestedField, { isNestedField } from "./NestedField";
 
 export default class Utils {
   public static resolveVariables(operations: IQueryBuilderOptions[]): any {
@@ -25,23 +26,25 @@ export default class Utils {
   public static queryFieldsMap(fields?: Fields): string {
     return fields
       ? fields
-          .map((field) =>
-            typeof field === "object"
-              ? field.hasOwnProperty("operation")
-                ? `${
-                    (field as { operation: String }).operation
-                  } ${this.createVariableString(
-                    (field as { variables: IQueryBuilderOptions[] }).variables
-                  )} { ${this.queryFieldsMap(
-                    (field as { fields: Fields }).fields
-                  )} }`
-                : `${Object.keys(field)[0]} { ${this.queryFieldsMap(
-                    Object.values(field)[0]
-                  )} }`
-              : `${field}`
-          )
+          .map((field) => {
+            if (typeof field === "object" && isNestedField(field)) {
+              return Utils.queryNestedFieldMap(field);
+            } else if (typeof field === "object") {
+              return `${Object.keys(field)[0]} { ${this.queryFieldsMap(
+                Object.values(field)[0] as Fields
+              )} }`;
+            } else {
+              return `${field}`;
+            }
+          })
           .join(", ")
       : "";
+  }
+
+  public static queryNestedFieldMap(field: NestedField) {
+    return `${field.operation} ${this.createVariableString(
+      field.variables
+    )} { ${this.queryFieldsMap(field.fields)} }`;
   }
 
   // Variables map. eg: { "id": 1, "name": "Jon Doe" }
