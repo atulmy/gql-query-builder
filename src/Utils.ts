@@ -12,14 +12,32 @@ export default class Utils {
     return ret;
   }
 
+  public static createVariableString(variables: IQueryBuilderOptions[]) {
+    return Object.keys(variables).length
+      ? `(${Object.keys(variables).reduce(
+          (dataString, key, i) =>
+            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
+          ""
+        )})`
+      : "";
+  }
+
   public static queryFieldsMap(fields?: Fields): string {
     return fields
       ? fields
           .map((field) =>
             typeof field === "object"
-              ? `${Object.keys(field)[0]} { ${this.queryFieldsMap(
-                  Object.values(field)[0]
-                )} }`
+              ? field.hasOwnProperty("operation")
+                ? `${
+                    (field as { operation: String }).operation
+                  } ${this.createVariableString(
+                    (field as { variables: IQueryBuilderOptions[] }).variables
+                  )} { ${this.queryFieldsMap(
+                    (field as { fields: Fields }).fields
+                  )} }`
+                : `${Object.keys(field)[0]} { ${this.queryFieldsMap(
+                    Object.values(field)[0]
+                  )} }`
               : `${field}`
           )
           .join(", ")
@@ -27,8 +45,8 @@ export default class Utils {
   }
 
   // Variables map. eg: { "id": 1, "name": "Jon Doe" }
-  public static queryVariablesMap(variables: any) {
-    const variablesMapped: { [key: string]: unknown } = {};
+  public static queryVariablesMap(variables: any, fields?: any) {
+    let variablesMapped: { [key: string]: unknown } = {};
     if (variables) {
       Object.keys(variables).map((key) => {
         variablesMapped[key] =
@@ -37,6 +55,14 @@ export default class Utils {
             : variables[key];
       });
     }
+    fields?.forEach((field: any) => {
+      if ((field as { variables: IQueryBuilderOptions[] }).variables) {
+        variablesMapped = {
+          ...(field as { variables: IQueryBuilderOptions[] }).variables,
+          ...variablesMapped,
+        };
+      }
+    });
     return variablesMapped;
   }
 
