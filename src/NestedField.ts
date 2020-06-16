@@ -14,8 +14,9 @@ type NestedField = {
 
 export default NestedField;
 
-export function isNestedField(object: object): object is NestedField {
+export function isNestedField(object: any): object is NestedField {
   return (
+    typeof object === "object" &&
     object.hasOwnProperty("operation") &&
     object.hasOwnProperty("variables") &&
     object.hasOwnProperty("fields")

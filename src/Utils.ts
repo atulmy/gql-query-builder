@@ -28,7 +28,7 @@ export default class Utils {
     return fields
       ? fields
           .map((field) => {
-            if (typeof field === "object" && isNestedField(field)) {
+            if (isNestedField(field)) {
               return Utils.queryNestedFieldMap(field);
             } else if (typeof field === "object") {
               return `${Object.keys(field)[0]} { ${this.queryFieldsMap(
@@ -59,16 +59,28 @@ export default class Utils {
             : variables[key];
       });
     }
-    // get nested variables in field
-    fields?.forEach((field: any) => {
-      if ((field as { variables: IQueryBuilderOptions[] }).variables) {
-        variablesMapped = {
-          ...(field as { variables: IQueryBuilderOptions[] }).variables,
-          ...variablesMapped,
+
+    if (fields && typeof fields === "object") {
+      variablesMapped = {
+        ...Utils.getNestedVariables(fields),
+        ...variablesMapped,
+      };
+    }
+    return variablesMapped;
+  }
+
+  public static getNestedVariables(fields: Fields) {
+    let variables = {};
+    fields?.forEach((field: string | object | NestedField) => {
+      if (isNestedField(field)) {
+        variables = {
+          ...field.variables,
+          ...variables,
+          ...(field.fields && Utils.getNestedVariables(field.fields)),
         };
       }
     });
-    return variablesMapped;
+    return variables;
   }
 
   public static queryDataType(variable: any) {

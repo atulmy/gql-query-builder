@@ -47,14 +47,13 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   // Convert object to argument and type map. eg: ($id: Int)
   private queryDataArgumentAndTypeMap(): string {
     let variablesUsed: { [key: string]: unknown } = this.variables;
-    this.fields?.forEach((field: any) => {
-      if ((field as { variables: IQueryBuilderOptions[] }).variables) {
-        variablesUsed = {
-          ...(field as { variables: IQueryBuilderOptions[] }).variables,
-          ...variablesUsed,
-        };
-      }
-    });
+
+    if (this.fields && typeof this.fields === "object") {
+      variablesUsed = {
+        ...Utils.getNestedVariables(this.fields),
+        ...variablesUsed,
+      };
+    }
     return variablesUsed && Object.keys(variablesUsed).length
       ? `(${Object.keys(variablesUsed).reduce(
           (dataString, key, i) =>
