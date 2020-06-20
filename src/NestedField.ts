@@ -7,7 +7,7 @@ Defines an array of strings or objects to define query fields
 @example [{id: 1, name: 'Chuck'}]
  */
 type NestedField = {
-  operation: String;
+  operation: string;
   variables: IQueryBuilderOptions[];
   fields: Fields;
 };
