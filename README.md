@@ -487,11 +487,14 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 
 ## Contributors
 
+**If you are interested in actively maintaining / enhancing this project, get in <a href="mailto:atul.12788@gmail.com">touch</a>.**
+
 - Juho Vepsäläinen - [GitHub](https://github.com/bebraw) · [Twitter](https://twitter.com/bebraw)
 - Daniel Hreben - [GitHub](https://github.com/DanielHreben) · [Twitter](https://twitter.com/DanielHreben)
 - Todd Baur - [GitHub](https://github.com/toadkicker) · [Twitter](https://twitter.com/toadkicker)
 - Alireza Hariri - [GitHub](https://github.com/ARHariri)
 - Cédric - [GitHub](https://github.com/cbonaudo)
+- Clayton Collie - [GitHub](https://github.com/ccollie)
 - [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
 
 ## Donate
