@@ -6,8 +6,12 @@ export default class Utils {
   public static resolveVariables(operations: IQueryBuilderOptions[]): any {
     let ret: any = {};
 
-    for (const { variables } of operations) {
-      ret = { ...ret, ...variables };
+    for (const { variables, fields } of operations) {
+      ret = {
+        ...ret,
+        ...variables,
+        ...((fields && Utils.getNestedVariables(fields)) || {}),
+      };
     }
 
     return ret;
@@ -50,21 +54,20 @@ export default class Utils {
 
   // Variables map. eg: { "id": 1, "name": "Jon Doe" }
   public static queryVariablesMap(variables: any, fields?: Fields) {
-    let variablesMapped: { [key: string]: unknown } = {};
-    if (variables) {
-      Object.keys(variables).map((key) => {
-        variablesMapped[key] =
-          typeof variables[key] === "object"
-            ? variables[key].value
-            : variables[key];
-      });
-    }
+    const variablesMapped: { [key: string]: unknown } = {};
 
+    const update = (vars: any) => {
+      if (vars) {
+        Object.keys(vars).map((key) => {
+          variablesMapped[key] =
+            typeof vars[key] === "object" ? vars[key].value : vars[key];
+        });
+      }
+    };
+
+    update(variables);
     if (fields && typeof fields === "object") {
-      variablesMapped = {
-        ...Utils.getNestedVariables(fields),
-        ...variablesMapped,
-      };
+      update(Utils.getNestedVariables(fields));
     }
     return variablesMapped;
   }

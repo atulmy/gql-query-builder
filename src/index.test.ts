@@ -160,7 +160,36 @@ describe("Query", () => {
 
     expect(query).toEqual({
       query: `query ($id: ID) { getPublicationNames  { publication (id: $id) { id, name } } }`,
-      variables: { id: { type: "ID", value: 12 } },
+      variables: { id: 12 },
+    });
+  });
+
+  test("generates query with object variables nested in fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getPublicationNames",
+        variables: { id: { type: "ID", value: 12 } },
+        fields: [
+          {
+            operation: "publication",
+            variables: {
+              input: {
+                value: { type: "news", tz: "EST" },
+                type: "FilterInput",
+              },
+            },
+            fields: ["name", "publishedAt"],
+          },
+        ],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query ($input: FilterInput, $id: ID) { getPublicationNames (id: $id) { publication (input: $input) { name, publishedAt } } }`,
+      variables: {
+        id: 12,
+        input: { type: "news", tz: "EST" },
+      },
     });
   });
 });
