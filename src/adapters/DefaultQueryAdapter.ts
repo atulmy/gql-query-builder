@@ -79,6 +79,10 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   private operationTemplate() {
     return `${this.operation} ${Utils.queryDataNameAndArgumentMap(
       this.variables
-    )} { ${Utils.queryFieldsMap(this.fields)} }`;
+    )} ${
+      this.fields && this.fields.length > 0
+        ? `{ ${Utils.queryFieldsMap(this.fields)} }`
+        : ""
+    }`;
   }
 }
