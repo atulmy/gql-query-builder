@@ -192,6 +192,29 @@ describe("Query", () => {
       },
     });
   });
+
+  test("generates query with operation name", () => {
+    const query = queryBuilder.query(
+      [
+        {
+          operation: "getPublicationNames",
+          variables: { id: { type: "ID", value: 12 } },
+          fields: ["name", "publishedAt"],
+        },
+      ],
+      null,
+      {
+        operationName: "operation",
+      }
+    );
+
+    expect(query).toEqual({
+      query: `query operation ($id: ID) { getPublicationNames (id: $id) { name, publishedAt } }`,
+      variables: {
+        id: 12,
+      },
+    });
+  });
 });
 
 describe("Mutation", () => {
