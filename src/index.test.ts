@@ -393,7 +393,7 @@ describe("Query", () => {
       },
     });
   });
-  
+
   test("generates query with operation name", () => {
     const query = queryBuilder.query(
       [
@@ -416,8 +416,8 @@ describe("Query", () => {
       },
     });
   });
-  
-    test("generates query arguments different from variable name", () => {
+
+  test("generates query arguments different from variable name", () => {
     const query = queryBuilder.query([
       {
         operation: "someoperation",
