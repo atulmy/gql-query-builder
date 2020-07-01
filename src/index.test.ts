@@ -193,7 +193,231 @@ describe("Query", () => {
     });
   });
 
-  test("generates query arguments different from variable name", () => {
+  test("generates query without extraneous brackets for operation with no fields", () => {
+    const query = queryBuilder.query({
+      operation: "getFilteredUsersCount",
+    });
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsersCount   }`,
+      variables: {},
+    });
+  });
+
+  test("generates queries without extraneous brackets for operations with no fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getFilteredUsersCount",
+      },
+      {
+        operation: "getAllUsersCount",
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsersCount   getAllUsersCount   }`,
+      variables: {},
+    });
+  });
+
+  test("generates query without extraneous brackets for operations with empty fields", () => {
+    const query = queryBuilder.query({
+      operation: "getFilteredUsersCount",
+      fields: [],
+    });
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsersCount   }`,
+      variables: {},
+    });
+  });
+
+  test("generates queries without extraneous brackets for operations with empty fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getFilteredUsersCount",
+        fields: [],
+      },
+      {
+        operation: "getAllUsersCount",
+        fields: [],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsersCount   getAllUsersCount   }`,
+      variables: {},
+    });
+  });
+
+  test("generates query without extraneous brackets for operation with empty fields of fields", () => {
+    const query = queryBuilder.query({
+      operation: "getFilteredUsers",
+      fields: [
+        {
+          count: [],
+        },
+      ],
+    });
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsers  { count  } }`,
+      variables: {},
+    });
+  });
+
+  test("generates queries without extraneous brackets for operations with empty fields of fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getFilteredUsers",
+        fields: [
+          {
+            count: [],
+          },
+        ],
+      },
+      {
+        operation: "getFilteredPosts",
+        fields: [
+          {
+            count: [],
+          },
+        ],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsers  { count  } getFilteredPosts  { count  } }`,
+      variables: {},
+    });
+  });
+
+  test("generates query without extraneous brackets for operation with nested operation empty fields", () => {
+    const query = queryBuilder.query({
+      operation: "getFilteredUsers",
+      fields: [
+        {
+          operation: "average_age",
+          fields: [],
+          variables: { format: "months" },
+        },
+      ],
+    });
+
+    expect(query).toEqual({
+      query: `query ($format: String) { getFilteredUsers  { average_age (format: $format)  } }`,
+      variables: { format: "months" },
+    });
+  });
+
+  test("generates queries without extraneous brackets for operations with nested operation empty fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getFilteredUsers",
+        fields: [
+          {
+            operation: "average_age",
+            fields: [],
+            variables: {},
+          },
+        ],
+      },
+      {
+        operation: "getFilteredPosts",
+        fields: [
+          {
+            operation: "average_viewers",
+            fields: [],
+            variables: {},
+          },
+        ],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsers  { average_age   } getFilteredPosts  { average_viewers   } }`,
+      variables: {},
+    });
+  });
+
+  test("generates queries with object variables for multiple queries", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getPublicationData",
+        variables: { id: { type: "ID", value: 12 } },
+        fields: ["publishedAt"],
+      },
+      {
+        operation: "getPublicationUsers",
+        variables: { name: { value: "johndoe" } },
+        fields: ["full_name"],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query ($id: ID, $name: String) { getPublicationData (id: $id) { publishedAt } getPublicationUsers (name: $name) { full_name } }`,
+      variables: {
+        id: 12,
+        name: "johndoe",
+      },
+    });
+  });
+
+  test("generates queries with object variables for multiple queries with nested variables", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getPublicationData",
+        variables: { id: { type: "ID", value: 12 } },
+        fields: [
+          "publishedAt",
+          {
+            operation: "publicationOrg",
+            variables: { location: "mars" },
+            fields: ["name"],
+          },
+        ],
+      },
+      {
+        operation: "getPublicationUsers",
+        variables: { name: { value: "johndoe" } },
+        fields: ["full_name"],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query ($id: ID, $location: String, $name: String) { getPublicationData (id: $id) { publishedAt, publicationOrg (location: $location) { name } } getPublicationUsers (name: $name) { full_name } }`,
+      variables: {
+        id: 12,
+        location: "mars",
+        name: "johndoe",
+      },
+    });
+  });
+  
+  test("generates query with operation name", () => {
+    const query = queryBuilder.query(
+      [
+        {
+          operation: "getPublicationNames",
+          variables: { id: { type: "ID", value: 12 } },
+          fields: ["name", "publishedAt"],
+        },
+      ],
+      null,
+      {
+        operationName: "operation",
+      }
+    );
+
+    expect(query).toEqual({
+      query: `query operation ($id: ID) { getPublicationNames (id: $id) { name, publishedAt } }`,
+      variables: {
+        id: 12,
+      },
+    });
+  });
+  
+    test("generates query arguments different from variable name", () => {
     const query = queryBuilder.query([
       {
         operation: "someoperation",

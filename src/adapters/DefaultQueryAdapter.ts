@@ -13,8 +13,22 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
   private fields: Fields | undefined;
   private operation!: string;
+  private config: { [key: string]: unknown };
 
-  constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
+  constructor(
+    options: IQueryBuilderOptions | IQueryBuilderOptions[],
+    configuration?: { [key: string]: unknown }
+  ) {
+    // Default configs
+    this.config = {
+      operationName: "",
+    };
+    if (configuration) {
+      Object.entries(configuration).forEach(([key, value]) => {
+        this.config[key] = value;
+      });
+    }
+
     if (Array.isArray(options)) {
       this.variables = Utils.resolveVariables(options);
     } else {
@@ -25,7 +39,9 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   }
   // kicks off building for a single query
   public queryBuilder() {
-    return this.operationWrapperTemplate(this.operationTemplate());
+    return this.operationWrapperTemplate(
+      this.operationTemplate(this.variables)
+    );
   }
   // if we have an array of options, call this
   public queriesBuilder(queries: IQueryBuilderOptions[]) {
@@ -35,8 +51,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
         if (query) {
           this.operation = query.operation;
           this.fields = query.fields;
-          this.variables = query.variables;
-          tmpl.push(this.operationTemplate());
+          tmpl.push(this.operationTemplate(query.variables));
         }
       });
       return tmpl.join(" ");
@@ -68,17 +83,24 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   private operationWrapperTemplate(
     content: string
   ): { variables: { [p: string]: unknown }; query: string } {
+    let query = `${
+      OperationType.Query
+    } ${this.queryDataArgumentAndTypeMap()} { ${content} }`;
+    query = query.replace(
+      "query",
+      `query${
+        this.config.operationName !== "" ? " " + this.config.operationName : ""
+      }`
+    );
     return {
-      query: `${
-        OperationType.Query
-      } ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
+      query,
       variables: Utils.queryVariablesMap(this.variables, this.fields),
     };
   }
   // query
-  private operationTemplate() {
+  private operationTemplate(variables: IQueryBuilderOptions[]) {
     return `${this.operation} ${Utils.queryDataNameAndArgumentMap(
-      this.variables
+      variables
     )} { ${Utils.queryFieldsMap(this.fields)} }`;
   }
 }
