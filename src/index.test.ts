@@ -416,6 +416,42 @@ describe("Query", () => {
       },
     });
   });
+  
+    test("generates query arguments different from variable name", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "someoperation",
+        fields: [
+          {
+            operation: "nestedoperation",
+            fields: ["field1"],
+            variables: {
+              id2: {
+                name: "id",
+                type: "ID",
+                value: 123,
+              },
+            },
+          },
+        ],
+        variables: {
+          id1: {
+            name: "id",
+            type: "ID",
+            value: 456,
+          },
+        },
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query ($id2: ID, $id1: ID) { someoperation (id: $id1) { nestedoperation (id: $id2) { field1 } } }`,
+      variables: {
+        id1: 456,
+        id2: 123,
+      },
+    });
+  });
 });
 
 describe("Mutation", () => {
