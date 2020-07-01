@@ -35,9 +35,12 @@ export default class Utils {
             if (isNestedField(field)) {
               return Utils.queryNestedFieldMap(field);
             } else if (typeof field === "object") {
-              return `${Object.keys(field)[0]} { ${this.queryFieldsMap(
-                Object.values(field)[0] as Fields
-              )} }`;
+              const values = Object.values(field)[0];
+              return `${Object.keys(field)[0]} ${
+                values.length > 0
+                  ? "{ " + this.queryFieldsMap(values as Fields) + " }"
+                  : ""
+              }`;
             } else {
               return `${field}`;
             }
@@ -49,7 +52,11 @@ export default class Utils {
   public static queryNestedFieldMap(field: NestedField) {
     return `${field.operation} ${this.queryDataNameAndArgumentMap(
       field.variables
-    )} { ${this.queryFieldsMap(field.fields)} }`;
+    )} ${
+      field.fields.length > 0
+        ? "{ " + this.queryFieldsMap(field.fields) + " }"
+        : ""
+    }`;
   }
 
   // Variables map. eg: { "id": 1, "name": "Jon Doe" }
