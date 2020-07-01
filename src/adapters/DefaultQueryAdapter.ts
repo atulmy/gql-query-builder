@@ -13,8 +13,22 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
   private fields: Fields | undefined;
   private operation!: string;
+  private config: { [key: string]: unknown };
 
-  constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
+  constructor(
+    options: IQueryBuilderOptions | IQueryBuilderOptions[],
+    configuration?: { [key: string]: unknown }
+  ) {
+    // Default configs
+    this.config = {
+      operationName: "",
+    };
+    if (configuration) {
+      Object.entries(configuration).forEach(([key, value]) => {
+        this.config[key] = value;
+      });
+    }
+
     if (Array.isArray(options)) {
       this.variables = Utils.resolveVariables(options);
     } else {
@@ -69,10 +83,17 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   private operationWrapperTemplate(
     content: string
   ): { variables: { [p: string]: unknown }; query: string } {
+    let query = `${
+      OperationType.Query
+    } ${this.queryDataArgumentAndTypeMap()} { ${content} }`;
+    query = query.replace(
+      "query",
+      `query${
+        this.config.operationName !== "" ? " " + this.config.operationName : ""
+      }`
+    );
     return {
-      query: `${
-        OperationType.Query
-      } ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
+      query,
       variables: Utils.queryVariablesMap(this.variables, this.fields),
     };
   }

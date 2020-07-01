@@ -9,22 +9,23 @@ import IQueryBuilderOptions from "./IQueryBuilderOptions";
 
 function queryOperation(
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  adapter?: any
+  adapter?: any,
+  config?: any
 ) {
   let defaultAdapter: IQueryAdapter;
   if (Array.isArray(options)) {
     if (adapter) {
-      const customAdapter: IQueryAdapter = new adapter(options);
+      const customAdapter: IQueryAdapter = new adapter(options, config);
       return customAdapter.queriesBuilder(options);
     }
-    defaultAdapter = new DefaultQueryAdapter(options);
+    defaultAdapter = new DefaultQueryAdapter(options, config);
     return defaultAdapter.queriesBuilder(options);
   }
   if (adapter) {
-    const customAdapter: IQueryAdapter = new adapter(options);
+    const customAdapter: IQueryAdapter = new adapter(options, config);
     return customAdapter.queryBuilder();
   }
-  defaultAdapter = new DefaultQueryAdapter(options);
+  defaultAdapter = new DefaultQueryAdapter(options, config);
   return defaultAdapter.queryBuilder();
 }
 
