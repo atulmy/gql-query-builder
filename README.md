@@ -25,7 +25,7 @@ subscription(options: object)
 ```typescript
 import * as gql from 'gql-query-builder'
 
-const query = gql.query(options: object, adapter?: MyCustomQueryAdapter)
+const query = gql.query(options: object, adapter?: MyCustomQueryAdapter,config?: object)
 const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
 const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
 ```
@@ -36,54 +36,90 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 
 <table width="100%">
   <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Type</th>
-      <th>Required</th>
-      <th>Example</th>
-    </tr>
+
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Required</th>
+    <th>Example</th>
+
+  </tr>
+
   </thead>
   <tbody>
-    <tr>
-      <td>operation</td>
-      <td>Name of operation to be executed on server</td>
-      <td>String</td>
-      <td>Yes</td>
-      <td>
-        getThoughts, createThought
-      </td>
-    </tr>
-    <tr>
-      <td>fields</td>
-      <td>Selection of fields</td>
-      <td>Array</td>
-      <td>No</td>
-      <td>
-        <code>['id', 'name', 'thought']</code>
-        <br/><br />
-        <code>['id', 'name', 'thought', { user: ['id', 'email'] }]</code>
-      </td>
-    </tr>
-    <tr>
-      <td>variables</td>
-      <td>Variables sent to the operation</td>
-      <td>Object</td>
-      <td>No</td>
-      <td>
-        { key: value } eg: <code>{ id: 1 }</code>
-        <br/><br/>
-        { key: { value: value, required: true, type: GQL type, list: true } eg:
-        <br />
-        <code>
-        {
-          email: { value: "user@example.com", required: true },
-          password: { value: "123456", required: true },
-          secondaryEmails: { value: [], required: false, type: 'String', list: true }
-        }
-        </code>
-      </td>
-    </tr>
+
+  <tr>
+    <td>operation</td>
+    <td>Name of operation to be executed on server</td>
+    <td>String</td>
+    <td>Yes</td>
+    <td>
+      getThoughts, createThought
+    </td>
+
+  </tr>
+  <tr>
+    <td>fields</td>
+    <td>Selection of fields</td>
+    <td>Array</td>
+    <td>No</td>
+    <td>
+      <code>['id', 'name', 'thought']</code>
+      <br/><br />
+      <code>['id', 'name', 'thought', { user: ['id', 'email'] }]</code>
+    </td>
+
+  </tr>
+  <tr>
+    <td>variables</td>
+    <td>Variables sent to the operation</td>
+    <td>Object</td>
+    <td>No</td>
+    <td>
+      { key: value } eg: <code>{ id: 1 }</code>
+      <br/><br/>
+      { key: { value: value, required: true, type: GQL type, list: true,name: argument name } eg:
+      <br />
+      <code>
+      {
+        email: { value: "user@example.com", required: true },
+        password: { value: "123456", required: true },
+        secondaryEmails: { value: [], required: false, type: 'String', list: true,name: secondaryEmail }
+      }
+      </code>
+    </td>
+
+  </tr>
+
+  </tbody>
+</table>
+
+#### config
+
+<table width="100%">
+  <thead>
+
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Required</th>
+    <th>Example</th>
+  </tr>
+
+  </thead>
+  <tbody>
+
+  <tr>
+    <td>operationName</td>
+    <td>Name of operation to be sent to the server</td>
+    <td>String</td>
+    <td>No</td>
+    <td>
+      getThoughts, createThought
+    </td>
+  </tr>
   </tbody>
 </table>
 
@@ -214,6 +250,104 @@ query ($email: String!, $password: String!) {
 {
   email: "jon.doe@example.com",
   password: "123456"
+}
+```
+
+**Query (with custom argument name):**
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+const query = gql.query([{
+    operation: "someoperation",
+    fields: [{
+        operation: "nestedoperation",
+        fields: ["field1"],
+        variables: {
+            id2: {
+                name: "id",
+                type: "ID",
+                value: 123,
+            },
+        },
+    }, ],
+    variables: {
+        id1: {
+            name: "id",
+            type: "ID",
+            value: 456,
+        },
+    },
+}, ]);
+
+console.log(query)
+
+// Output
+query($id2: ID, $id1: ID) {
+    someoperation(id: $id1) {
+        nestedoperation(id: $id2) {
+            field1
+        }
+    }
+}
+
+// Variables
+{
+    "id1": 1,
+    "id2": 1
+}
+```
+
+**Query (with operation name):**
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+const query = gql.query({
+    operation: 'userLogin',
+    fields: ['userId', 'token']
+}, null, {
+    operationName: 'someoperation'
+})
+
+console.log(query)
+
+// Output
+query someoperation {
+    userLogin {
+        userId
+        token
+    }
+}
+```
+
+**Query (with empty fields):**
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+const query = gql.query([{
+        operation: "getFilteredUsersCount",
+    },
+    {
+        operation: "getAllUsersCount",
+        fields: []
+    },
+    operation: "getFilteredUsers",
+    fields: [{
+        count: [],
+    }, ],
+]);
+
+console.log(query)
+
+// Output
+query {
+    getFilteredUsersCount
+    getAllUsersCount
+    getFilteredUsers {
+        count
+    }
 }
 ```
 
