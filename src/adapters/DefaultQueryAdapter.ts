@@ -8,6 +8,7 @@ import IQueryBuilderOptions from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
 import Utils from "../Utils";
 import IQueryAdapter from "./IQueryAdapter";
+import VariableOptions from "../VariableOptions";
 
 export default class DefaultQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
@@ -69,7 +70,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
         ...variablesUsed,
       };
     }
-    return variablesUsed && Object.keys(variablesUsed).length
+    return variablesUsed && Object.keys(variablesUsed).length > 0
       ? `(${Object.keys(variablesUsed).reduce(
           (dataString, key, i) =>
             `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
@@ -98,9 +99,13 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     };
   }
   // query
-  private operationTemplate(variables: IQueryBuilderOptions[]) {
-    return `${this.operation} ${Utils.queryDataNameAndArgumentMap(
-      variables
-    )} { ${Utils.queryFieldsMap(this.fields)} }`;
+  private operationTemplate(variables: VariableOptions | undefined) {
+    return `${this.operation} ${
+      variables ? Utils.queryDataNameAndArgumentMap(variables) : ""
+    } ${
+      this.fields && this.fields.length > 0
+        ? "{ " + Utils.queryFieldsMap(this.fields) + " }"
+        : ""
+    }`;
   }
 }
