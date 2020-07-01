@@ -339,8 +339,7 @@ describe("Query", () => {
       variables: {},
     });
   });
-  
-  
+
   test("generates queries with object variables for multiple queries", () => {
     const query = queryBuilder.query([
       {
@@ -391,6 +390,29 @@ describe("Query", () => {
         id: 12,
         location: "mars",
         name: "johndoe",
+      },
+    });
+  });
+  
+  test("generates query with operation name", () => {
+    const query = queryBuilder.query(
+      [
+        {
+          operation: "getPublicationNames",
+          variables: { id: { type: "ID", value: 12 } },
+          fields: ["name", "publishedAt"],
+        },
+      ],
+      null,
+      {
+        operationName: "operation",
+      }
+    );
+
+    expect(query).toEqual({
+      query: `query operation ($id: ID) { getPublicationNames (id: $id) { name, publishedAt } }`,
+      variables: {
+        id: 12,
       },
     });
   });
