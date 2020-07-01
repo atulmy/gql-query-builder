@@ -339,6 +339,61 @@ describe("Query", () => {
       variables: {},
     });
   });
+  
+  
+  test("generates queries with object variables for multiple queries", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getPublicationData",
+        variables: { id: { type: "ID", value: 12 } },
+        fields: ["publishedAt"],
+      },
+      {
+        operation: "getPublicationUsers",
+        variables: { name: { value: "johndoe" } },
+        fields: ["full_name"],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query ($id: ID, $name: String) { getPublicationData (id: $id) { publishedAt } getPublicationUsers (name: $name) { full_name } }`,
+      variables: {
+        id: 12,
+        name: "johndoe",
+      },
+    });
+  });
+
+  test("generates queries with object variables for multiple queries with nested variables", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getPublicationData",
+        variables: { id: { type: "ID", value: 12 } },
+        fields: [
+          "publishedAt",
+          {
+            operation: "publicationOrg",
+            variables: { location: "mars" },
+            fields: ["name"],
+          },
+        ],
+      },
+      {
+        operation: "getPublicationUsers",
+        variables: { name: { value: "johndoe" } },
+        fields: ["full_name"],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query ($id: ID, $location: String, $name: String) { getPublicationData (id: $id) { publishedAt, publicationOrg (location: $location) { name } } getPublicationUsers (name: $name) { full_name } }`,
+      variables: {
+        id: 12,
+        location: "mars",
+        name: "johndoe",
+      },
+    });
+  });
 });
 
 describe("Mutation", () => {

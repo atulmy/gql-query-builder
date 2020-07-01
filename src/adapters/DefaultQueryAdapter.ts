@@ -25,7 +25,9 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   }
   // kicks off building for a single query
   public queryBuilder() {
-    return this.operationWrapperTemplate(this.operationTemplate());
+    return this.operationWrapperTemplate(
+      this.operationTemplate(this.variables)
+    );
   }
   // if we have an array of options, call this
   public queriesBuilder(queries: IQueryBuilderOptions[]) {
@@ -35,8 +37,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
         if (query) {
           this.operation = query.operation;
           this.fields = query.fields;
-          this.variables = query.variables;
-          tmpl.push(this.operationTemplate());
+          tmpl.push(this.operationTemplate(query.variables));
         }
       });
       return tmpl.join(" ");
@@ -76,13 +77,9 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     };
   }
   // query
-  private operationTemplate() {
+  private operationTemplate(variables: IQueryBuilderOptions[]) {
     return `${this.operation} ${Utils.queryDataNameAndArgumentMap(
-      this.variables
-    )} ${
-      this.fields && this.fields.length > 0
-        ? `{ ${Utils.queryFieldsMap(this.fields)} }`
-        : ""
-    }`;
+      variables
+    )} { ${Utils.queryFieldsMap(this.fields)} }`;
   }
 }
