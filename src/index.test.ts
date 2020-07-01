@@ -192,6 +192,153 @@ describe("Query", () => {
       },
     });
   });
+
+  test("generates query without extraneous brackets for operation with no fields", () => {
+    const query = queryBuilder.query({
+      operation: "getFilteredUsersCount",
+    });
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsersCount   }`,
+      variables: {},
+    });
+  });
+
+  test("generates queries without extraneous brackets for operations with no fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getFilteredUsersCount",
+      },
+      {
+        operation: "getAllUsersCount",
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsersCount   getAllUsersCount   }`,
+      variables: {},
+    });
+  });
+
+  test("generates query without extraneous brackets for operations with empty fields", () => {
+    const query = queryBuilder.query({
+      operation: "getFilteredUsersCount",
+      fields: [],
+    });
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsersCount   }`,
+      variables: {},
+    });
+  });
+
+  test("generates queries without extraneous brackets for operations with empty fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getFilteredUsersCount",
+        fields: [],
+      },
+      {
+        operation: "getAllUsersCount",
+        fields: [],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsersCount   getAllUsersCount   }`,
+      variables: {},
+    });
+  });
+
+  test("generates query without extraneous brackets for operation with empty fields of fields", () => {
+    const query = queryBuilder.query({
+      operation: "getFilteredUsers",
+      fields: [
+        {
+          count: [],
+        },
+      ],
+    });
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsers  { count  } }`,
+      variables: {},
+    });
+  });
+
+  test("generates queries without extraneous brackets for operations with empty fields of fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getFilteredUsers",
+        fields: [
+          {
+            count: [],
+          },
+        ],
+      },
+      {
+        operation: "getFilteredPosts",
+        fields: [
+          {
+            count: [],
+          },
+        ],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsers  { count  } getFilteredPosts  { count  } }`,
+      variables: {},
+    });
+  });
+
+  test("generates query without extraneous brackets for operation with nested operation empty fields", () => {
+    const query = queryBuilder.query({
+      operation: "getFilteredUsers",
+      fields: [
+        {
+          operation: "average_age",
+          fields: [],
+          variables: { format: "months" },
+        },
+      ],
+    });
+
+    expect(query).toEqual({
+      query: `query ($format: String) { getFilteredUsers  { average_age (format: $format)  } }`,
+      variables: { format: "months" },
+    });
+  });
+
+  test("generates queries without extraneous brackets for operations with nested operation empty fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getFilteredUsers",
+        fields: [
+          {
+            operation: "average_age",
+            fields: [],
+            variables: {},
+          },
+        ],
+      },
+      {
+        operation: "getFilteredPosts",
+        fields: [
+          {
+            operation: "average_viewers",
+            fields: [],
+            variables: {},
+          },
+        ],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { getFilteredUsers  { average_age   } getFilteredPosts  { average_viewers   } }`,
+      variables: {},
+    });
+  });
 });
 
 describe("Mutation", () => {
