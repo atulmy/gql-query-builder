@@ -259,42 +259,42 @@ query ($email: String!, $password: String!) {
 import * as gql from 'gql-query-builder'
 
 const query = gql.query([{
-    operation: "someoperation",
-    fields: [{
-        operation: "nestedoperation",
-        fields: ["field1"],
-        variables: {
-            id2: {
-                name: "id",
-                type: "ID",
-                value: 123,
-            },
-        },
-    }, ],
+  operation: "someoperation",
+  fields: [{
+    operation: "nestedoperation",
+    fields: ["field1"],
     variables: {
-        id1: {
-            name: "id",
-            type: "ID",
-            value: 456,
-        },
+      id2: {
+        name: "id",
+        type: "ID",
+        value: 123,
+      },
     },
+  }, ],
+  variables: {
+    id1: {
+      name: "id",
+      type: "ID",
+      value: 456,
+    },
+  },
 }, ]);
 
 console.log(query)
 
 // Output
 query($id2: ID, $id1: ID) {
-    someoperation(id: $id1) {
-        nestedoperation(id: $id2) {
-            field1
-        }
+  someoperation(id: $id1) {
+    nestedoperation(id: $id2) {
+      field1
     }
+  }
 }
 
 // Variables
 {
-    "id1": 1,
-    "id2": 1
+  "id1": 1,
+  "id2": 1
 }
 ```
 
@@ -304,20 +304,20 @@ query($id2: ID, $id1: ID) {
 import * as gql from 'gql-query-builder'
 
 const query = gql.query({
-    operation: 'userLogin',
-    fields: ['userId', 'token']
+  operation: 'userLogin',
+  fields: ['userId', 'token']
 }, null, {
-    operationName: 'someoperation'
+  operationName: 'someoperation'
 })
 
 console.log(query)
 
 // Output
 query someoperation {
-    userLogin {
-        userId
-        token
-    }
+  userLogin {
+    userId
+    token
+  }
 }
 ```
 
@@ -327,27 +327,27 @@ query someoperation {
 import * as gql from 'gql-query-builder'
 
 const query = gql.query([{
-        operation: "getFilteredUsersCount",
-    },
-    {
-        operation: "getAllUsersCount",
-        fields: []
-    },
-    operation: "getFilteredUsers",
-    fields: [{
-        count: [],
-    }, ],
+  operation: "getFilteredUsersCount",
+},
+  {
+    operation: "getAllUsersCount",
+    fields: []
+  },
+  operation: "getFilteredUsers",
+  fields: [{
+  count: [],
+}, ],
 ]);
 
 console.log(query)
 
 // Output
 query {
-    getFilteredUsersCount
-    getAllUsersCount
-    getFilteredUsers {
-        count
-    }
+  getFilteredUsersCount
+  getAllUsersCount
+  getFilteredUsers {
+    count
+  }
 }
 ```
 
