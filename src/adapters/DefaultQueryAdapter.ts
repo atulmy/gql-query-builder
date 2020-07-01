@@ -55,7 +55,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
         ...variablesUsed,
       };
     }
-    return variablesUsed && Object.keys(variablesUsed).length
+    return variablesUsed && Object.keys(variablesUsed).length > 0
       ? `(${Object.keys(variablesUsed).reduce(
           (dataString, key, i) =>
             `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
@@ -78,8 +78,10 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   }
   // query
   private operationTemplate(variables: IQueryBuilderOptions[]) {
-    return `${this.operation} ${Utils.queryDataNameAndArgumentMap(
-      variables
-    )} { ${Utils.queryFieldsMap(this.fields)} }`;
+    return `${this.operation} ${Utils.queryDataNameAndArgumentMap(variables)} ${
+      this.fields && this.fields.length > 0
+        ? "{ " + Utils.queryFieldsMap(this.fields) + " }"
+        : ""
+    }`;
   }
 }
