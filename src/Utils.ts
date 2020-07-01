@@ -1,6 +1,7 @@
 import Fields from "./Fields";
 import IQueryBuilderOptions from "./IQueryBuilderOptions";
 import NestedField, { isNestedField } from "./NestedField";
+import VariableOptions from "./VariableOptions";
 
 export default class Utils {
   public static resolveVariables(operations: IQueryBuilderOptions[]): any {
@@ -13,18 +14,17 @@ export default class Utils {
         ...((fields && Utils.getNestedVariables(fields)) || {}),
       };
     }
-
     return ret;
   }
 
   // Convert object to name and argument map. eg: (id: $id)
-  public static queryDataNameAndArgumentMap(variables: IQueryBuilderOptions[]) {
+  public static queryDataNameAndArgumentMap(variables: VariableOptions) {
     return variables && Object.keys(variables).length
-      ? `(${Object.keys(variables).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
-          ""
-        )})`
+      ? `(${Object.entries(variables).reduce((dataString, [key, value], i) => {
+          return `${dataString}${i !== 0 ? ", " : ""}${
+            value && value.name ? value.name : key
+          }: $${key}`;
+        }, "")})`
       : "";
   }
 
@@ -62,7 +62,6 @@ export default class Utils {
   // Variables map. eg: { "id": 1, "name": "Jon Doe" }
   public static queryVariablesMap(variables: any, fields?: Fields) {
     const variablesMapped: { [key: string]: unknown } = {};
-
     const update = (vars: any) => {
       if (vars) {
         Object.keys(vars).map((key) => {
