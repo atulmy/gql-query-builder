@@ -602,6 +602,93 @@ describe("Mutation", () => {
       variables: {},
     });
   });
+
+  test("generates nested mutation operations without variables", () => {
+    const query = queryBuilder.mutation({
+      operation: "namespaceField",
+      fields: [
+        {
+          operation: "innerMutation",
+          fields: ["id"],
+          variables: {},
+        },
+      ],
+    });
+
+    expect(query).toEqual({
+      query: `mutation  {
+  namespaceField  {
+    innerMutation  { id }
+  }
+}`,
+      variables: {},
+    });
+  });
+
+  test("generates nested mutation operations with variables", () => {
+    const query = queryBuilder.mutation({
+      operation: "namespaceField",
+      fields: [
+        {
+          operation: "innerMutation",
+          variables: {
+            name: { value: "stringy" },
+          },
+          fields: ["id"],
+        },
+      ],
+    });
+
+    expect(query).toEqual({
+      query: `mutation ($name: String) {
+  namespaceField  {
+    innerMutation (name: $name) { id }
+  }
+}`,
+      variables: { name: "stringy" },
+    });
+  });
+
+  test("generates multiple nested mutation operations with variables", () => {
+    const query = queryBuilder.mutation([
+      {
+        operation: "namespaceField",
+        fields: [
+          {
+            operation: "mutationA",
+            variables: {
+              nameA: { value: "A" },
+            },
+            fields: ["id"],
+          },
+        ],
+      },
+      {
+        operation: "namespaceField",
+        fields: [
+          {
+            operation: "mutationB",
+            variables: {
+              nameB: { value: "B" },
+            },
+            fields: ["id"],
+          },
+        ],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `mutation ($nameB: String, $nameA: String) {
+  namespaceField  {
+    mutationA (nameA: $nameA) { id }
+  }
+  namespaceField  {
+    mutationB (nameB: $nameB) { id }
+  }
+}`,
+      variables: { nameA: "A", nameB: "B" },
+    });
+  });
 });
 
 describe("Subscriptions", () => {
