@@ -56,15 +56,18 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
       : "";
   }
 
-  private queryDataArgumentAndTypeMap(variables: any): string {
-    if (!variables) {
-      return "";
+  private queryDataArgumentAndTypeMap(variablesUsed: any): string {
+    if (this.fields && typeof this.fields === "object") {
+      variablesUsed = {
+        ...Utils.getNestedVariables(this.fields),
+        ...variablesUsed,
+      };
     }
-    return Object.keys(variables).length
-      ? `(${Object.keys(variables).reduce(
+    return variablesUsed && Object.keys(variablesUsed).length > 0
+      ? `(${Object.keys(variablesUsed).reduce(
           (dataString, key, i) =>
             `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
-              variables[key]
+              variablesUsed[key]
             )}`,
           ""
         )})`
@@ -81,7 +84,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
       query: `${type} ${this.queryDataArgumentAndTypeMap(variables)} {
   ${content}
 }`,
-      variables: Utils.queryVariablesMap(variables),
+      variables: Utils.queryVariablesMap(variables, this.fields),
     };
   }
 
@@ -89,24 +92,9 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     return `${operation} ${this.queryDataNameAndArgumentMap()} ${
       this.fields && this.fields.length > 0
         ? `{
-    ${this.queryFieldsMap(this.fields)}
+    ${Utils.queryFieldsMap(this.fields)}
   }`
         : ""
     }`;
-  }
-
-  // Fields selection map. eg: { id, name }
-  private queryFieldsMap(fields?: Fields): string {
-    return fields
-      ? fields
-          .map((field) =>
-            typeof field === "object"
-              ? `${Object.keys(field)[0]} { ${this.queryFieldsMap(
-                  Object.values(field)[0]
-                )} }`
-              : `${field}`
-          )
-          .join(", ")
-      : "";
   }
 }
