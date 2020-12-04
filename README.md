@@ -630,6 +630,7 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 - Cédric - [GitHub](https://github.com/cbonaudo)
 - Clayton Collie - [GitHub](https://github.com/ccollie)
 - Devon Reid - [GitHub](https://github.com/Devorein)
+- Harry Brundage - [GitHub](https://github.com/airhorns) · [Twitter](https://twitter.com/harrybrundage)
 - [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
 
 ## Donate
