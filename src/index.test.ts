@@ -204,7 +204,26 @@ describe("Query", () => {
                             type: "Int",
                           },
                         },
-                        fields: ["id", "label"],
+                        fields: [
+                          "id",
+                          "label",
+                          {
+                            operation: "users",
+                            variables: {
+                              userLimit: {
+                                name: "limit",
+                                value: 999,
+                                type: "Int",
+                              },
+                              userFilter: {
+                                name: "filters",
+                                value: "doe",
+                                type: "String",
+                              },
+                            },
+                            fields: ["id", "name"],
+                          },
+                        ],
                       },
                     ],
                   },
@@ -224,8 +243,9 @@ describe("Query", () => {
         ],
       },
     ]);
+
     expect(query).toEqual({
-      query: `query ($id: ID, $visible: Boolean, $platformLimit: Int, $idChannel: Int!, $channelLimit: Int, $rightsLimit: Int, $rightsOffset: Int) { getPublicationNames  { publication (id: $id) { id, name, platforms (visible: $visible, limit: $platformLimit) { totalCount, edges { label, code, parentId, id, rights (idChannel: $idChannel, limit: $rightsLimit, offset: $rightsOffset) { id, label } }, subField, channels (id: $idChannel, limit: $channelLimit) { id, label } } } } }`,
+      query: `query ($id: ID, $visible: Boolean, $platformLimit: Int, $idChannel: Int!, $channelLimit: Int, $rightsLimit: Int, $rightsOffset: Int, $userLimit: Int, $userFilter: String) { getPublicationNames  { publication (id: $id) { id, name, platforms (visible: $visible, limit: $platformLimit) { totalCount, edges { label, code, parentId, id, rights (idChannel: $idChannel, limit: $rightsLimit, offset: $rightsOffset) { id, label, users (limit: $userLimit, filters: $userFilter) { id, name } } }, subField, channels (id: $idChannel, limit: $channelLimit) { id, label } } } } }`,
       variables: {
         id: 12,
         visible: true,
@@ -234,6 +254,8 @@ describe("Query", () => {
         channelLimit: 999,
         rightsLimit: 999,
         rightsOffset: 0,
+        userLimit: 999,
+        userFilter: "doe",
       },
     });
   });
