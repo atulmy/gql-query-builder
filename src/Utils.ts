@@ -80,15 +80,29 @@ export default class Utils {
 
   public static getNestedVariables(fields: Fields) {
     let variables = {};
-    fields?.forEach((field: string | object | NestedField) => {
-      if (isNestedField(field)) {
-        variables = {
-          ...field.variables,
-          ...variables,
-          ...(field.fields && Utils.getNestedVariables(field.fields)),
-        };
-      }
-    });
+
+    function getDeepestVariables(innerFields: Fields) {
+      innerFields?.forEach((field: string | object | NestedField) => {
+        if (isNestedField(field)) {
+          variables = {
+            ...field.variables,
+            ...variables,
+            ...(field.fields && getDeepestVariables(field.fields)),
+          };
+        } else {
+          if (typeof field === "object") {
+            for (const [, value] of Object.entries(field)) {
+              getDeepestVariables(value);
+            }
+          }
+        }
+      });
+
+      return variables;
+    }
+
+    getDeepestVariables(fields);
+
     return variables;
   }
 
