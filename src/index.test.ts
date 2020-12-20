@@ -164,6 +164,102 @@ describe("Query", () => {
     });
   });
 
+  test("generates query with nested variables in nested fields", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "getPublicationNames",
+        fields: [
+          {
+            operation: "publication",
+            variables: { id: { value: 12, type: "ID" } },
+            fields: [
+              "id",
+              "name",
+              {
+                operation: "platforms",
+                variables: {
+                  visible: { type: "Boolean", value: true },
+                  platformLimit: { name: "limit", value: 999, type: "Int" },
+                },
+                fields: [
+                  "totalCount",
+                  {
+                    edges: [
+                      "label",
+                      "code",
+                      "parentId",
+                      "id",
+                      {
+                        operation: "rights",
+                        variables: {
+                          idChannel: { type: "Int", required: true },
+                          rightsLimit: {
+                            name: "limit",
+                            value: 999,
+                            type: "Int",
+                          },
+                          rightsOffset: {
+                            name: "offset",
+                            value: 0,
+                            type: "Int",
+                          },
+                        },
+                        fields: [
+                          "id",
+                          "label",
+                          {
+                            operation: "users",
+                            variables: {
+                              userLimit: {
+                                name: "limit",
+                                value: 999,
+                                type: "Int",
+                              },
+                              userFilter: {
+                                name: "filters",
+                                value: "doe",
+                                type: "String",
+                              },
+                            },
+                            fields: ["id", "name"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "subField",
+                  {
+                    operation: "channels",
+                    variables: {
+                      idChannel: { name: "id", type: "Int", required: true },
+                      channelLimit: { name: "limit", value: 999, type: "Int" },
+                    },
+                    fields: ["id", "label"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query ($id: ID, $visible: Boolean, $platformLimit: Int, $idChannel: Int!, $channelLimit: Int, $rightsLimit: Int, $rightsOffset: Int, $userLimit: Int, $userFilter: String) { getPublicationNames  { publication (id: $id) { id, name, platforms (visible: $visible, limit: $platformLimit) { totalCount, edges { label, code, parentId, id, rights (idChannel: $idChannel, limit: $rightsLimit, offset: $rightsOffset) { id, label, users (limit: $userLimit, filters: $userFilter) { id, name } } }, subField, channels (id: $idChannel, limit: $channelLimit) { id, label } } } } }`,
+      variables: {
+        id: 12,
+        visible: true,
+        platformLimit: 999,
+        idChannel: undefined,
+        channelLimit: 999,
+        rightsLimit: 999,
+        rightsOffset: 0,
+        userLimit: 999,
+        userFilter: "doe",
+      },
+    });
+  });
+
   test("generates query with object variables nested in fields", () => {
     const query = queryBuilder.query([
       {
