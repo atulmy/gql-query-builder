@@ -3,7 +3,7 @@ type VariableOptions =
       type?: string;
       name?: string;
       value: any;
-      list?: boolean;
+      list?: boolean | [boolean];
       required?: boolean;
     }
   | { [k: string]: any };
