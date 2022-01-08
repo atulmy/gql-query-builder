@@ -636,6 +636,48 @@ describe("Mutation", () => {
     });
   });
 
+  test("generates multiple mutations with named variables", () => {
+    const query = queryBuilder.mutation([
+      {
+        operation: "delete0: deleteUser",
+        variables: {
+          id0: {
+            name: "id",
+            type: "ID",
+            value: "user_1234",
+          },
+        },
+        fields: ["id"],
+      },
+      {
+        operation: "delete1: deleteUser",
+        variables: {
+          id1: {
+            name: "id",
+            type: "ID",
+            value: "user_5678",
+          },
+        },
+        fields: ["id"],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `mutation ($id0: ID, $id1: ID) {
+  delete0: deleteUser (id: $id0) {
+    id
+  }
+  delete1: deleteUser (id: $id1) {
+    id
+  }
+}`,
+      variables: {
+        id0: "user_1234",
+        id1: "user_5678",
+      },
+    });
+  });
+
   test("generates mutation with required variables", () => {
     const query = queryBuilder.mutation({
       operation: "userSignup",
