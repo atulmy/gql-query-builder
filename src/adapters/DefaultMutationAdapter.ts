@@ -45,16 +45,6 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
       content.join("\n  ")
     );
   }
-  // Convert object to name and argument map. eg: (id: $id)
-  private queryDataNameAndArgumentMap() {
-    return this.variables && Object.keys(this.variables).length
-      ? `(${Object.keys(this.variables).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
-          ""
-        )})`
-      : "";
-  }
 
   private queryDataArgumentAndTypeMap(variablesUsed: any): string {
     if (this.fields && typeof this.fields === "object") {
@@ -89,7 +79,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   }
 
   private operationTemplate(operation: string) {
-    return `${operation} ${this.queryDataNameAndArgumentMap()} ${
+    return `${operation} ${Utils.queryDataNameAndArgumentMap(this.variables)} ${
       this.fields && this.fields.length > 0
         ? `{
     ${Utils.queryFieldsMap(this.fields)}
