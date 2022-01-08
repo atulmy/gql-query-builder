@@ -79,13 +79,13 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
     <td>
       { key: value } eg: <code>{ id: 1 }</code>
       <br/><br/>
-      { key: { value: value, required: true, type: GQL type, list: true,name: argument name } eg:
+      { key: { value: value, required: true, type: GQL type, list: true, name: argument name } eg:
       <br />
       <code>
       {
         email: { value: "user@example.com", required: true },
         password: { value: "123456", required: true },
-        secondaryEmails: { value: [], required: false, type: 'String', list: true,name: secondaryEmail }
+        secondaryEmails: { value: [], required: false, type: 'String', list: true, name: secondaryEmail }
       }
       </code>
     </td>
