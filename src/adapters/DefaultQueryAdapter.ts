@@ -81,9 +81,10 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
       : "";
   }
 
-  private operationWrapperTemplate(
-    content: string
-  ): { variables: { [p: string]: unknown }; query: string } {
+  private operationWrapperTemplate(content: string): {
+    variables: { [p: string]: unknown };
+    query: string;
+  } {
     let query = `${
       OperationType.Query
     } ${this.queryDataArgumentAndTypeMap()} { ${content} }`;

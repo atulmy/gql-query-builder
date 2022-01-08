@@ -10,7 +10,8 @@ import Utils from "../Utils";
 import ISubscriptionAdapter from "./ISubscriptionAdapter";
 
 export default class DefaultSubscriptionAdapter
-  implements ISubscriptionAdapter {
+  implements ISubscriptionAdapter
+{
   private variables: any | undefined;
   private fields: Fields | undefined;
   private operation!: string;

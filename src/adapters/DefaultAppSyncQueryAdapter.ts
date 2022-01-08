@@ -98,9 +98,10 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
     return type;
   };
 
-  private operationWrapperTemplate(
-    content: string
-  ): { variables: { [p: string]: unknown }; query: string } {
+  private operationWrapperTemplate(content: string): {
+    variables: { [p: string]: unknown };
+    query: string;
+  } {
     return {
       query: `${OperationType.Query} ${this.operation
         .charAt(0)
