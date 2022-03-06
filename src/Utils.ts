@@ -35,12 +35,24 @@ export default class Utils {
             if (isNestedField(field)) {
               return Utils.queryNestedFieldMap(field);
             } else if (typeof field === "object") {
-              const values = Object.values(field)[0];
-              return `${Object.keys(field)[0]} ${
-                values.length > 0
-                  ? "{ " + this.queryFieldsMap(values as Fields) + " }"
-                  : ""
-              }`;
+              let result = "";
+
+              Object.entries<Fields>(field as Record<string, Fields>).forEach(
+                ([key, values], index, array) => {
+                  result += `${key} ${
+                    values.length > 0
+                      ? "{ " + this.queryFieldsMap(values) + " }"
+                      : ""
+                  }`;
+
+                  // If it's not the last item in array, join with comma
+                  if (index < array.length - 1) {
+                    result += ", ";
+                  }
+                }
+              );
+
+              return result;
             } else {
               return `${field}`;
             }
