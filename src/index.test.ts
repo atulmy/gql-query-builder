@@ -69,13 +69,42 @@ describe("Query", () => {
             {
               address: ["city", "country"],
             },
+            {
+              account: ["holder"],
+            },
           ],
         },
       ],
     });
 
     expect(query).toEqual({
-      query: `query  { orders  { id, amount, user { id, name, email, address { city, country } } } }`,
+      query: `query  { orders  { id, amount, user { id, name, email, address { city, country }, account { holder } } } }`,
+      variables: {},
+    });
+  });
+
+  test("generates query with multiple sub fields selection in same object", () => {
+    const query = queryBuilder.query({
+      operation: "orders",
+      fields: [
+        "id",
+        "amount",
+        {
+          user: [
+            "id",
+            "name",
+            "email",
+            {
+              address: ["city", "country"],
+              account: ["holder"],
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(query).toEqual({
+      query: `query  { orders  { id, amount, user { id, name, email, address { city, country }, account { holder } } } }`,
       variables: {},
     });
   });
