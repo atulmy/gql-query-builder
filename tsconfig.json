@@ -6,6 +6,7 @@
     "target": "es5",
     "strict": true,
     "sourceMap": true,
+    "inlineSources": true,
     "outDir": "build",
     "typeRoots": ["node_modules/@types"],
     "forceConsistentCasingInFileNames": true,
