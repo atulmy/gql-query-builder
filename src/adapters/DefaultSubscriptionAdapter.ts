@@ -4,7 +4,7 @@
 @desc modify the output of the subscription template by passing a second argument to subscription(options, AdapterClass)
  */
 import Fields from "../Fields";
-import IQueryBuilderOptions from "../IQueryBuilderOptions";
+import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
 import Utils from "../Utils";
 import ISubscriptionAdapter from "./ISubscriptionAdapter";
@@ -14,7 +14,7 @@ export default class DefaultSubscriptionAdapter
 {
   private variables: any | undefined;
   private fields: Fields | undefined;
-  private operation!: string;
+  private operation!: string | IOperation;
 
   constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
@@ -84,8 +84,13 @@ export default class DefaultSubscriptionAdapter
     };
   }
 
-  private operationTemplate(operation: string) {
-    return `${operation} ${this.queryDataNameAndArgumentMap()} {
+  private operationTemplate(operation: string | IOperation) {
+    const operationName =
+      typeof this.operation === "string"
+        ? this.operation
+        : `${this.operation.alias}: ${this.operation.name}`;
+
+    return `${operationName} ${this.queryDataNameAndArgumentMap()} {
     ${this.queryFieldsMap(this.fields)}
   }`;
   }

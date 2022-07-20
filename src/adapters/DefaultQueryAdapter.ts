@@ -4,7 +4,7 @@
 @desc modify the output of the query template by passing a second argument to query(options, AdapterClass)
  */
 import Fields from "../Fields";
-import IQueryBuilderOptions from "../IQueryBuilderOptions";
+import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
 import Utils from "../Utils";
 import IQueryAdapter from "./IQueryAdapter";
@@ -13,7 +13,7 @@ import VariableOptions from "../VariableOptions";
 export default class DefaultQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
   private fields: Fields | undefined;
-  private operation!: string;
+  private operation!: string | IOperation;
   private config: { [key: string]: unknown };
 
   constructor(
@@ -101,7 +101,12 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   }
   // query
   private operationTemplate(variables: VariableOptions | undefined) {
-    return `${this.operation} ${
+    const operation =
+      typeof this.operation === "string"
+        ? this.operation
+        : `${this.operation.alias}: ${this.operation.name}`;
+
+    return `${operation} ${
       variables ? Utils.queryDataNameAndArgumentMap(variables) : ""
     } ${
       this.fields && this.fields.length > 0

@@ -14,6 +14,45 @@ describe("Query", () => {
     });
   });
 
+  test("generates query with alias", () => {
+    const query = queryBuilder.query({
+      operation: {
+        name: "thoughts",
+        alias: "myThoughts",
+      },
+      fields: ["id", "name", "thought"],
+    });
+
+    expect(query).toEqual({
+      query: `query  { myThoughts: thoughts  { id, name, thought } }`,
+      variables: {},
+    });
+  });
+
+  test("generates queries with the same operation with different alias", () => {
+    const query = queryBuilder.query([
+      {
+        operation: {
+          name: "thoughts",
+          alias: "myThoughts",
+        },
+        fields: ["id", "name", "thought"],
+      },
+      {
+        operation: {
+          name: "thoughts",
+          alias: "yourThoughts",
+        },
+        fields: ["id", "name", "thought"],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `query  { myThoughts: thoughts  { id, name, thought } yourThoughts: thoughts  { id, name, thought } }`,
+      variables: {},
+    });
+  });
+
   test("generates query when adapter argument is provided", () => {
     const query = queryBuilder.query(
       {
@@ -25,6 +64,24 @@ describe("Query", () => {
 
     expect(query).toEqual({
       query: `query Thoughts  { thoughts  { nodes { id, name, thought } } }`,
+      variables: {},
+    });
+  });
+
+  test("generates query when adapter and alias arguments are provided", () => {
+    const query = queryBuilder.query(
+      {
+        operation: {
+          name: "thoughts",
+          alias: "myThoughts",
+        },
+        fields: ["id", "name", "thought"],
+      },
+      DefaultAppSyncQueryAdapter
+    );
+
+    expect(query).toEqual({
+      query: `query Thoughts  { myThoughts: thoughts  { nodes { id, name, thought } } }`,
       variables: {},
     });
   });
@@ -603,6 +660,76 @@ describe("Mutation", () => {
     });
   });
 
+  test("generates mutation query with alias", () => {
+    const query = queryBuilder.mutation({
+      operation: {
+        name: "thoughtCreate",
+        alias: "myThoughtCreate",
+      },
+      variables: {
+        name: "Tyrion Lannister",
+        thought: "I drink and I know things.",
+      },
+      fields: ["id"],
+    });
+
+    expect(query).toEqual({
+      query: `mutation ($name: String, $thought: String) {
+  myThoughtCreate: thoughtCreate (name: $name, thought: $thought) {
+    id
+  }
+}`,
+      variables: {
+        name: "Tyrion Lannister",
+        thought: "I drink and I know things.",
+      },
+    });
+  });
+
+  test("generates mutations with the same operation with different alias", () => {
+    const query = queryBuilder.mutation([
+      {
+        operation: {
+          name: "thoughtCreate",
+          alias: "myThoughtCreate",
+        },
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things.",
+        },
+        fields: ["id"],
+      },
+      {
+        operation: {
+          name: "thoughtCreate",
+          alias: "yourThoughtCreate",
+        },
+        variables: {
+          character: "Eddard Stark",
+          quote: "Winter is coming.",
+        },
+        fields: ["id"],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `mutation ($name: String, $thought: String, $character: String, $quote: String) {
+  myThoughtCreate: thoughtCreate (name: $name, thought: $thought) {
+    id
+  }
+  yourThoughtCreate: thoughtCreate (character: $character, quote: $quote) {
+    id
+  }
+}`,
+      variables: {
+        name: "Tyrion Lannister",
+        thought: "I drink and I know things.",
+        character: "Eddard Stark",
+        quote: "Winter is coming.",
+      },
+    });
+  });
+
   test("generates mutation query with required variables", () => {
     const query = queryBuilder.mutation({
       operation: "userSignup",
@@ -885,6 +1012,49 @@ describe("Subscriptions", () => {
     id
   }
   prayerCreate (name: $name, prayer: $prayer) {
+    id
+  }
+}`,
+      variables: {
+        name: "Tyrion Lannister",
+        thought: "I drink and I know things.",
+        prayer: "I wish for winter.",
+      },
+    });
+  });
+
+  test("generates subscriptions with query alias", () => {
+    const query = queryBuilder.subscription([
+      {
+        operation: {
+          name: "thoughtCreate",
+          alias: "myThoughtCreate",
+        },
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things.",
+        },
+        fields: ["id"],
+      },
+      {
+        operation: {
+          name: "prayerCreate",
+          alias: "myPrayerCreate",
+        },
+        variables: {
+          name: { value: "Tyrion Lannister" },
+          prayer: { value: "I wish for winter." },
+        },
+        fields: ["id"],
+      },
+    ]);
+
+    expect(query).toEqual({
+      query: `subscription ($name: String, $thought: String, $prayer: String) {
+  myThoughtCreate: thoughtCreate (name: $name, thought: $thought) {
+    id
+  }
+  myPrayerCreate: prayerCreate (name: $name, prayer: $prayer) {
     id
   }
 }`,

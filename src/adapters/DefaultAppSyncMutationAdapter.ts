@@ -4,7 +4,7 @@
 @desc modify the output of the mutation template by passing a second argument to mutation(options, AdapterClass)
  */
 import Fields from "../Fields";
-import IQueryBuilderOptions from "../IQueryBuilderOptions";
+import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
 import Utils from "../Utils";
 import IMutationAdapter from "./IMutationAdapter";
@@ -12,7 +12,7 @@ import IMutationAdapter from "./IMutationAdapter";
 export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;
   private fields: Fields | undefined;
-  private operation!: string;
+  private operation!: string | IOperation;
 
   constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
@@ -68,9 +68,12 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
 
   // start of mutation building
   private operationWrapperTemplate(variables: any, content: string): any {
+    const operation =
+      typeof this.operation === "string" ? this.operation : this.operation.name;
+
     return {
       query: `${OperationType.Mutation} ${
-        this.operation.charAt(0).toUpperCase() + this.operation.slice(1)
+        operation.charAt(0).toUpperCase() + operation.slice(1)
       } ${this.queryDataArgumentAndTypeMap(variables)} {
   ${content}
 }`,
@@ -78,8 +81,13 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
     };
   }
 
-  private operationTemplate(operation: string): string {
-    return `${operation} ${this.queryDataNameAndArgumentMap()} {
+  private operationTemplate(operation: string | IOperation): string {
+    const operationName =
+      typeof operation === "string"
+        ? operation
+        : `${operation.alias}: ${operation.name}`;
+
+    return `${operationName} ${this.queryDataNameAndArgumentMap()} {
     ${this.queryFieldsMap(this.fields)}
   }`;
   }

@@ -4,7 +4,7 @@
 @desc modify the output of the query template by passing a second argument to query(options, DefaultAppSyncQueryAdapter)
  */
 import Fields from "../Fields";
-import IQueryBuilderOptions from "../IQueryBuilderOptions";
+import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
 import Utils from "../Utils";
 import IQueryAdapter from "./IQueryAdapter";
@@ -12,7 +12,7 @@ import IQueryAdapter from "./IQueryAdapter";
 export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
   private fields: Fields | undefined;
-  private operation!: string;
+  private operation!: string | IOperation;
 
   constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
@@ -102,10 +102,13 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
     variables: { [p: string]: unknown };
     query: string;
   } {
+    const operation =
+      typeof this.operation === "string" ? this.operation : this.operation.name;
+
     return {
-      query: `${OperationType.Query} ${this.operation
+      query: `${OperationType.Query} ${operation
         .charAt(0)
-        .toUpperCase()}${this.operation.slice(
+        .toUpperCase()}${operation.slice(
         1
       )} ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
       variables: Utils.queryVariablesMap(this.variables),
@@ -113,9 +116,12 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   }
   // query
   private operationTemplate() {
-    return `${
-      this.operation
-    } ${this.queryDataNameAndArgumentMap()} { nodes { ${Utils.queryFieldsMap(
+    const operation =
+      typeof this.operation === "string"
+        ? this.operation
+        : `${this.operation.alias}: ${this.operation.name}`;
+
+    return `${operation} ${this.queryDataNameAndArgumentMap()} { nodes { ${Utils.queryFieldsMap(
       this.fields
     )} } }`;
   }
