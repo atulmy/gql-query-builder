@@ -52,13 +52,16 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
   <tr>
     <td>operation</td>
     <td>Name of operation to be executed on server</td>
-    <td>String</td>
+    <td>String | Object</td>
     <td>Yes</td>
     <td>
       getThoughts, createThought
+      <br/><br />
+      <code>{ name: 'getUser', alias: 'getAdminUser' }</code>
     </td>
 
   </tr>
+
   <tr>
     <td>fields</td>
     <td>Selection of fields</td>
@@ -146,6 +149,31 @@ console.log(query)
 // Output
 query {
   thoughts {
+    id,
+    name,
+    thought
+  }
+}
+```
+
+**Query with alias:**
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+const query = gql.query({
+  operation: {
+    name: 'thoughts',
+    alias: 'myThoughts',
+  },
+  fields: ['id', 'name', 'thought']
+})
+
+console.log(query)
+
+// Output
+query {
+  myThoughts: thoughts {
     id,
     name,
     thought
@@ -632,6 +660,7 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 - Devon Reid - [GitHub](https://github.com/Devorein)
 - Harry Brundage - [GitHub](https://github.com/airhorns) · [Twitter](https://twitter.com/harrybrundage)
 - Clément Berard - [GitHub](https://github.com/clement-berard) · [Twitter](https://twitter.com/clementberard)
+- Lee Rose - [GitHub](https://github.com/leeroyrose)
 - [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
 
 ## Donate

@@ -4,7 +4,7 @@
 @desc modify the output of the mutation template by passing a second argument to mutation(options, AdapterClass)
  */
 import Fields from "../Fields";
-import IQueryBuilderOptions from "../IQueryBuilderOptions";
+import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
 import Utils from "../Utils";
 import IMutationAdapter from "./IMutationAdapter";
@@ -12,7 +12,7 @@ import IMutationAdapter from "./IMutationAdapter";
 export default class DefaultMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;
   private fields: Fields | undefined;
-  private operation!: string;
+  private operation!: string | IOperation;
 
   constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
@@ -78,8 +78,15 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     };
   }
 
-  private operationTemplate(operation: string) {
-    return `${operation} ${Utils.queryDataNameAndArgumentMap(this.variables)} ${
+  private operationTemplate(operation: string | IOperation) {
+    const operationName =
+      typeof operation === "string"
+        ? operation
+        : `${operation.alias}: ${operation.name}`;
+
+    return `${operationName} ${Utils.queryDataNameAndArgumentMap(
+      this.variables
+    )} ${
       this.fields && this.fields.length > 0
         ? `{
     ${Utils.queryFieldsMap(this.fields)}
