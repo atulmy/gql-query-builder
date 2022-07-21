@@ -2,6 +2,10 @@
 
 A simple helper function to generate GraphQL queries using plain JavaScript Objects (JSON).
 
+<a href="https://www.npmjs.com/package/gql-query-builder">
+<img src="https://img.shields.io/npm/dt/gql-query-builder?color=%23039be5&label=Downloads" alt="downloads" />
+</a>
+
 # Usage
 
 ### Install
@@ -149,31 +153,6 @@ console.log(query)
 // Output
 query {
   thoughts {
-    id,
-    name,
-    thought
-  }
-}
-```
-
-**Query with alias:**
-
-```javascript
-import * as gql from 'gql-query-builder'
-
-const query = gql.query({
-  operation: {
-    name: 'thoughts',
-    alias: 'myThoughts',
-  },
-  fields: ['id', 'name', 'thought']
-})
-
-console.log(query)
-
-// Output
-query {
-  myThoughts: thoughts {
     id,
     name,
     thought
@@ -375,6 +354,31 @@ query {
   getAllUsersCount
   getFilteredUsers {
     count
+  }
+}
+```
+
+**Query (with alias):**
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+const query = gql.query({
+  operation: {
+    name: 'thoughts',
+    alias: 'myThoughts',
+  },
+  fields: ['id', 'name', 'thought']
+})
+
+console.log(query)
+
+// Output
+query {
+  myThoughts: thoughts {
+    id,
+    name,
+    thought
   }
 }
 ```
