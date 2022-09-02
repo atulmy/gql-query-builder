@@ -180,6 +180,7 @@ query {
   }
 }
 ```
+[↑ all examples](#examples)
 
 #### Query (with variables):
 
@@ -204,7 +205,6 @@ query ($id: Int) {
 // Variables
 { "id": 1 }
 ```
-
 [↑ all examples](#examples)
 
 #### Query (with nested fields selection):
@@ -252,6 +252,7 @@ query {
   }
 }
 ```
+[↑ all examples](#examples)
 
 #### Query (with required variables):
 
@@ -282,6 +283,7 @@ query ($email: String!, $password: String!) {
   password: "123456"
 }
 ```
+[↑ all examples](#examples)
 
 #### Query (with custom argument name):
 
@@ -327,6 +329,7 @@ query($id2: ID, $id1: ID) {
   "id2": 1
 }
 ```
+[↑ all examples](#examples)
 
 #### Query (with operation name):
 
@@ -350,6 +353,7 @@ query someoperation {
   }
 }
 ```
+[↑ all examples](#examples)
 
 #### Query (with empty fields):
 
@@ -380,6 +384,7 @@ query {
   }
 }
 ```
+[↑ all examples](#examples)
 
 #### Query (with alias):
 
@@ -405,6 +410,7 @@ query {
   }
 }
 ```
+[↑ all examples](#examples)
 
 #### Query (with adapter defined):
 
@@ -432,6 +438,8 @@ query SomethingIDidInMyAdapter {
 ```
 
 Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get an understanding of how to make a new adapter.
+
+[↑ all examples](#examples)
 
 #### Mutation:
 
@@ -462,6 +470,7 @@ mutation ($name: String, $thought: String) {
   "thought": "I drink and I know things."
 }
 ```
+[↑ all examples](#examples)
 
 #### Mutation (with required variables):
 
@@ -494,6 +503,7 @@ mutation ($name: String, $email: String!, $password: String!) {
   password: "123456"
 }
 ```
+[↑ all examples](#examples)
 
 #### Mutation (with custom types):
 
@@ -528,6 +538,7 @@ mutation ($phone: PhoneNumber!) {
   }
 }
 ```
+[↑ all examples](#examples)
 
 #### Mutation (with adapter defined):
 
@@ -553,6 +564,7 @@ mutation SomethingIDidInMyAdapter {
   }
 }
 ```
+[↑ all examples](#examples)
 
 Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
 
@@ -582,6 +594,7 @@ async function saveThought() {
   }
 }
 ```
+[↑ all examples](#examples)
 
 #### Subscription (with adapter defined):
 
@@ -610,6 +623,8 @@ subscription SomethingIDidInMyAdapter {
 
 Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdapter.ts) to get an understanding of how to make a new adapter.
 
+[↑ all examples](#examples)
+
 #### Example with [Axios](https://github.com/axios/axios)
 
 **Query:**
@@ -634,6 +649,7 @@ async function getThoughts() {
   }
 }
 ```
+[↑ all examples](#examples)
 
 **Mutation:**
 
@@ -661,6 +677,7 @@ async function saveThought() {
   }
 }
 ```
+[↑ all examples](#examples)
 
 
 # Showcase
