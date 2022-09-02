@@ -3,7 +3,7 @@
 A simple helper function to generate GraphQL queries using plain JavaScript Objects (JSON).
 
 <a href="https://www.npmjs.com/package/gql-query-builder">
-<img src="https://img.shields.io/npm/dt/gql-query-builder?color=%23039be5&label=Downloads" alt="downloads" />
+<img src="https://img.shields.io/npm/dt/gql-query-builder?label=Downloads" alt="downloads" />
 </a>
 
 ## Install
