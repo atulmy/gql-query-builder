@@ -6,13 +6,20 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 <img src="https://img.shields.io/npm/dt/gql-query-builder?color=%23039be5&label=Downloads" alt="downloads" />
 </a>
 
-# Usage
-
-### Install
+## Install
 
 `npm install gql-query-builder --save` or `yarn add gql-query-builder`
 
-### Getting Started
+
+## API
+
+```typescript
+import * as gql from 'gql-query-builder'
+
+const query = gql.query(options: object)
+const mutation = gql.mutation(options: object)
+const subscription = gql.subscription(options: object)
+```
 
 You can also import `query` or `mutation` or `subscription` individually:
 
@@ -24,17 +31,7 @@ mutation(options: object)
 subscription(options: object)
 ```
 
-## API
-
-```typescript
-import * as gql from 'gql-query-builder'
-
-const query = gql.query(options: object, adapter?: MyCustomQueryAdapter,config?: object)
-const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
-const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
-```
-
-#### Options
+### Options
 
 `options` is `{ operation, fields, variables }` or an array of `options`
 
@@ -102,7 +99,7 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
   </tbody>
 </table>
 
-#### config
+### Config
 
 <table width="100%">
   <thead>
@@ -130,15 +127,25 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
   </tbody>
 </table>
 
-## Adapter
+### Adapter
 
 An optional second argument `adapter` is a typescript/javascript class that implements `src/adapters/IQueryAdapter` or `src/adapters/IMutationAdapter`.
 
 If adapter is undefined then `src/adapters/DefaultQueryAdapter` or `src/adapters/DefaultMutationAdapter` is used.
 
-### Examples
+```
+import * as gql from 'gql-query-builder'
 
-**Query:**
+const query = gql.query(options: object, adapter?: MyCustomQueryAdapter,config?: object)
+const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
+const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
+```
+
+## Examples
+1. <a href="#query">Query</a>
+2. <a href="#query">Query (with variables)</a>
+
+#### Query:
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -160,7 +167,7 @@ query {
 }
 ```
 
-**Query (with variables):**
+#### Query (with variables):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -184,7 +191,9 @@ query ($id: Int) {
 { "id": 1 }
 ```
 
-**Query (with nested fields selection)**
+[↑ all examples](#examples)
+
+#### Query (with nested fields selection)
 
 ```javascript
 import * as gql from 'gql-query-builder'
