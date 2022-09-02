@@ -11,7 +11,7 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 `npm install gql-query-builder --save` or `yarn add gql-query-builder`
 
 
-## API
+## Usage
 
 ```typescript
 import * as gql from 'gql-query-builder'
