@@ -143,7 +143,21 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 
 ## Examples
 1. <a href="#query">Query</a>
-2. <a href="#query">Query (with variables)</a>
+2. <a href="#query-with-variables">Query (with variables)</a>
+3. <a href="#query-with-nested-fields-selection">Query (with nested fields selection)</a>
+4. <a href="#query-with-required-variables">Query (with required variables)</a>
+5. <a href="#query-with-custom-argument-name">Query (with custom argument name)</a>
+6. <a href="#query-with-operation-name">Query (with operation name)</a>
+7. <a href="#query-with-empty-fields">Query (with empty fields)</a>
+8. <a href="#query-with-alias">Query (with alias)</a>
+9. <a href="#query-with-adapter-defined">Query (with adapter defined)</a>
+10. <a href="#mutation">Mutation</a>
+11. <a href="#mutation-with-required-variables">Mutation (with required variables)</a>
+12. <a href="#mutation-with-custom-types">Mutation (with custom types)</a>
+13. <a href="#mutation-with-adapter-defined">Mutation (with adapter defined)</a>
+14. <a href="#subscription">Subscription</a>
+15. <a href="#subscription-with-adapter-defined">Subscription (with adapter defined)</a>
+16. <a href="#example-with-axios">Example with Axios</a>
 
 #### Query:
 
@@ -193,7 +207,7 @@ query ($id: Int) {
 
 [↑ all examples](#examples)
 
-#### Query (with nested fields selection)
+#### Query (with nested fields selection):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -239,7 +253,7 @@ query {
 }
 ```
 
-**Query (with required variables):**
+#### Query (with required variables):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -269,7 +283,7 @@ query ($email: String!, $password: String!) {
 }
 ```
 
-**Query (with custom argument name):**
+#### Query (with custom argument name):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -314,7 +328,7 @@ query($id2: ID, $id1: ID) {
 }
 ```
 
-**Query (with operation name):**
+#### Query (with operation name):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -337,7 +351,7 @@ query someoperation {
 }
 ```
 
-**Query (with empty fields):**
+#### Query (with empty fields):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -367,7 +381,7 @@ query {
 }
 ```
 
-**Query (with alias):**
+#### Query (with alias):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -392,7 +406,7 @@ query {
 }
 ```
 
-**Query (with adapter defined):**
+#### Query (with adapter defined):
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
@@ -419,7 +433,7 @@ query SomethingIDidInMyAdapter {
 
 Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get an understanding of how to make a new adapter.
 
-**Mutation:**
+#### Mutation:
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -449,7 +463,7 @@ mutation ($name: String, $thought: String) {
 }
 ```
 
-**Mutation (with required variables):**
+#### Mutation (with required variables):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -481,7 +495,7 @@ mutation ($name: String, $email: String!, $password: String!) {
 }
 ```
 
-**Mutation (with custom types):**
+#### Mutation (with custom types):
 
 ```javascript
 import * as gql from 'gql-query-builder'
@@ -515,59 +529,7 @@ mutation ($phone: PhoneNumber!) {
 }
 ```
 
-#### Example with [Axios](https://github.com/axios/axios)
-
-**Query:**
-
-```javascript
-import axios from "axios";
-import { query } from "gql-query-builder";
-
-async function getThoughts() {
-  try {
-    const response = await axios.post(
-      "http://api.example.com/graphql",
-      query({
-        operation: "thoughts",
-        fields: ["id", "name", "thought"],
-      })
-    );
-
-    console.log(response);
-  } catch (error) {
-    console.log(error);
-  }
-}
-```
-
-**Mutation:**
-
-```javascript
-import axios from "axios";
-import { mutation } from "gql-query-builder";
-
-async function saveThought() {
-  try {
-    const response = await axios.post(
-      "http://api.example.com/graphql",
-      mutation({
-        operation: "thoughtCreate",
-        variables: {
-          name: "Tyrion Lannister",
-          thought: "I drink and I know things.",
-        },
-        fields: ["id"],
-      })
-    );
-
-    console.log(response);
-  } catch (error) {
-    console.log(error);
-  }
-}
-```
-
-**Mutation (with adapter defined):**
+#### Mutation (with adapter defined):
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
@@ -621,7 +583,7 @@ async function saveThought() {
 }
 ```
 
-**Subscription (with adapter defined):**
+#### Subscription (with adapter defined):
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
@@ -647,6 +609,59 @@ subscription SomethingIDidInMyAdapter {
 ```
 
 Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdapter.ts) to get an understanding of how to make a new adapter.
+
+#### Example with [Axios](https://github.com/axios/axios)
+
+**Query:**
+
+```javascript
+import axios from "axios";
+import { query } from "gql-query-builder";
+
+async function getThoughts() {
+  try {
+    const response = await axios.post(
+      "http://api.example.com/graphql",
+      query({
+        operation: "thoughts",
+        fields: ["id", "name", "thought"],
+      })
+    );
+
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
+
+**Mutation:**
+
+```javascript
+import axios from "axios";
+import { mutation } from "gql-query-builder";
+
+async function saveThought() {
+  try {
+    const response = await axios.post(
+      "http://api.example.com/graphql",
+      mutation({
+        operation: "thoughtCreate",
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things.",
+        },
+        fields: ["id"],
+      })
+    );
+
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
+
 
 # Showcase
 
