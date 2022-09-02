@@ -634,6 +634,34 @@ describe("Query", () => {
       },
     });
   });
+
+  test("generates aliased nested queries", () => {
+    const query = queryBuilder.query([
+      {
+        operation: "singleRootQuery",
+        variables: {},
+        fields: [
+          {
+            operation: "nestedQuery",
+            variables: {},
+            fields: ["whatever"],
+          },
+          {
+            operation: {
+              alias: "duplicatedNestedQuery",
+              name: "nestedQuery",
+            },
+            variables: {},
+            fields: ["whatever"],
+          },
+        ],
+      },
+    ]); // query
+    expect(query).toEqual({
+      query: `query  { singleRootQuery  { nestedQuery  { whatever }, duplicatedNestedQuery: nestedQuery  { whatever } } }`,
+      variables: {},
+    }); // expect
+  }); // test
 });
 
 describe("Mutation", () => {

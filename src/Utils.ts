@@ -61,10 +61,16 @@ export default class Utils {
       : "";
   }
 
+  public static operationOrAlias(operation: IQueryBuilderOptions["operation"]) {
+    return typeof operation === "string"
+      ? operation
+      : `${operation.alias}: ${operation.name}`;
+  }
+
   public static queryNestedFieldMap(field: NestedField) {
-    return `${field.operation} ${this.queryDataNameAndArgumentMap(
-      field.variables
-    )} ${
+    return `${this.operationOrAlias(
+      field.operation
+    )} ${this.queryDataNameAndArgumentMap(field.variables)} ${
       field.fields.length > 0
         ? "{ " + this.queryFieldsMap(field.fields) + " }"
         : ""
