@@ -568,7 +568,7 @@ mutation SomethingIDidInMyAdapter {
 
 Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
 
-**Subscription:**
+#### Subscription:
 
 ```javascript
 import axios from "axios";
