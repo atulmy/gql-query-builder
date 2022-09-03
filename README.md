@@ -706,6 +706,7 @@ Following projects are using [gql-query-builder](https://github.com/atulmy/gql-q
 - Harry Brundage - [GitHub](https://github.com/airhorns) · [Twitter](https://twitter.com/harrybrundage)
 - Clément Berard - [GitHub](https://github.com/clement-berard) · [Twitter](https://twitter.com/clementberard)
 - Lee Rose - [GitHub](https://github.com/leeroyrose)
+- Christian Westgaard - [GitHub](https://github.com/ComLock)
 - [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
 
 ## Donate
