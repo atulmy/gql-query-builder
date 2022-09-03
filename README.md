@@ -99,6 +99,20 @@ subscription(options: object)
   </tbody>
 </table>
 
+### Adapter
+
+An optional second argument `adapter` is a typescript/javascript class that implements `src/adapters/IQueryAdapter` or `src/adapters/IMutationAdapter`.
+
+If adapter is undefined then `src/adapters/DefaultQueryAdapter` or `src/adapters/DefaultMutationAdapter` is used.
+
+```
+import * as gql from 'gql-query-builder'
+
+const query = gql.query(options: object, adapter?: MyCustomQueryAdapter,config?: object)
+const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
+const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
+```
+
 ### Config
 
 <table width="100%">
@@ -126,20 +140,6 @@ subscription(options: object)
   </tr>
   </tbody>
 </table>
-
-### Adapter
-
-An optional second argument `adapter` is a typescript/javascript class that implements `src/adapters/IQueryAdapter` or `src/adapters/IMutationAdapter`.
-
-If adapter is undefined then `src/adapters/DefaultQueryAdapter` or `src/adapters/DefaultMutationAdapter` is used.
-
-```
-import * as gql from 'gql-query-builder'
-
-const query = gql.query(options: object, adapter?: MyCustomQueryAdapter,config?: object)
-const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
-const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
-```
 
 ## Examples
 1. <a href="#query">Query</a>
