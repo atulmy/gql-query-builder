@@ -10,7 +10,6 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 
 `npm install gql-query-builder --save` or `yarn add gql-query-builder`
 
-
 ## Usage
 
 ```typescript
@@ -142,6 +141,7 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 </table>
 
 ## Examples
+
 1. <a href="#query">Query</a>
 2. <a href="#query-with-variables">Query (with variables)</a>
 3. <a href="#query-with-nested-fields-selection">Query (with nested fields selection)</a>
@@ -180,6 +180,7 @@ query {
   }
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Query (with variables):
@@ -205,6 +206,7 @@ query ($id: Int) {
 // Variables
 { "id": 1 }
 ```
+
 [↑ all examples](#examples)
 
 #### Query (with nested fields selection):
@@ -252,6 +254,7 @@ query {
   }
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Query (with required variables):
@@ -283,6 +286,7 @@ query ($email: String!, $password: String!) {
   password: "123456"
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Query (with custom argument name):
@@ -329,6 +333,7 @@ query($id2: ID, $id1: ID) {
   "id2": 1
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Query (with operation name):
@@ -353,6 +358,7 @@ query someoperation {
   }
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Query (with empty fields):
@@ -384,6 +390,7 @@ query {
   }
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Query (with alias):
@@ -410,6 +417,43 @@ query {
   }
 }
 ```
+
+[↑ all examples](#examples)
+
+#### Query (with inline fragment):
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+const query = gql.query({
+    operation: "thought",
+    fields: [
+        "id",
+        "name",
+        "thought",
+        {
+            operation: "FragmentType",
+            fields: ["emotion"],
+            fragment: true,
+        },
+    ],
+});
+
+console.log(query)
+
+// Output
+query {
+    thought {
+        id,
+        name,
+        thought,
+        ... on FragmentType {
+            emotion
+        }
+    }
+}
+```
+
 [↑ all examples](#examples)
 
 #### Query (with adapter defined):
@@ -470,6 +514,7 @@ mutation ($name: String, $thought: String) {
   "thought": "I drink and I know things."
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Mutation (with required variables):
@@ -503,6 +548,7 @@ mutation ($name: String, $email: String!, $password: String!) {
   password: "123456"
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Mutation (with custom types):
@@ -538,6 +584,7 @@ mutation ($phone: PhoneNumber!) {
   }
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Mutation (with adapter defined):
@@ -564,6 +611,7 @@ mutation SomethingIDidInMyAdapter {
   }
 }
 ```
+
 [↑ all examples](#examples)
 
 Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
@@ -594,6 +642,7 @@ async function saveThought() {
   }
 }
 ```
+
 [↑ all examples](#examples)
 
 #### Subscription (with adapter defined):
@@ -649,6 +698,7 @@ async function getThoughts() {
   }
 }
 ```
+
 [↑ all examples](#examples)
 
 **Mutation:**
@@ -677,8 +727,8 @@ async function saveThought() {
   }
 }
 ```
-[↑ all examples](#examples)
 
+[↑ all examples](#examples)
 
 # Showcase
 

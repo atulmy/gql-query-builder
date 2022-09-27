@@ -10,15 +10,20 @@ type NestedField = {
   operation: string;
   variables: IQueryBuilderOptions[];
   fields: Fields;
+  fragment?: boolean | null;
 };
 
 export default NestedField;
 
 export function isNestedField(object: any): object is NestedField {
   return (
-    typeof object === "object" &&
-    object.hasOwnProperty("operation") &&
-    object.hasOwnProperty("variables") &&
-    object.hasOwnProperty("fields")
+    (typeof object === "object" &&
+      object.hasOwnProperty("operation") &&
+      object.hasOwnProperty("variables") &&
+      object.hasOwnProperty("fields")) ||
+    (typeof object === "object" &&
+      object.hasOwnProperty("operation") &&
+      object.hasOwnProperty("fragment") &&
+      object.hasOwnProperty("fields"))
   );
 }

@@ -61,16 +61,34 @@ export default class Utils {
       : "";
   }
 
-  public static operationOrAlias(operation: IQueryBuilderOptions["operation"]) {
+  public static isFragment(field: NestedField): boolean {
+    return field?.fragment === true ?? false;
+  }
+
+  public static operationOrAlias(
+    operation: IQueryBuilderOptions["operation"]
+  ): string {
     return typeof operation === "string"
       ? operation
       : `${operation.alias}: ${operation.name}`;
   }
 
+  public static operationOrFragment(field: NestedField): string {
+    return this.isFragment(field)
+      ? field.operation
+      : Utils.operationOrAlias(field.operation);
+  }
+
+  public static getFragment(field: NestedField): string {
+    return Utils.isFragment(field) ? "... on " : "";
+  }
+
   public static queryNestedFieldMap(field: NestedField) {
-    return `${this.operationOrAlias(
-      field.operation
-    )} ${this.queryDataNameAndArgumentMap(field.variables)} ${
+    return `${Utils.getFragment(field)}${Utils.operationOrFragment(field)} ${
+      this.isFragment(field)
+        ? ""
+        : this.queryDataNameAndArgumentMap(field.variables)
+    } ${
       field.fields.length > 0
         ? "{ " + this.queryFieldsMap(field.fields) + " }"
         : ""
