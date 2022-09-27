@@ -635,6 +635,27 @@ describe("Query", () => {
     });
   });
 
+  test("generates query arguments with inline fragment", () => {
+    const query = queryBuilder.query({
+      operation: "thought",
+      fields: [
+        "id",
+        "name",
+        "thought",
+        {
+          operation: "FragmentType",
+          fields: ["grade"],
+          fragment: true,
+        },
+      ],
+    });
+
+    expect(query).toEqual({
+      query: `query  { thought  { id, name, thought, ... on FragmentType  { grade } } }`,
+      variables: {},
+    });
+  });
+
   test("generates aliased nested queries", () => {
     const query = queryBuilder.query([
       {
