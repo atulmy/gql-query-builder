@@ -61,10 +61,6 @@ export default class Utils {
       : "";
   }
 
-  public static isFragment(field: NestedField): boolean {
-    return field?.fragment === true ?? false;
-  }
-
   public static operationOrAlias(
     operation: IQueryBuilderOptions["operation"]
   ): string {
@@ -73,8 +69,12 @@ export default class Utils {
       : `${operation.alias}: ${operation.name}`;
   }
 
+  public static isFragment(field: NestedField): boolean {
+    return field?.fragment === true ?? false;
+  }
+
   public static operationOrFragment(field: NestedField): string {
-    return this.isFragment(field)
+    return Utils.isFragment(field)
       ? field.operation
       : Utils.operationOrAlias(field.operation);
   }
