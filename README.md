@@ -6,6 +6,10 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 <img src="https://img.shields.io/npm/dt/gql-query-builder?label=Downloads" alt="downloads" />
 </a>
 
+<a href="https://replit.com/@atulmy/gql-query-builder#index.js">
+<img src="https://img.shields.io/badge/Demo-replit-blue" alt="demo" />
+</a>
+
 ## Install
 
 `npm install gql-query-builder --save` or `yarn add gql-query-builder`
