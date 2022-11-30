@@ -159,9 +159,10 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 11. <a href="#mutation-with-required-variables">Mutation (with required variables)</a>
 12. <a href="#mutation-with-custom-types">Mutation (with custom types)</a>
 13. <a href="#mutation-with-adapter-defined">Mutation (with adapter defined)</a>
-14. <a href="#subscription">Subscription</a>
-15. <a href="#subscription-with-adapter-defined">Subscription (with adapter defined)</a>
-16. <a href="#example-with-axios">Example with Axios</a>
+14. <a href="#mutation-with-operation-name">Mutation (with operation name)</a>
+15. <a href="#subscription">Subscription</a>
+16. <a href="#subscription-with-adapter-defined">Subscription (with adapter defined)</a>
+17. <a href="#example-with-axios">Example with Axios</a>
 
 #### Query:
 
@@ -619,6 +620,32 @@ mutation SomethingIDidInMyAdapter {
 [↑ all examples](#examples)
 
 Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
+
+#### Mutation (with operation name):
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+const query = gql.mutation({
+  operation: 'thoughts',
+  fields: ['id', 'name', 'thought']
+}, undefined, {
+  operationName: 'someoperation'
+})
+
+console.log(query)
+
+// Output
+mutation someoperation {
+  thoughts {
+    id
+    name
+    thought
+  }
+}
+```
+
+[↑ all examples](#examples)
 
 #### Subscription:
 

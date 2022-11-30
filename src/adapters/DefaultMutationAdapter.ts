@@ -13,14 +13,28 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;
   private fields: Fields | undefined;
   private operation!: string | IOperation;
+  private config: { [key: string]: unknown };
 
-  constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
+  constructor(
+    options: IQueryBuilderOptions | IQueryBuilderOptions[],
+    configuration?: { [key: string]: unknown }
+  ) {
     if (Array.isArray(options)) {
       this.variables = Utils.resolveVariables(options);
     } else {
       this.variables = options.variables;
       this.fields = options.fields;
       this.operation = options.operation;
+    }
+
+    // Default configs
+    this.config = {
+      operationName: "",
+    };
+    if (configuration) {
+      Object.entries(configuration).forEach(([key, value]) => {
+        this.config[key] = value;
+      });
     }
   }
 
@@ -70,10 +84,19 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     variables: any,
     content: string
   ) {
+    let query = `${type} ${this.queryDataArgumentAndTypeMap(variables)} {
+      ${content}
+    }`;
+
+    if (this.config.operationName) {
+      query = query.replace(
+        "mutation",
+        `mutation ${this.config.operationName}`
+      );
+    }
+
     return {
-      query: `${type} ${this.queryDataArgumentAndTypeMap(variables)} {
-  ${content}
-}`,
+      query,
       variables: Utils.queryVariablesMap(variables, this.fields),
     };
   }
