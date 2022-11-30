@@ -1032,6 +1032,37 @@ describe("Mutation", () => {
       variables: { nameA: "A", nameB: "B" },
     });
   });
+
+  test.only("generates mutation with operation name", () => {
+    const query = queryBuilder.mutation(
+      [
+        {
+          operation: "thoughtCreate",
+          variables: {
+            name: "Tyrion Lannister",
+            thought: "I drink and I know things.",
+          },
+          fields: ["id"],
+        },
+      ],
+      undefined,
+      {
+        operationName: "operation",
+      }
+    );
+
+    expect(query).toEqual({
+      query: `mutation operation ($name: String, $thought: String) {
+      thoughtCreate (name: $name, thought: $thought) {
+    id
+  }
+    }`,
+      variables: {
+        name: "Tyrion Lannister",
+        thought: "I drink and I know things.",
+      },
+    });
+  });
 });
 
 describe("Subscriptions", () => {

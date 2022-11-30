@@ -31,25 +31,26 @@ function queryOperation(
 
 function mutationOperation(
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  adapter?: IMutationAdapter
+  adapter?: IMutationAdapter,
+  config?: any
 ) {
   let customAdapter: IMutationAdapter;
   let defaultAdapter: IMutationAdapter;
   if (Array.isArray(options)) {
     if (adapter) {
       // @ts-ignore
-      customAdapter = new adapter(options);
+      customAdapter = new adapter(options, config);
       return customAdapter.mutationsBuilder(options);
     }
-    defaultAdapter = new DefaultMutationAdapter(options);
+    defaultAdapter = new DefaultMutationAdapter(options, config);
     return defaultAdapter.mutationsBuilder(options);
   }
   if (adapter) {
     // @ts-ignore
-    customAdapter = new adapter(options);
+    customAdapter = new adapter(options, config);
     return customAdapter.mutationBuilder();
   }
-  defaultAdapter = new DefaultMutationAdapter(options);
+  defaultAdapter = new DefaultMutationAdapter(options, config);
   return defaultAdapter.mutationBuilder();
 }
 
