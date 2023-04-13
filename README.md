@@ -294,6 +294,41 @@ query ($email: String!, $password: String!) {
 
 [↑ all examples](#examples)
 
+#### Query (with variable builder):
+
+```javascript
+import * as gql from 'gql-query-builder'
+
+function customVarBuilder(key: string, value: BuilderVariableOptions) {
+  const name = value.name ?? key;
+  return `where: {${name}_eq: $${name}}`;
+}
+
+const query = gql.query({
+  operation: 'userByEmail',
+  variables: {
+    email: { value: 'jon.doe@example.com', required: true, builder: customVarBuilder}
+  },
+  fields: ['userId', 'email']
+})
+
+console.log(query)
+
+// Output
+query ($email: String!) {
+  userByEmail (where: {email_eq: $email}) {
+    userId, email
+  }
+}
+
+// Variables
+{
+  email: "jon.doe@example.com"
+}
+```
+
+[↑ all examples](#examples)
+
 #### Query (with custom argument name):
 
 ```javascript

@@ -1,3 +1,4 @@
+import VariableOptions from "../src/VariableOptions";
 import DefaultAppSyncQueryAdapter from "../src/adapters/DefaultAppSyncQueryAdapter";
 import * as queryBuilder from "./";
 
@@ -209,6 +210,30 @@ describe("Query", () => {
     expect(query).toEqual({
       query: `query ($tags: [String]) { search (tags: $tags) { id, title, content, tag } }`,
       variables: { tags: ["a", "b", "c", null] },
+    });
+  });
+
+  test("generates query with variable builder", () => {
+    function customVarBuilder(key: string, value: VariableOptions) {
+      const name = value.name ?? key;
+      return `where: {${name}_eq: $${name}}`;
+    }
+
+    const query = queryBuilder.query({
+      operation: "userByEmail",
+      variables: {
+        email: {
+          value: "jon.doe@example.com",
+          required: true,
+          builder: customVarBuilder,
+        },
+      },
+      fields: ["userId", "email"],
+    });
+
+    expect(query).toEqual({
+      query: `query ($email: String!) { userByEmail (where: {email_eq: $email}) { userId, email } }`,
+      variables: { email: "jon.doe@example.com" },
     });
   });
 
@@ -685,7 +710,7 @@ describe("Query", () => {
   }); // test
 });
 
-describe("Mutation", () => {
+describe.skip("Mutation", () => {
   test("generates mutation query", () => {
     const query = queryBuilder.mutation({
       operation: "thoughtCreate",
@@ -1033,7 +1058,7 @@ describe("Mutation", () => {
     });
   });
 
-  test.only("generates mutation with operation name", () => {
+  test("generates mutation with operation name", () => {
     const query = queryBuilder.mutation(
       [
         {

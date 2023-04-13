@@ -17,13 +17,25 @@ export default class Utils {
     return ret;
   }
 
+  private static buildVariable(key: string, value: VariableOptions) {
+    if (typeof value === "object") {
+      const { builder } = value;
+      if (builder && typeof builder === "function") {
+        return builder(key, value);
+      }
+    }
+
+    return `${value && value.name ? value.name : key}: $${key}`;
+  }
+
   // Convert object to name and argument map. eg: (id: $id)
   public static queryDataNameAndArgumentMap(variables: VariableOptions) {
     return variables && Object.keys(variables).length
       ? `(${Object.entries(variables).reduce((dataString, [key, value], i) => {
-          return `${dataString}${i !== 0 ? ", " : ""}${
-            value && value.name ? value.name : key
-          }: $${key}`;
+          return `${dataString}${i !== 0 ? ", " : ""}${this.buildVariable(
+            key,
+            value
+          )}`;
         }, "")})`
       : "";
   }
