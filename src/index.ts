@@ -83,4 +83,7 @@ export {
   mutationOperation as mutation,
   queryOperation as query,
   adapters,
+  IQueryAdapter,
+  ISubscriptionAdapter,
+  IQueryBuilderOptions,
 };
