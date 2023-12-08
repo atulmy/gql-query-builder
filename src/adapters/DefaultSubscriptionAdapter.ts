@@ -89,10 +89,9 @@ export default class DefaultSubscriptionAdapter
       typeof this.operation === "string"
         ? this.operation
         : `${this.operation.alias}: ${this.operation.name}`;
-
-    return `${operationName} ${this.queryDataNameAndArgumentMap()} {
-    ${this.queryFieldsMap(this.fields)}
-  }`;
+    const requestFields = this.queryFieldsMap(this.fields);
+    return `${operationName} ${this.queryDataNameAndArgumentMap()} ${requestFields ? 
+    '{ ${requestFields} }' : ''}`;
   }
 
   // Fields selection map. eg: { id, name }
