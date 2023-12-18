@@ -6,8 +6,8 @@
 import Fields from "../Fields";
 import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
 import IQueryAdapter from "./IQueryAdapter";
+import { queryFieldsMap, queryVariablesMap, resolveVariables } from "../Utils";
 
 export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
@@ -16,7 +16,7 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
 
   constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
-      this.variables = Utils.resolveVariables(options);
+      this.variables = resolveVariables(options);
     } else {
       this.variables = options.variables;
       this.fields = options.fields || [];
@@ -111,7 +111,7 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
         .toUpperCase()}${operation.slice(
         1
       )} ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
-      variables: Utils.queryVariablesMap(this.variables),
+      variables: queryVariablesMap(this.variables),
     };
   }
   // query
@@ -121,7 +121,7 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
         ? this.operation
         : `${this.operation.alias}: ${this.operation.name}`;
 
-    return `${operation} ${this.queryDataNameAndArgumentMap()} { nodes { ${Utils.queryFieldsMap(
+    return `${operation} ${this.queryDataNameAndArgumentMap()} { nodes { ${queryFieldsMap(
       this.fields
     )} } }`;
   }

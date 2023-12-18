@@ -6,8 +6,8 @@
 import Fields from "../Fields";
 import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
 import IMutationAdapter from "./IMutationAdapter";
+import { queryDataType, queryVariablesMap, resolveVariables } from "../Utils";
 
 export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;
@@ -16,7 +16,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
 
   constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
-      this.variables = Utils.resolveVariables(options);
+      this.variables = resolveVariables(options);
     } else {
       this.variables = options.variables;
       this.fields = options.fields;
@@ -39,7 +39,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
       return this.operationTemplate(opts.operation);
     });
     return this.operationWrapperTemplate(
-      Utils.resolveVariables(mutations),
+      resolveVariables(mutations),
       content.join("\n  ")
     );
   }
@@ -58,7 +58,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
     return Object.keys(variables).length
       ? `(${Object.keys(variables).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
+            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
               variables[key]
             )}`,
           ""
@@ -77,7 +77,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
       } ${this.queryDataArgumentAndTypeMap(variables)} {
   ${content}
 }`,
-      variables: Utils.queryVariablesMap(variables),
+      variables: queryVariablesMap(variables),
     };
   }
 

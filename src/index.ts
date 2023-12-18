@@ -31,7 +31,7 @@ function queryOperation(
 
 function mutationOperation(
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  adapter?: IMutationAdapter,
+  adapter?: any,
   config?: any
 ) {
   let customAdapter: IMutationAdapter;
@@ -56,7 +56,7 @@ function mutationOperation(
 
 function subscriptionOperation(
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  adapter?: ISubscriptionAdapter
+  adapter?: any
 ) {
   let customAdapter: ISubscriptionAdapter;
   let defaultAdapter: ISubscriptionAdapter;
