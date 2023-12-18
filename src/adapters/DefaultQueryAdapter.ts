@@ -6,9 +6,16 @@
 import Fields from "../Fields";
 import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
 import IQueryAdapter from "./IQueryAdapter";
 import VariableOptions from "../VariableOptions";
+import {
+  getNestedVariables,
+  queryDataNameAndArgumentMap,
+  queryDataType,
+  queryFieldsMap,
+  queryVariablesMap,
+  resolveVariables,
+} from "../Utils";
 
 export default class DefaultQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
@@ -31,7 +38,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     }
 
     if (Array.isArray(options)) {
-      this.variables = Utils.resolveVariables(options);
+      this.variables = resolveVariables(options);
     } else {
       this.variables = options.variables;
       this.fields = options.fields || [];
@@ -66,14 +73,14 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
 
     if (this.fields && typeof this.fields === "object") {
       variablesUsed = {
-        ...Utils.getNestedVariables(this.fields),
+        ...getNestedVariables(this.fields),
         ...variablesUsed,
       };
     }
     return variablesUsed && Object.keys(variablesUsed).length > 0
       ? `(${Object.keys(variablesUsed).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
+            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
               variablesUsed[key]
             )}`,
           ""
@@ -96,7 +103,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     );
     return {
       query,
-      variables: Utils.queryVariablesMap(this.variables, this.fields),
+      variables: queryVariablesMap(this.variables, this.fields),
     };
   }
   // query
@@ -107,10 +114,10 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
         : `${this.operation.alias}: ${this.operation.name}`;
 
     return `${operation} ${
-      variables ? Utils.queryDataNameAndArgumentMap(variables) : ""
+      variables ? queryDataNameAndArgumentMap(variables) : ""
     } ${
       this.fields && this.fields.length > 0
-        ? "{ " + Utils.queryFieldsMap(this.fields) + " }"
+        ? "{ " + queryFieldsMap(this.fields) + " }"
         : ""
     }`;
   }

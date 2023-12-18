@@ -6,8 +6,15 @@
 import Fields from "../Fields";
 import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
 import IMutationAdapter from "./IMutationAdapter";
+import {
+  getNestedVariables,
+  queryDataNameAndArgumentMap,
+  queryDataType,
+  queryFieldsMap,
+  queryVariablesMap,
+  resolveVariables,
+} from "../Utils";
 
 export default class DefaultMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;
@@ -20,7 +27,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     configuration?: { [key: string]: unknown }
   ) {
     if (Array.isArray(options)) {
-      this.variables = Utils.resolveVariables(options);
+      this.variables = resolveVariables(options);
     } else {
       this.variables = options.variables;
       this.fields = options.fields;
@@ -55,7 +62,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     });
     return this.operationWrapperTemplate(
       OperationType.Mutation,
-      Utils.resolveVariables(mutations),
+      resolveVariables(mutations),
       content.join("\n  ")
     );
   }
@@ -63,14 +70,14 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   private queryDataArgumentAndTypeMap(variablesUsed: any): string {
     if (this.fields && typeof this.fields === "object") {
       variablesUsed = {
-        ...Utils.getNestedVariables(this.fields),
+        ...getNestedVariables(this.fields),
         ...variablesUsed,
       };
     }
     return variablesUsed && Object.keys(variablesUsed).length > 0
       ? `(${Object.keys(variablesUsed).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
+            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
               variablesUsed[key]
             )}`,
           ""
@@ -97,7 +104,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
 
     return {
       query,
-      variables: Utils.queryVariablesMap(variables, this.fields),
+      variables: queryVariablesMap(variables, this.fields),
     };
   }
 
@@ -107,12 +114,10 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
         ? operation
         : `${operation.alias}: ${operation.name}`;
 
-    return `${operationName} ${Utils.queryDataNameAndArgumentMap(
-      this.variables
-    )} ${
+    return `${operationName} ${queryDataNameAndArgumentMap(this.variables)} ${
       this.fields && this.fields.length > 0
         ? `{
-    ${Utils.queryFieldsMap(this.fields)}
+    ${queryFieldsMap(this.fields)}
   }`
         : ""
     }`;

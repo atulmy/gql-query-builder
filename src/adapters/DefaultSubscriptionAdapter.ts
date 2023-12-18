@@ -6,8 +6,8 @@
 import Fields from "../Fields";
 import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
 import ISubscriptionAdapter from "./ISubscriptionAdapter";
+import { queryDataType, queryVariablesMap, resolveVariables } from "../Utils";
 
 export default class DefaultSubscriptionAdapter
   implements ISubscriptionAdapter
@@ -18,7 +18,7 @@ export default class DefaultSubscriptionAdapter
 
   constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
-      this.variables = Utils.resolveVariables(options);
+      this.variables = resolveVariables(options);
     } else {
       this.variables = options.variables;
       this.fields = options.fields;
@@ -43,7 +43,7 @@ export default class DefaultSubscriptionAdapter
     });
     return this.operationWrapperTemplate(
       OperationType.Subscription,
-      Utils.resolveVariables(subscriptions),
+      resolveVariables(subscriptions),
       content.join("\n  ")
     );
   }
@@ -62,7 +62,7 @@ export default class DefaultSubscriptionAdapter
     return Object.keys(variables).length
       ? `(${Object.keys(variables).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
+            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
               variables[key]
             )}`,
           ""
@@ -80,7 +80,7 @@ export default class DefaultSubscriptionAdapter
       query: `${type} ${this.queryDataArgumentAndTypeMap(variables)} {
   ${content}
 }`,
-      variables: Utils.queryVariablesMap(variables),
+      variables: queryVariablesMap(variables),
     };
   }
 
