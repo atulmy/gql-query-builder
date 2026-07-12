@@ -43,7 +43,8 @@ export type MutationAdapterConstructor = new (
 
 /** Constructor of a custom subscription adapter class. */
 export type SubscriptionAdapterConstructor = new (
-  options: QueryBuilderOptions | QueryBuilderOptions[]
+  options: QueryBuilderOptions | QueryBuilderOptions[],
+  config?: AdapterConfig
 ) => SubscriptionAdapter;
 
 /** @deprecated Use {@link QueryAdapter} instead. */

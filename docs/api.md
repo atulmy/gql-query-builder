@@ -9,12 +9,12 @@ import { query, mutation, subscription, adapters } from "gql-query-builder";
 
 query(options, adapter?, config?);        // -> { query: string, variables: object }
 mutation(options, adapter?, config?);     // -> { query: string, variables: object }
-subscription(options, adapter?);          // -> { query: string, variables: object }
+subscription(options, adapter?, config?); // -> { query: string, variables: object }
 ```
 
 - `options`: one operation object `{ operation, fields?, variables? }`, or an array of them (combined into a single document).
-- `adapter` (optional): a class implementing `IQueryAdapter` / `IMutationAdapter` / `ISubscriptionAdapter` to customize string generation. Pass `null`/`undefined` to use the defaults.
-- `config` (optional): `{ operationName?: string }` — adds a named operation to the document.
+- `adapter` (optional): a class implementing `QueryAdapter` / `MutationAdapter` / `SubscriptionAdapter` to customize string generation. Pass `null`/`undefined` to use the defaults.
+- `config` (optional): `{ operationName?: string, fragments?: FragmentDefinition[] }` — adds a named operation and/or named fragment definitions to the document.
 
 ## The options object
 
@@ -34,10 +34,12 @@ A variable value can be a plain value (`{ id: 1 }` → type inferred: `Int`, `Fl
   phone: { value: {...}, type: "PhoneNumber", required: true }, // -> $phone: PhoneNumber!
   tags:  { value: [], type: "String", list: true },            // -> $tags: [String]
   id2:   { name: "id", type: "ID", value: 123 },               // custom argument name: (id: $id2)
+  first: { value: 10, default: 5 },                            // -> $first: Int = 5
+  ep:    { value: "EMPIRE", type: "Episode", default: rawGraphQL("JEDI") }, // -> $ep: Episode = JEDI
 }
 ```
 
-Descriptor keys: `value`, `type` (GraphQL type name), `required` (appends `!`), `list` (`true` → `[T]`, `[true]` → `[T!]`), `name` (argument name if different from the variable key).
+Descriptor keys: `value`, `type` (GraphQL type name), `required` (appends `!`), `list` (`true` → `[T]`, `[true]` → `[T!]`), `name` (argument name if different from the variable key), `default` (emits `= <literal>` in the variable definition; strings are quoted, input object keys unquoted — wrap enum names in `rawGraphQL()` from the package root; when only `default` is given, also give `type` or the type is inferred as `String`).
 
 ## Canonical examples
 
@@ -71,6 +73,31 @@ query({
   fields: ["id", { operation: "FragmentType", fields: ["emotion"], fragment: true }],
 });
 // query { thought { id, ... on FragmentType { emotion } } }
+```
+
+### Named fragment (definition + spread)
+
+```typescript
+query(
+  { operation: "hero", fields: ["...heroFields"] },
+  null,
+  { fragments: [{ name: "heroFields", on: "Character", fields: ["name"] }] }
+);
+// query { hero { ...heroFields } }
+//
+// fragment heroFields on Character { name }
+```
+
+### Directives, field aliases, meta fields (string passthrough)
+
+Field strings are inserted verbatim, so any field-level GraphQL syntax works:
+
+```typescript
+query({
+  operation: "hero",
+  variables: { withFriends: { value: true, type: "Boolean", required: true } },
+  fields: ["name", "friends @include(if: $withFriends)", "empireHero: name", "__typename"],
+});
 ```
 
 ### Nested operation with variables (sub-selection with arguments)

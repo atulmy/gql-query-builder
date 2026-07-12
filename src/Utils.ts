@@ -3,11 +3,56 @@
  */
 import type {
   Fields,
+  FragmentDefinition,
   NestedField,
   QueryBuilderOptions,
   VariableOptions,
 } from "./types";
 import { isNestedField } from "./types";
+
+/** A raw GraphQL snippet inserted verbatim into the document. Create with {@link rawGraphQL}. */
+export class GraphQLRaw {
+  constructor(readonly value: string) {}
+}
+
+/**
+ * Marks a string to be inserted into the document verbatim, without quoting.
+ * Needed for enum literals, e.g. `default: rawGraphQL("JEDI")` emits `= JEDI`.
+ */
+export function rawGraphQL(value: string): GraphQLRaw {
+  return new GraphQLRaw(value);
+}
+
+/**
+ * Serializes a JavaScript value as a GraphQL literal: strings are quoted,
+ * input object keys are unquoted, and {@link GraphQLRaw} values pass through.
+ */
+export function toGraphQLLiteral(value: unknown): string {
+  if (value instanceof GraphQLRaw) {
+    return value.value;
+  }
+  if (value === null) {
+    return "null";
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map(toGraphQLLiteral).join(", ")}]`;
+  }
+  switch (typeof value) {
+    case "string":
+      return JSON.stringify(value);
+    case "number":
+    case "boolean":
+      return String(value);
+    case "object":
+      return `{${Object.entries(value as Record<string, unknown>)
+        .map(([key, entry]) => `${key}: ${toGraphQLLiteral(entry)}`)
+        .join(", ")}}`;
+    default:
+      throw new TypeError(
+        `Cannot serialize ${typeof value} as a GraphQL literal`
+      );
+  }
+}
 
 /** Merges the variables of several operations (including nested field variables) into one object. */
 export function resolveVariables(operations: QueryBuilderOptions[]): any {
@@ -138,6 +183,34 @@ export function getNestedVariables(fields: Fields) {
   getDeepestVariables(fields);
 
   return variables;
+}
+
+/**
+ * Renders the full variable definition type expression: the inferred/declared
+ * type plus a `= default` literal when the descriptor carries one.
+ */
+export function queryDataTypeAndDefault(variable: any): string {
+  const type = queryDataType(variable);
+  return typeof variable === "object" &&
+    variable !== null &&
+    !Array.isArray(variable) &&
+    variable.default !== undefined
+    ? `${type} = ${toGraphQLLiteral(variable.default)}`
+    : type;
+}
+
+/** Renders named fragment definitions appended to a document (empty string when none). */
+export function queryFragmentsMap(fragments?: FragmentDefinition[]): string {
+  return fragments?.length
+    ? fragments
+        .map(
+          (fragment) =>
+            `\n\nfragment ${fragment.name} on ${fragment.on} { ${queryFieldsMap(
+              fragment.fields
+            )} }`
+        )
+        .join("")
+    : "";
 }
 
 /** Infers the GraphQL type of a variable, honoring `type`, `required`, and `list` descriptors. */

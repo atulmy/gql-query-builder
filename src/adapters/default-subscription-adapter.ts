@@ -5,20 +5,30 @@
  * customize the output.
  */
 import type {
+  AdapterConfig,
   Fields,
   Operation,
   OperationResult,
   QueryBuilderOptions,
 } from "../types";
-import { queryDataType, queryVariablesMap, resolveVariables } from "../utils";
+import {
+  queryDataTypeAndDefault,
+  queryFragmentsMap,
+  queryVariablesMap,
+  resolveVariables,
+} from "../utils";
 import type { SubscriptionAdapter } from "./types";
 
 export class DefaultSubscriptionAdapter implements SubscriptionAdapter {
   #variables: any;
   #fields: Fields | undefined;
   #operation!: string | Operation;
+  readonly #config: AdapterConfig;
 
-  constructor(options: QueryBuilderOptions | QueryBuilderOptions[]) {
+  constructor(
+    options: QueryBuilderOptions | QueryBuilderOptions[],
+    configuration?: AdapterConfig
+  ) {
     if (Array.isArray(options)) {
       this.#variables = resolveVariables(options);
     } else {
@@ -26,6 +36,11 @@ export class DefaultSubscriptionAdapter implements SubscriptionAdapter {
       this.#fields = options.fields;
       this.#operation = options.operation;
     }
+
+    this.#config = {
+      operationName: "",
+      ...configuration,
+    };
   }
 
   /** Builds the document for the single operation passed to the constructor. */
@@ -68,19 +83,30 @@ export class DefaultSubscriptionAdapter implements SubscriptionAdapter {
     return variables && Object.keys(variables).length
       ? `(${Object.keys(variables).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
-              variables[key]
-            )}`,
+            `${dataString}${
+              i !== 0 ? ", " : ""
+            }$${key}: ${queryDataTypeAndDefault(variables[key])}`,
           ""
         )})`
       : "";
   }
 
   #operationWrapperTemplate(variables: any, content: string): OperationResult {
-    return {
-      query: `subscription ${this.#queryDataArgumentAndTypeMap(variables)} {
+    let query = `subscription ${this.#queryDataArgumentAndTypeMap(variables)} {
   ${content}
-}`,
+}`;
+
+    if (this.#config.operationName) {
+      query = query.replace(
+        "subscription",
+        `subscription ${this.#config.operationName}`
+      );
+    }
+
+    query += queryFragmentsMap(this.#config.fragments);
+
+    return {
+      query,
       variables: queryVariablesMap(variables),
     };
   }

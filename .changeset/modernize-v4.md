@@ -12,6 +12,13 @@ Full modernization of the toolchain and package format.
 - Fixed mutation output indentation regression introduced in 3.8.0: generated mutation strings are indented consistently with queries and subscriptions again (2 spaces, closing brace at column 0).
 - Fixed a crash when calling `subscription()` without `variables`.
 
+**New GraphQL spec features:**
+
+- Variable default values: `{ value, type, default }` descriptors emit `$var: Type = <literal>`. Strings are quoted and input objects use unquoted keys; the new `rawGraphQL()` helper inserts enum literals verbatim (`default: rawGraphQL("JEDI")` -> `= JEDI`). `toGraphQLLiteral()` is exported too.
+- Named fragments: `config.fragments` (`{ name, on, fields }[]`) appends `fragment ... on ... { ... }` definitions to the document; spread them with plain `"...name"` field strings. Supported by query, mutation, and subscription.
+- `subscription()` now accepts a third `config` argument supporting `operationName` and `fragments`, matching query/mutation.
+- Field-level directives (`@include`/`@skip`/`@defer`), field aliases, and meta fields (`__typename`) via string passthrough are now covered by tests and documented.
+
 **Other changes:**
 
 - Migrated npm -> pnpm, TSLint/Prettier -> Biome, Jest -> Vitest, tsc build -> tsup.

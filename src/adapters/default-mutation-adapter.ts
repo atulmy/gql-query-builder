@@ -13,8 +13,9 @@ import type {
 import {
   getNestedVariables,
   queryDataNameAndArgumentMap,
-  queryDataType,
+  queryDataTypeAndDefault,
   queryFieldsMap,
+  queryFragmentsMap,
   queryVariablesMap,
   resolveVariables,
 } from "../utils";
@@ -77,9 +78,9 @@ export class DefaultMutationAdapter implements MutationAdapter {
     return variablesUsed && Object.keys(variablesUsed).length > 0
       ? `(${Object.keys(variablesUsed).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
-              variablesUsed[key]
-            )}`,
+            `${dataString}${
+              i !== 0 ? ", " : ""
+            }$${key}: ${queryDataTypeAndDefault(variablesUsed[key])}`,
           ""
         )})`
       : "";
@@ -96,6 +97,8 @@ export class DefaultMutationAdapter implements MutationAdapter {
         `mutation ${this.#config.operationName}`
       );
     }
+
+    query += queryFragmentsMap(this.#config.fragments);
 
     return {
       query,

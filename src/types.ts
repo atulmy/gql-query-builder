@@ -45,6 +45,11 @@ export type VariableOptions =
       list?: boolean | [boolean];
       /** Appends `!` to the emitted type. */
       required?: boolean;
+      /**
+       * Default value emitted in the variable definition, e.g. `$episode: Episode = JEDI`.
+       * Serialized as a GraphQL literal; wrap enum names with `rawGraphQL()`.
+       */
+      default?: unknown;
     }
   | Record<string, any>;
 
@@ -64,10 +69,35 @@ export interface OperationResult {
   variables: Record<string, unknown>;
 }
 
-/** Configuration accepted by the default query and mutation adapters. */
+/**
+ * A named fragment definition, appended to the generated document.
+ * Spread it in a selection with a plain `"...name"` field string.
+ *
+ * @example
+ * query(
+ *   { operation: "hero", fields: ["...heroFields"] },
+ *   null,
+ *   { fragments: [{ name: "heroFields", on: "Character", fields: ["name"] }] }
+ * )
+ * // => query  { hero  { ...heroFields } }
+ * //
+ * //    fragment heroFields on Character { name }
+ */
+export interface FragmentDefinition {
+  /** Fragment name, referenced by `"...name"` spreads. */
+  name: string;
+  /** Type condition: the type the fragment applies to. */
+  on: string;
+  /** Selection set of the fragment. */
+  fields: Fields;
+}
+
+/** Configuration accepted by the default adapters. */
 export interface AdapterConfig {
   /** Named operation added after the operation keyword, e.g. `query MyOperation { ... }`. */
   operationName?: string;
+  /** Named fragment definitions appended to the generated document. */
+  fragments?: FragmentDefinition[];
   [key: string]: unknown;
 }
 

@@ -174,7 +174,11 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 14. <a href="#mutation-with-operation-name">Mutation (with operation name)</a>
 15. <a href="#subscription">Subscription</a>
 16. <a href="#subscription-with-adapter-defined">Subscription (with adapter defined)</a>
-17. <a href="#example-with-axios">Example with Axios</a>
+17. <a href="#query-with-default-variable-values">Query (with default variable values)</a>
+18. <a href="#query-with-named-fragments">Query (with named fragments)</a>
+19. <a href="#query-with-directives">Query (with directives)</a>
+20. <a href="#subscription-with-operation-name">Subscription (with operation name)</a>
+21. <a href="#example-with-axios">Example with Axios</a>
 
 #### Query:
 
@@ -714,6 +718,109 @@ subscription SomethingIDidInMyAdapter {
 ```
 
 Take a peek at [DefaultSubscriptionAdapter](src/adapters/default-subscription-adapter.ts) to get an understanding of how to make a new adapter.
+
+[↑ all examples](#examples)
+
+#### Query (with default variable values):
+
+Add a `default` to a variable descriptor to emit a GraphQL default value. Strings are quoted and input objects use unquoted keys automatically; wrap enum literals with `rawGraphQL()`:
+
+```javascript
+import { query, rawGraphQL } from 'gql-query-builder'
+
+const q = query({
+  operation: 'hero',
+  variables: {
+    episode: { value: 'EMPIRE', type: 'Episode', default: rawGraphQL('JEDI') },
+    first: { value: 10, default: 5 }
+  },
+  fields: ['name']
+})
+
+// Output
+query ($episode: Episode = JEDI, $first: Int = 5) {
+  hero (episode: $episode, first: $first) {
+    name
+  }
+}
+```
+
+[↑ all examples](#examples)
+
+#### Query (with named fragments):
+
+Define reusable named fragments with the `fragments` config option and spread them with a plain `'...name'` field string. Works for queries, mutations, and subscriptions:
+
+```javascript
+import { query } from 'gql-query-builder'
+
+const q = query({
+  operation: 'hero',
+  fields: ['...heroFields']
+}, null, {
+  fragments: [
+    { name: 'heroFields', on: 'Character', fields: ['name', { friends: ['name'] }] }
+  ]
+})
+
+// Output
+query {
+  hero {
+    ...heroFields
+  }
+}
+
+fragment heroFields on Character { name, friends { name } }
+```
+
+[↑ all examples](#examples)
+
+#### Query (with directives):
+
+Directives such as `@include(if:)` and `@skip(if:)` (or `@defer`/`@stream` where supported) can be attached to any field — field strings are passed through verbatim:
+
+```javascript
+import { query } from 'gql-query-builder'
+
+const q = query({
+  operation: 'hero',
+  variables: { withFriends: { value: true, type: 'Boolean', required: true } },
+  fields: ['name', 'friends @include(if: $withFriends)']
+})
+
+// Output
+query ($withFriends: Boolean!) {
+  hero (withFriends: $withFriends) {
+    name,
+    friends @include(if: $withFriends)
+  }
+}
+```
+
+The same passthrough works for field-level aliases (`'empireHero: name'`) and meta fields (`'__typename'`).
+
+[↑ all examples](#examples)
+
+#### Subscription (with operation name):
+
+```javascript
+import { subscription } from 'gql-query-builder'
+
+const q = subscription({
+  operation: 'postAdded',
+  variables: { topic: 'news' },
+  fields: ['id']
+}, null, {
+  operationName: 'OnPostAdded'
+})
+
+// Output
+subscription OnPostAdded ($topic: String) {
+  postAdded (topic: $topic) {
+    id
+  }
+}
+```
 
 [↑ all examples](#examples)
 

@@ -68,6 +68,7 @@ export function mutation(
  *
  * @param options - A single operation or an array of operations to combine into one subscription.
  * @param adapter - Optional custom adapter class controlling how the subscription string is generated.
+ * @param config - Optional adapter configuration (e.g. `{ operationName: "..." }`).
  * @returns `{ query, variables }` ready to send to a GraphQL server.
  *
  * @example
@@ -75,10 +76,11 @@ export function mutation(
  */
 export function subscription(
   options: QueryBuilderOptions | QueryBuilderOptions[],
-  adapter?: SubscriptionAdapterConstructor | null
+  adapter?: SubscriptionAdapterConstructor | null,
+  config?: AdapterConfig
 ): OperationResult {
   const AdapterClass = adapter ?? DefaultSubscriptionAdapter;
-  const subscriptionAdapter = new AdapterClass(options);
+  const subscriptionAdapter = new AdapterClass(options, config);
   return Array.isArray(options)
     ? subscriptionAdapter.subscriptionsBuilder(options)
     : subscriptionAdapter.subscriptionBuilder();
@@ -106,6 +108,7 @@ export type {
 export type {
   AdapterConfig,
   Fields,
+  FragmentDefinition,
   IOperation,
   IQueryBuilderOptions,
   NestedField,
@@ -116,3 +119,4 @@ export type {
   VariableOptions,
 } from "./types";
 export { isNestedField } from "./types";
+export { GraphQLRaw, rawGraphQL, toGraphQLLiteral } from "./utils";

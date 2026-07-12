@@ -4,7 +4,7 @@
 
 Install: `pnpm add gql-query-builder` (or npm/yarn/bun equivalent).
 
-Core usage: `query|mutation|subscription({ operation, fields?, variables? })` returns `{ query: string, variables: object }` ready to POST to any GraphQL endpoint. Options can be an array to combine multiple operations in one document. Fields support nesting (`['id', { user: ['email'] }]`), aliases (`{ name, alias }`), and inline fragments (`{ operation, fields, fragment: true }`). Variables support typed descriptors (`{ value, type, required, list, name }`). An optional adapter class customizes string generation (AWS AppSync adapters are bundled as `adapters`).
+Core usage: `query|mutation|subscription(options, adapter?, config?)` returns `{ query: string, variables: object }` ready to POST to any GraphQL endpoint. Options (`{ operation, fields?, variables? }`) can be an array to combine multiple operations in one document. Fields support nesting (`['id', { user: ['email'] }]`), aliases (`{ name, alias }` for operations, `'alias: field'` strings for fields), inline fragments (`{ operation, fields, fragment: true }`), and directives via string passthrough (`'name @include(if: $x)'`). Variables support typed descriptors (`{ value, type, required, list, name, default }`); enum default literals via `rawGraphQL()`. Config supports `operationName` and named `fragments` (`{ name, on, fields }[]`, spread with `'...name'`). An optional adapter class customizes string generation (AWS AppSync adapters are bundled as `adapters`).
 
 ## Docs
 
