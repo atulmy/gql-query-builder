@@ -1,4 +1,4 @@
-import NestedField from "./NestedField";
+import type NestedField from "./NestedField";
 
 /*
 Defines an array of strings or objects to define query fields

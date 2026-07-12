@@ -1,5 +1,5 @@
-import IQueryBuilderOptions from "./IQueryBuilderOptions";
-import Fields from "./Fields";
+import type Fields from "./Fields";
+import type IQueryBuilderOptions from "./IQueryBuilderOptions";
 
 /*
 Defines an array of strings or objects to define query fields
@@ -18,12 +18,12 @@ export default NestedField;
 export function isNestedField(object: any): object is NestedField {
   return (
     (typeof object === "object" &&
-      object.hasOwnProperty("operation") &&
-      object.hasOwnProperty("variables") &&
-      object.hasOwnProperty("fields")) ||
+      Object.hasOwn(object, "operation") &&
+      Object.hasOwn(object, "variables") &&
+      Object.hasOwn(object, "fields")) ||
     (typeof object === "object" &&
-      object.hasOwnProperty("operation") &&
-      object.hasOwnProperty("fragment") &&
-      object.hasOwnProperty("fields"))
+      Object.hasOwn(object, "operation") &&
+      Object.hasOwn(object, "fragment") &&
+      Object.hasOwn(object, "fields"))
   );
 }

@@ -2,7 +2,7 @@
 @interface IQueryAdapter
 @desc defines public methods for building a full query template
  */
-import IQueryBuilderOptions from "../IQueryBuilderOptions";
+import type IQueryBuilderOptions from "../IQueryBuilderOptions";
 
 export default interface IQueryAdapter {
   queryBuilder: () => { variables: any; query: string };

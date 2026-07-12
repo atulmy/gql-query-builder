@@ -3,11 +3,12 @@
 @desc A basic implementation to use with AWS AppSync
 @desc modify the output of the mutation template by passing a second argument to mutation(options, AdapterClass)
  */
-import Fields from "../Fields";
-import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
+import type Fields from "../Fields";
+import type IQueryBuilderOptions from "../IQueryBuilderOptions";
+import type { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
-import IMutationAdapter from "./IMutationAdapter";
+import * as Utils from "../Utils";
+import type IMutationAdapter from "./IMutationAdapter";
 
 export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;

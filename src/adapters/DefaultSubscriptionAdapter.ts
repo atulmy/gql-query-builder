@@ -3,11 +3,12 @@
 @desc A basic implementation to use
 @desc modify the output of the subscription template by passing a second argument to subscription(options, AdapterClass)
  */
-import Fields from "../Fields";
-import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
+import type Fields from "../Fields";
+import type IQueryBuilderOptions from "../IQueryBuilderOptions";
+import type { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
-import ISubscriptionAdapter from "./ISubscriptionAdapter";
+import * as Utils from "../Utils";
+import type ISubscriptionAdapter from "./ISubscriptionAdapter";
 
 export default class DefaultSubscriptionAdapter
   implements ISubscriptionAdapter
@@ -30,7 +31,7 @@ export default class DefaultSubscriptionAdapter
     return this.operationWrapperTemplate(
       OperationType.Subscription,
       this.variables,
-      this.operationTemplate(this.operation)
+      this.operationTemplate()
     );
   }
 
@@ -39,7 +40,7 @@ export default class DefaultSubscriptionAdapter
       this.operation = opts.operation;
       this.variables = opts.variables;
       this.fields = opts.fields;
-      return this.operationTemplate(opts.operation);
+      return this.operationTemplate();
     });
     return this.operationWrapperTemplate(
       OperationType.Subscription,
@@ -59,7 +60,7 @@ export default class DefaultSubscriptionAdapter
   }
 
   private queryDataArgumentAndTypeMap(variables: any): string {
-    return Object.keys(variables).length
+    return variables && Object.keys(variables).length
       ? `(${Object.keys(variables).reduce(
           (dataString, key, i) =>
             `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
@@ -84,7 +85,7 @@ export default class DefaultSubscriptionAdapter
     };
   }
 
-  private operationTemplate(operation: string | IOperation) {
+  private operationTemplate() {
     const operationName =
       typeof this.operation === "string"
         ? this.operation

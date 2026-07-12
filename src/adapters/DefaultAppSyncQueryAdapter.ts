@@ -3,11 +3,12 @@
 @desc A basic implementation to use with AWS AppSync
 @desc modify the output of the query template by passing a second argument to query(options, DefaultAppSyncQueryAdapter)
  */
-import Fields from "../Fields";
-import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
+import type Fields from "../Fields";
+import type IQueryBuilderOptions from "../IQueryBuilderOptions";
+import type { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
-import IQueryAdapter from "./IQueryAdapter";
+import * as Utils from "../Utils";
+import type IQueryAdapter from "./IQueryAdapter";
 
 export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;

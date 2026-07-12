@@ -6,13 +6,25 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 <img src="https://img.shields.io/npm/dt/gql-query-builder?label=Downloads" alt="downloads" />
 </a>
 
+<a href="https://github.com/atulmy/gql-query-builder/actions/workflows/ci.yml">
+<img src="https://github.com/atulmy/gql-query-builder/actions/workflows/ci.yml/badge.svg" alt="CI status" />
+</a>
+
 <a href="https://replit.com/@atulmy/gql-query-builder#index.js">
 <img src="https://img.shields.io/badge/Demo-replit-blue" alt="demo" />
 </a>
 
 ## Install
 
-`npm install gql-query-builder --save` or `yarn add gql-query-builder`
+```bash
+npm install gql-query-builder
+# or
+pnpm add gql-query-builder
+# or
+yarn add gql-query-builder
+```
+
+Requires Node.js >= 20 (works in browsers too). The package ships both ESM (`import`) and CommonJS (`require`) builds with TypeScript types included — no extra `@types` package needed.
 
 ## Usage
 
@@ -760,6 +772,23 @@ async function saveThought() {
 ```
 
 [↑ all examples](#examples)
+
+# Development
+
+This repo uses [pnpm](https://pnpm.io), [Biome](https://biomejs.dev) for lint/format, [Vitest](https://vitest.dev) for tests, [tsup](https://tsup.egg.sh) for the dual ESM/CJS build, and [Changesets](https://github.com/changesets/changesets) for releases.
+
+```bash
+pnpm install       # install dependencies
+pnpm test          # run the test suite
+pnpm lint          # lint + format check
+pnpm typecheck     # TypeScript, no emit
+pnpm build         # build ESM + CJS + types into dist/
+pnpm changeset     # describe your change for the next release
+```
+
+Every user-facing PR should include a changeset. Merging to `master` opens/updates an automated "Version Packages" PR; merging that publishes to npm with provenance.
+
+A compact, machine-friendly API reference lives in [docs/api.md](docs/api.md); agent/LLM entry points are [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
 
 # Showcase
 

@@ -3,12 +3,13 @@
 @desc A basic implementation to use
 @desc modify the output of the query template by passing a second argument to query(options, AdapterClass)
  */
-import Fields from "../Fields";
-import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
+import type Fields from "../Fields";
+import type IQueryBuilderOptions from "../IQueryBuilderOptions";
+import type { IOperation } from "../IQueryBuilderOptions";
 import OperationType from "../OperationType";
-import Utils from "../Utils";
-import IQueryAdapter from "./IQueryAdapter";
-import VariableOptions from "../VariableOptions";
+import * as Utils from "../Utils";
+import type VariableOptions from "../VariableOptions";
+import type IQueryAdapter from "./IQueryAdapter";
 
 export default class DefaultQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
@@ -91,7 +92,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     query = query.replace(
       "query",
       `query${
-        this.config.operationName !== "" ? " " + this.config.operationName : ""
+        this.config.operationName !== "" ? ` ${this.config.operationName}` : ""
       }`
     );
     return {
@@ -110,7 +111,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
       variables ? Utils.queryDataNameAndArgumentMap(variables) : ""
     } ${
       this.fields && this.fields.length > 0
-        ? "{ " + Utils.queryFieldsMap(this.fields) + " }"
+        ? `{ ${Utils.queryFieldsMap(this.fields)} }`
         : ""
     }`;
   }
