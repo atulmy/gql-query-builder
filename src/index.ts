@@ -1,28 +1,20 @@
-import adapters from "./adapters";
-import DefaultMutationAdapter from "./adapters/DefaultMutationAdapter";
-import DefaultQueryAdapter from "./adapters/DefaultQueryAdapter";
-import DefaultSubscriptionAdapter from "./adapters/DefaultSubscriptionAdapter";
-import type IMutationAdapter from "./adapters/IMutationAdapter";
-import type IQueryAdapter from "./adapters/IQueryAdapter";
-import type ISubscriptionAdapter from "./adapters/ISubscriptionAdapter";
-import type IQueryBuilderOptions from "./IQueryBuilderOptions";
-
-/** Constructor of a custom query adapter, e.g. `class MyAdapter implements IQueryAdapter`. */
-export type QueryAdapterConstructor = new (
-  options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  config?: any
-) => IQueryAdapter;
-
-/** Constructor of a custom mutation adapter, e.g. `class MyAdapter implements IMutationAdapter`. */
-export type MutationAdapterConstructor = new (
-  options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  config?: any
-) => IMutationAdapter;
-
-/** Constructor of a custom subscription adapter, e.g. `class MyAdapter implements ISubscriptionAdapter`. */
-export type SubscriptionAdapterConstructor = new (
-  options: IQueryBuilderOptions | IQueryBuilderOptions[]
-) => ISubscriptionAdapter;
+/**
+ * gql-query-builder — generates GraphQL query/mutation/subscription strings
+ * (plus a matching variables object) from plain JavaScript objects.
+ */
+import { DefaultMutationAdapter } from "./adapters/default-mutation-adapter";
+import { DefaultQueryAdapter } from "./adapters/default-query-adapter";
+import { DefaultSubscriptionAdapter } from "./adapters/default-subscription-adapter";
+import type {
+  MutationAdapterConstructor,
+  QueryAdapterConstructor,
+  SubscriptionAdapterConstructor,
+} from "./adapters/types";
+import type {
+  AdapterConfig,
+  OperationResult,
+  QueryBuilderOptions,
+} from "./types";
 
 /**
  * Builds a GraphQL query string plus its variables object.
@@ -36,13 +28,13 @@ export type SubscriptionAdapterConstructor = new (
  * query({ operation: "thoughts", fields: ["id", "name"] })
  * // => { query: "query { thoughts { id, name } }", variables: {} }
  */
-function queryOperation(
-  options: IQueryBuilderOptions | IQueryBuilderOptions[],
+export function query(
+  options: QueryBuilderOptions | QueryBuilderOptions[],
   adapter?: QueryAdapterConstructor | null,
-  config?: any
-) {
+  config?: AdapterConfig
+): OperationResult {
   const AdapterClass = adapter ?? DefaultQueryAdapter;
-  const queryAdapter: IQueryAdapter = new AdapterClass(options, config);
+  const queryAdapter = new AdapterClass(options, config);
   return Array.isArray(options)
     ? queryAdapter.queriesBuilder(options)
     : queryAdapter.queryBuilder();
@@ -59,13 +51,13 @@ function queryOperation(
  * @example
  * mutation({ operation: "thoughtCreate", variables: { name: "Tyrion" }, fields: ["id"] })
  */
-function mutationOperation(
-  options: IQueryBuilderOptions | IQueryBuilderOptions[],
+export function mutation(
+  options: QueryBuilderOptions | QueryBuilderOptions[],
   adapter?: MutationAdapterConstructor | null,
-  config?: any
-) {
+  config?: AdapterConfig
+): OperationResult {
   const AdapterClass = adapter ?? DefaultMutationAdapter;
-  const mutationAdapter: IMutationAdapter = new AdapterClass(options, config);
+  const mutationAdapter = new AdapterClass(options, config);
   return Array.isArray(options)
     ? mutationAdapter.mutationsBuilder(options)
     : mutationAdapter.mutationBuilder();
@@ -81,12 +73,12 @@ function mutationOperation(
  * @example
  * subscription({ operation: "thoughtCreated", fields: ["id"] })
  */
-function subscriptionOperation(
-  options: IQueryBuilderOptions | IQueryBuilderOptions[],
+export function subscription(
+  options: QueryBuilderOptions | QueryBuilderOptions[],
   adapter?: SubscriptionAdapterConstructor | null
-) {
+): OperationResult {
   const AdapterClass = adapter ?? DefaultSubscriptionAdapter;
-  const subscriptionAdapter: ISubscriptionAdapter = new AdapterClass(options);
+  const subscriptionAdapter = new AdapterClass(options);
   return Array.isArray(options)
     ? subscriptionAdapter.subscriptionsBuilder(options)
     : subscriptionAdapter.subscriptionBuilder();
@@ -94,7 +86,33 @@ function subscriptionOperation(
 
 export {
   adapters,
-  mutationOperation as mutation,
-  queryOperation as query,
-  subscriptionOperation as subscription,
-};
+  DefaultAppSyncMutationAdapter,
+  DefaultAppSyncQueryAdapter,
+  DefaultMutationAdapter,
+  DefaultQueryAdapter,
+  DefaultSubscriptionAdapter,
+} from "./adapters";
+export type {
+  IMutationAdapter,
+  IQueryAdapter,
+  ISubscriptionAdapter,
+  MutationAdapter,
+  MutationAdapterConstructor,
+  QueryAdapter,
+  QueryAdapterConstructor,
+  SubscriptionAdapter,
+  SubscriptionAdapterConstructor,
+} from "./adapters/types";
+export type {
+  AdapterConfig,
+  Fields,
+  IOperation,
+  IQueryBuilderOptions,
+  NestedField,
+  Operation,
+  OperationResult,
+  OperationType,
+  QueryBuilderOptions,
+  VariableOptions,
+} from "./types";
+export { isNestedField } from "./types";

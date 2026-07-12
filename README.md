@@ -116,9 +116,9 @@ subscription(options: object)
 
 ### Adapter
 
-An optional second argument `adapter` is a typescript/javascript class that implements `src/adapters/IQueryAdapter` or `src/adapters/IMutationAdapter`.
+An optional second argument `adapter` is a typescript/javascript class that implements the `QueryAdapter`, `MutationAdapter`, or `SubscriptionAdapter` interface (exported from the package root).
 
-If adapter is undefined then `src/adapters/DefaultQueryAdapter` or `src/adapters/DefaultMutationAdapter` is used.
+If adapter is undefined then the default adapter (`DefaultQueryAdapter`, `DefaultMutationAdapter`, or `DefaultSubscriptionAdapter` — also exported for reuse) is used.
 
 ```
 import * as gql from 'gql-query-builder'
@@ -498,7 +498,7 @@ query SomethingIDidInMyAdapter {
 }
 ```
 
-Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get an understanding of how to make a new adapter.
+Take a peek at [DefaultQueryAdapter](src/adapters/default-query-adapter.ts) to get an understanding of how to make a new adapter.
 
 [↑ all examples](#examples)
 
@@ -631,7 +631,7 @@ mutation SomethingIDidInMyAdapter {
 
 [↑ all examples](#examples)
 
-Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
+Take a peek at [DefaultMutationAdapter](src/adapters/default-mutation-adapter.ts) to get an understanding of how to make a new adapter.
 
 #### Mutation (with operation name):
 
@@ -713,7 +713,7 @@ subscription SomethingIDidInMyAdapter {
 }
 ```
 
-Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdapter.ts) to get an understanding of how to make a new adapter.
+Take a peek at [DefaultSubscriptionAdapter](src/adapters/default-subscription-adapter.ts) to get an understanding of how to make a new adapter.
 
 [↑ all examples](#examples)
 
@@ -790,43 +790,6 @@ Every user-facing PR should include a changeset. Merging to `master` opens/updat
 
 A compact, machine-friendly API reference lives in [docs/api.md](docs/api.md); agent/LLM entry points are [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
 
-# Showcase
-
-Following projects are using [gql-query-builder](https://github.com/atulmy/gql-query-builder)
-
-- Crate - Get monthly subscription of trendy clothes and accessories - [GitHub](https://github.com/atulmy/crate)
-- Fullstack GraphQL Application - [GitHub](https://github.com/atulmy/fullstack-graphql)
-- Would really appreciate if you add your project to this list by sending a PR
-
-## Author
-
-- Atul Yadav - [GitHub](https://github.com/atulmy) · [Twitter](https://twitter.com/atulmy)
-
-## Contributors
-
-**If you are interested in actively maintaining / enhancing this project, get in <a href="mailto:atul.12788@gmail.com">touch</a>.**
-
-- Juho Vepsäläinen - [GitHub](https://github.com/bebraw) · [Twitter](https://twitter.com/bebraw)
-- Daniel Hreben - [GitHub](https://github.com/DanielHreben) · [Twitter](https://twitter.com/DanielHreben)
-- Todd Baur - [GitHub](https://github.com/toadkicker) · [Twitter](https://twitter.com/toadkicker)
-- Alireza Hariri - [GitHub](https://github.com/ARHariri)
-- Cédric - [GitHub](https://github.com/cbonaudo)
-- Clayton Collie - [GitHub](https://github.com/ccollie)
-- Devon Reid - [GitHub](https://github.com/Devorein)
-- Harry Brundage - [GitHub](https://github.com/airhorns) · [Twitter](https://twitter.com/harrybrundage)
-- Clément Berard - [GitHub](https://github.com/clement-berard) · [Twitter](https://twitter.com/clementberard)
-- Lee Rose - [GitHub](https://github.com/leeroyrose)
-- Christian Westgaard - [GitHub](https://github.com/ComLock)
-- [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
-
-## Donate
-
-If you liked this project, you can donate to support it ❤️
-
-[![Donate via PayPal](https://raw.githubusercontent.com/atulmy/atulmy.github.io/master/images/mix/paypal-me-smaller.png)](http://paypal.me/atulmy)
-
 ## License
-
-Copyright (c) 2018 Atul Yadav <http://github.com/atulmy>
 
 The MIT License (<http://www.opensource.org/licenses/mit-license.php>)

@@ -1,4 +1,4 @@
-import DefaultAppSyncQueryAdapter from "../adapters/DefaultAppSyncQueryAdapter";
+import { DefaultAppSyncQueryAdapter } from "../adapters/app-sync-query-adapter";
 import * as queryBuilder from "../index";
 
 describe("Query", () => {

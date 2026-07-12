@@ -15,5 +15,5 @@ Core usage: `query|mutation|subscription({ operation, fields?, variables? })` re
 ## Source
 
 - [Entry point](src/index.ts): query/mutation/subscription functions and adapter dispatch
-- [Option types](src/IQueryBuilderOptions.ts): operation/fields/variables shapes
-- [Default query adapter](src/adapters/DefaultQueryAdapter.ts): reference adapter implementation
+- [Option types](src/types.ts): operation/fields/variables shapes
+- [Default query adapter](src/adapters/default-query-adapter.ts): reference adapter implementation

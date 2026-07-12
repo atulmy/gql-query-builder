@@ -20,10 +20,12 @@ Package manager is **pnpm** (see `packageManager` in package.json). Node >= 20.
 
 ## Layout
 
-- `src/index.ts` — public entry: `query()`, `mutation()`, `subscription()`, `adapters` (all named exports). Dispatches to an adapter class.
-- `src/adapters/` — string-generation strategy classes. `Default{Query,Mutation,Subscription}Adapter` plus AWS AppSync variants; `I{Query,Mutation,Subscription}Adapter` interfaces for custom adapters.
-- `src/Utils.ts` — shared pure helpers (field maps, variable resolution, GraphQL type inference).
-- `src/IQueryBuilderOptions.ts`, `src/Fields.ts`, `src/NestedField.ts`, `src/VariableOptions.ts` — option types.
+- `src/index.ts` — public entry: `query()`, `mutation()`, `subscription()`, `adapters`, plus all public types (named exports only).
+- `src/types.ts` — option/result types (`QueryBuilderOptions`, `Fields`, `NestedField`, `VariableOptions`, `Operation`, `OperationResult`) and the `isNestedField` guard. Deprecated `I*` aliases live here too.
+- `src/utils.ts` — shared pure helpers (field maps, variable resolution, GraphQL type inference).
+- `src/adapters/types.ts` — adapter contracts (`QueryAdapter`, `MutationAdapter`, `SubscriptionAdapter`) and their constructor types.
+- `src/adapters/default-{query,mutation,subscription}-adapter.ts` — default string-generation classes (use native `#private` fields).
+- `src/adapters/app-sync-{query,mutation}-adapter.ts` — AWS AppSync variants, bundled in the `adapters` export.
 - `src/__tests__/` — Vitest suites (globals enabled, no imports of `describe`/`it` needed).
 - `docs/api.md` — compact API reference with canonical examples.
 

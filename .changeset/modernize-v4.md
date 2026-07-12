@@ -15,5 +15,7 @@ Full modernization of the toolchain and package format.
 **Other changes:**
 
 - Migrated npm -> pnpm, TSLint/Prettier -> Biome, Jest -> Vitest, tsc build -> tsup.
-- Custom adapters are now properly typed as constructor parameters (`QueryAdapterConstructor`, `MutationAdapterConstructor`, `SubscriptionAdapterConstructor` are exported); removed all `@ts-ignore`s.
+- Source fully rewritten with a modern structure: kebab-case modules, named exports, consolidated `src/types.ts`, native `#private` class fields, string-union `OperationType` instead of an enum.
+- The package root now exports all public types (`QueryBuilderOptions`, `Operation`, `Fields`, `NestedField`, `VariableOptions`, `OperationResult`, `AdapterConfig`), the adapter contracts (`QueryAdapter`, `MutationAdapter`, `SubscriptionAdapter` — old `I*` names remain as deprecated aliases), the adapter constructor types, and the default adapter classes for reuse/extension.
+- Custom adapters are now properly typed as constructor parameters; removed all `@ts-ignore`s.
 - Releases are automated with Changesets and published with npm provenance.

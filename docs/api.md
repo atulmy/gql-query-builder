@@ -135,10 +135,12 @@ import { query, adapters } from "gql-query-builder";
 query(options, adapters.DefaultAppSyncQueryAdapter);
 ```
 
-Interfaces to implement (see `src/adapters/`):
+Interfaces to implement (exported from the package root, defined in `src/adapters/types.ts`):
 
-- `IQueryAdapter`: `queryBuilder()`, `queriesBuilder(options[])`
-- `IMutationAdapter`: `mutationBuilder()`, `mutationsBuilder(options[])`
-- `ISubscriptionAdapter`: `subscriptionBuilder()`, `subscriptionsBuilder(options[])`
+- `QueryAdapter`: `queryBuilder()`, `queriesBuilder(options[])`
+- `MutationAdapter`: `mutationBuilder()`, `mutationsBuilder(options[])`
+- `SubscriptionAdapter`: `subscriptionBuilder()`, `subscriptionsBuilder(options[])`
 
-Each returns `{ query: string, variables: object }`. Reference implementations: `src/adapters/DefaultQueryAdapter.ts`, `DefaultMutationAdapter.ts`, `DefaultSubscriptionAdapter.ts`.
+(The pre-v4 `IQueryAdapter`/`IMutationAdapter`/`ISubscriptionAdapter` names still work as deprecated aliases.)
+
+Each returns `{ query: string, variables: object }`. Reference implementations: `src/adapters/default-query-adapter.ts`, `default-mutation-adapter.ts`, `default-subscription-adapter.ts`. The default adapter classes are also exported from the package root for reuse.
