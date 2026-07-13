@@ -1,0 +1,18 @@
+{
+  "name": "gql-query-builder-playground",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Interactive playground showcasing gql-query-builder — build GraphQL documents from plain objects and run them against a live API.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.9.3",
+    "vite": "^6.3.6"
+  }
+}
