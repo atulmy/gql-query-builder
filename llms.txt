@@ -1,0 +1,19 @@
+# gql-query-builder
+
+> Zero-dependency TypeScript/JavaScript library that generates GraphQL query, mutation, and subscription strings (plus a matching variables object) from plain JavaScript objects. Works in Node.js >= 20 and browsers; ships ESM and CJS builds with TypeScript types.
+
+Install: `pnpm add gql-query-builder` (or npm/yarn/bun equivalent).
+
+Core usage: `query|mutation|subscription(options, adapter?, config?)` returns `{ query: string, variables: object }` ready to POST to any GraphQL endpoint. Options (`{ operation, fields?, variables? }`) can be an array to combine multiple operations in one document. Fields support nesting (`['id', { user: ['email'] }]`), aliases (`{ name, alias }` for operations, `'alias: field'` strings for fields), inline fragments (`{ operation, fields, fragment: true }`), and directives via string passthrough (`'name @include(if: $x)'`). Variables support typed descriptors (`{ value, type, required, list, name, default }`); enum default literals via `rawGraphQL()`. Config supports `operationName` and named `fragments` (`{ name, on, fields }[]`, spread with `'...name'`). An optional adapter class customizes string generation (AWS AppSync adapters are bundled as `adapters`).
+
+## Docs
+
+- [API reference](docs/api.md): all options, variable descriptors, and one canonical example per feature
+- [README](README.md): full example gallery and project info
+- [Agent guide](AGENTS.md): repo layout, build/test commands, contribution constraints
+
+## Source
+
+- [Entry point](src/index.ts): query/mutation/subscription functions and adapter dispatch
+- [Option types](src/types.ts): operation/fields/variables shapes
+- [Default query adapter](src/adapters/default-query-adapter.ts): reference adapter implementation

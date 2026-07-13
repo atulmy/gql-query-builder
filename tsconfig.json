@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "module": "commonjs",
-    "lib": ["es6", "es2017"],
-    "target": "es5",
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
     "strict": true,
-    "sourceMap": true,
-    "inlineSources": true,
-    "outDir": "build",
-    "typeRoots": ["node_modules/@types"],
-    "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "tsup.config.ts", "vitest.config.ts"]
 }

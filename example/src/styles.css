@@ -1,0 +1,397 @@
+:root {
+  --bg: #101010;
+  --bg-elev: #1a1a1a;
+  --bg-inset: #0b0b0b;
+  --border: #2c2c2c;
+  --text: #eaeaea;
+  --text-dim: #9e9e9e;
+  --accent: #e535ab; /* GraphQL pink */
+  --accent-soft: rgba(229, 53, 171, 0.14);
+  --green: #4ade80;
+  --blue: #60a5fa;
+  --amber: #fbbf24;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, Menlo,
+    Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: var(--accent-soft);
+  color: #f6a8dd;
+  padding: 0.08em 0.36em;
+  border-radius: 4px;
+}
+
+/* App shell: a fixed-height column so the sidebar and main pane each scroll
+   independently instead of the whole page scrolling as one. */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ── header ─────────────────────────────────────────────────────────────── */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #1c1c1c, var(--bg));
+  flex: 0 0 auto;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo {
+  font-size: 26px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 10px rgba(229, 53, 171, 0.6));
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.tagline {
+  margin: 2px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.header-links {
+  display: flex;
+  gap: 8px;
+}
+
+.header-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+
+.header-links a:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* ── layout ─────────────────────────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 288px 1fr;
+  flex: 1 1 auto;
+  min-height: 0; /* let grid children shrink so they can scroll */
+}
+
+.sidebar {
+  border-right: 1px solid var(--border);
+  padding: 20px 14px;
+  overflow-y: auto;
+  background: var(--bg-elev);
+}
+
+.cat-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin: 18px 8px 8px;
+  font-weight: 600;
+}
+
+.cat-title:first-child {
+  margin-top: 0;
+}
+
+.recipe-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recipe-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+
+.recipe-btn:hover {
+  background: var(--bg-inset);
+  color: var(--text);
+}
+
+.recipe-btn.is-active {
+  background: var(--accent-soft);
+  color: var(--text);
+  border-color: rgba(229, 53, 171, 0.4);
+}
+
+.recipe-name {
+  font-weight: 500;
+}
+
+.pill {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pill-query {
+  background: rgba(96, 165, 250, 0.18);
+  color: var(--blue);
+}
+.pill-mutation {
+  background: rgba(251, 191, 36, 0.18);
+  color: var(--amber);
+}
+.pill-subscription {
+  background: rgba(74, 222, 128, 0.18);
+  color: var(--green);
+}
+
+/* ── main ───────────────────────────────────────────────────────────────── */
+.main {
+  padding: 28px 32px 64px;
+  overflow-y: auto; /* scrolls independently; scrollbar sits at the column's right edge */
+  overflow-x: hidden;
+}
+
+/* Cap the reading width of the content while .main fills the whole column, so
+   the vertical scrollbar stays flush to the right instead of hugging the text. */
+.main > * {
+  max-width: 960px;
+}
+
+.recipe-head {
+  margin-bottom: 18px;
+}
+
+.recipe-title {
+  margin: 0 0 6px;
+  font-size: 23px;
+  letter-spacing: -0.015em;
+}
+
+.blurb {
+  margin: 0;
+  color: var(--text-dim);
+  max-width: 68ch;
+  line-height: 1.6;
+}
+
+/* ── panels ─────────────────────────────────────────────────────────────── */
+.panel {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-inset);
+}
+
+.panel-label {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.editor {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.55;
+  padding: 14px 16px;
+  resize: none;
+  overflow: hidden; /* auto-sized in JS; never scroll internally */
+  outline: none;
+  tab-size: 2;
+  display: block;
+}
+
+.code-out {
+  margin: 0;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+  color: var(--text);
+}
+
+.vars-out,
+.response-out {
+  color: #b6f0c9;
+}
+
+.outputs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.doc-out {
+  color: #d8d8d8;
+}
+
+.tok-kw {
+  color: var(--accent);
+  font-weight: 600;
+}
+.tok-var {
+  color: var(--blue);
+}
+.tok-dir {
+  color: var(--amber);
+}
+
+/* ── buttons ────────────────────────────────────────────────────────────── */
+.copy-btn,
+.ghost-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+
+.copy-btn:hover,
+.ghost-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.run-panel .run-row {
+  padding: 14px 16px 0;
+}
+
+.run-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  box-shadow: 0 4px 18px rgba(229, 53, 171, 0.3);
+}
+
+.run-btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.run-btn.is-disabled,
+.run-btn:disabled {
+  background: var(--border);
+  color: var(--text-dim);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.run-status {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+/* ── error ──────────────────────────────────────────────────────────────── */
+.error-box {
+  background: rgba(248, 81, 73, 0.12);
+  border: 1px solid rgba(248, 81, 73, 0.4);
+  color: #ffb4ae;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  white-space: pre-wrap;
+}
+
+/* ── responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  /* On narrow screens drop the fixed shell and let the page scroll as one. */
+  #app {
+    height: auto;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow-y: visible;
+  }
+  .main {
+    padding: 20px 16px 48px;
+    overflow-y: visible;
+  }
+}

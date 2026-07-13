@@ -2,3 +2,6 @@
 gql-query-builder.code-workspace
 node_modules
 build
+dist
+coverage
+*.tgz

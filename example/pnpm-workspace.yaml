@@ -1,0 +1,5 @@
+# Standalone workspace root so `pnpm install` here installs the playground's
+# own dev dependencies instead of no-oping against the library workspace above.
+packages: []
+allowBuilds:
+  esbuild: true

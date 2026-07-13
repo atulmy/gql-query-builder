@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+# id-token: write lets GitHub mint the OIDC token npm exchanges for a short-lived
+# publish credential — no NPM_TOKEN secret required. Provenance is generated
+# automatically as a result. Requires a Trusted Publisher configured on npmjs.com
+# for this package, pointing at this repo + workflow file (release.yml).
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs npm CLI >= 11.5.1; the version bundled with the
+      # runner is older, so upgrade it before changeset publish shells out to npm.
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Publishing must never outrun a red test suite: the changesets action
+      # below publishes independently of the CI workflow's status.
+      - name: Verify before release
+        run: pnpm lint && pnpm typecheck && pnpm test
+
+      - name: Create release PR or publish to npm
+        uses: changesets/action@v1
+        with:
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

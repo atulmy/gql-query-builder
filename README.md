@@ -6,13 +6,21 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 <img src="https://img.shields.io/npm/dt/gql-query-builder?label=Downloads" alt="downloads" />
 </a>
 
-<a href="https://replit.com/@atulmy/gql-query-builder#index.js">
-<img src="https://img.shields.io/badge/Demo-replit-blue" alt="demo" />
+<a href="https://github.com/atulmy/gql-query-builder/actions/workflows/ci.yml">
+<img src="https://github.com/atulmy/gql-query-builder/actions/workflows/ci.yml/badge.svg" alt="CI status" />
 </a>
 
 ## Install
 
-`npm install gql-query-builder --save` or `yarn add gql-query-builder`
+```bash
+npm install gql-query-builder
+# or
+pnpm add gql-query-builder
+# or
+yarn add gql-query-builder
+```
+
+Requires Node.js >= 22 (works in browsers too). The package ships both ESM (`import`) and CommonJS (`require`) builds with TypeScript types included — no extra `@types` package needed.
 
 ## Usage
 
@@ -104,16 +112,16 @@ subscription(options: object)
 
 ### Adapter
 
-An optional second argument `adapter` is a typescript/javascript class that implements `src/adapters/IQueryAdapter` or `src/adapters/IMutationAdapter`.
+An optional second argument `adapter` is a typescript/javascript class that implements the `QueryAdapter`, `MutationAdapter`, or `SubscriptionAdapter` interface (exported from the package root).
 
-If adapter is undefined then `src/adapters/DefaultQueryAdapter` or `src/adapters/DefaultMutationAdapter` is used.
+If adapter is undefined then the default adapter (`DefaultQueryAdapter`, `DefaultMutationAdapter`, or `DefaultSubscriptionAdapter` — also exported for reuse) is used.
 
 ```
 import * as gql from 'gql-query-builder'
 
-const query = gql.query(options: object, adapter?: MyCustomQueryAdapter,config?: object)
-const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
-const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
+const query = gql.query(options: object, adapter?: MyCustomQueryAdapter, config?: object)
+const mutation = gql.mutation(options: object, adapter?: MyCustomMutationAdapter, config?: object)
+const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter, config?: object)
 ```
 
 ### Config
@@ -154,15 +162,21 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 6. <a href="#query-with-operation-name">Query (with operation name)</a>
 7. <a href="#query-with-empty-fields">Query (with empty fields)</a>
 8. <a href="#query-with-alias">Query (with alias)</a>
-9. <a href="#query-with-adapter-defined">Query (with adapter defined)</a>
-10. <a href="#mutation">Mutation</a>
-11. <a href="#mutation-with-required-variables">Mutation (with required variables)</a>
-12. <a href="#mutation-with-custom-types">Mutation (with custom types)</a>
-13. <a href="#mutation-with-adapter-defined">Mutation (with adapter defined)</a>
-14. <a href="#mutation-with-operation-name">Mutation (with operation name)</a>
-15. <a href="#subscription">Subscription</a>
-16. <a href="#subscription-with-adapter-defined">Subscription (with adapter defined)</a>
-17. <a href="#example-with-axios">Example with Axios</a>
+9. <a href="#query-with-inline-fragment">Query (with inline fragment)</a>
+10. <a href="#query-with-adapter-defined">Query (with adapter defined)</a>
+11. <a href="#mutation">Mutation</a>
+12. <a href="#mutation-with-required-variables">Mutation (with required variables)</a>
+13. <a href="#mutation-with-custom-types">Mutation (with custom types)</a>
+14. <a href="#mutation-with-adapter-defined">Mutation (with adapter defined)</a>
+15. <a href="#mutation-with-operation-name">Mutation (with operation name)</a>
+16. <a href="#subscription">Subscription</a>
+17. <a href="#subscription-with-adapter-defined">Subscription (with adapter defined)</a>
+18. <a href="#query-with-default-variable-values">Query (with default variable values)</a>
+19. <a href="#query-with-named-fragments">Query (with named fragments)</a>
+20. <a href="#query-with-directives">Query (with directives)</a>
+21. <a href="#subscription-with-operation-name">Subscription (with operation name)</a>
+22. <a href="#example-with-fetch">Example with Fetch</a>
+23. <a href="#example-with-axios">Example with Axios</a>
 
 #### Query:
 
@@ -219,7 +233,7 @@ query ($id: Int) {
 ```javascript
 import * as gql from 'gql-query-builder'
 
-const query = gql({
+const query = gql.query({
   operation: 'orders',
   fields: [
     'id',
@@ -334,8 +348,8 @@ query($id2: ID, $id1: ID) {
 
 // Variables
 {
-  "id1": 1,
-  "id2": 1
+  "id1": 456,
+  "id2": 123
 }
 ```
 
@@ -371,17 +385,10 @@ query someoperation {
 ```javascript
 import * as gql from 'gql-query-builder'
 
-const query = gql.query([{
-  operation: "getFilteredUsersCount",
-},
-  {
-    operation: "getAllUsersCount",
-    fields: []
-  },
-  operation: "getFilteredUsers",
-  fields: [{
-  count: [],
-}, ],
+const query = gql.query([
+  { operation: "getFilteredUsersCount" },
+  { operation: "getAllUsersCount", fields: [] },
+  { operation: "getFilteredUsers", fields: [{ count: [] }] },
 ]);
 
 console.log(query)
@@ -486,7 +493,7 @@ query SomethingIDidInMyAdapter {
 }
 ```
 
-Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get an understanding of how to make a new adapter.
+Take a peek at [DefaultQueryAdapter](src/adapters/default-query-adapter.ts) to get an understanding of how to make a new adapter.
 
 [↑ all examples](#examples)
 
@@ -619,7 +626,7 @@ mutation SomethingIDidInMyAdapter {
 
 [↑ all examples](#examples)
 
-Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) to get an understanding of how to make a new adapter.
+Take a peek at [DefaultMutationAdapter](src/adapters/default-mutation-adapter.ts) to get an understanding of how to make a new adapter.
 
 #### Mutation (with operation name):
 
@@ -650,27 +657,30 @@ mutation someoperation {
 #### Subscription:
 
 ```javascript
-import axios from "axios";
-import { subscription } from "gql-query-builder";
+import { subscription } from 'gql-query-builder'
 
-async function saveThought() {
-  try {
-    const response = await axios.post(
-      "http://api.example.com/graphql",
-      subscription({
-        operation: "thoughtCreate",
-        variables: {
-          name: "Tyrion Lannister",
-          thought: "I drink and I know things.",
-        },
-        fields: ["id"],
-      })
-    );
+const sub = subscription({
+  operation: 'thoughtCreate',
+  variables: {
+    name: 'Tyrion Lannister',
+    thought: 'I drink and I know things.'
+  },
+  fields: ['id']
+})
 
-    console.log(response);
-  } catch (error) {
-    console.log(error);
+console.log(sub)
+
+// Output
+subscription ($name: String, $thought: String) {
+  thoughtCreate (name: $name, thought: $thought) {
+    id
   }
+}
+
+// Variables
+{
+  "name": "Tyrion Lannister",
+  "thought": "I drink and I know things."
 }
 ```
 
@@ -701,7 +711,174 @@ subscription SomethingIDidInMyAdapter {
 }
 ```
 
-Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdapter.ts) to get an understanding of how to make a new adapter.
+Take a peek at [DefaultSubscriptionAdapter](src/adapters/default-subscription-adapter.ts) to get an understanding of how to make a new adapter.
+
+[↑ all examples](#examples)
+
+#### Query (with default variable values):
+
+Add a `default` to a variable descriptor to emit a GraphQL default value. Strings are quoted and input objects use unquoted keys automatically; wrap enum literals with `rawGraphQL()`:
+
+```javascript
+import { query, rawGraphQL } from 'gql-query-builder'
+
+const q = query({
+  operation: 'hero',
+  variables: {
+    episode: { value: 'EMPIRE', type: 'Episode', default: rawGraphQL('JEDI') },
+    first: { value: 10, default: 5 }
+  },
+  fields: ['name']
+})
+
+// Output
+query ($episode: Episode = JEDI, $first: Int = 5) {
+  hero (episode: $episode, first: $first) {
+    name
+  }
+}
+```
+
+[↑ all examples](#examples)
+
+#### Query (with named fragments):
+
+Define reusable named fragments with the `fragments` config option and spread them with a plain `'...name'` field string. Works for queries, mutations, and subscriptions:
+
+```javascript
+import { query } from 'gql-query-builder'
+
+const q = query({
+  operation: 'hero',
+  fields: ['...heroFields']
+}, null, {
+  fragments: [
+    { name: 'heroFields', on: 'Character', fields: ['name', { friends: ['name'] }] }
+  ]
+})
+
+// Output
+query {
+  hero {
+    ...heroFields
+  }
+}
+
+fragment heroFields on Character { name, friends { name } }
+```
+
+[↑ all examples](#examples)
+
+#### Query (with directives):
+
+Directives such as `@include(if:)` and `@skip(if:)` (or `@defer`/`@stream` where supported) can be attached to any field — field strings are passed through verbatim:
+
+```javascript
+import { query } from 'gql-query-builder'
+
+const q = query({
+  operation: 'hero',
+  variables: { withFriends: { value: true, type: 'Boolean', required: true } },
+  fields: ['name', 'friends @include(if: $withFriends)']
+})
+
+// Output
+query ($withFriends: Boolean!) {
+  hero (withFriends: $withFriends) {
+    name,
+    friends @include(if: $withFriends)
+  }
+}
+```
+
+The same passthrough works for field-level aliases (`'empireHero: name'`) and meta fields (`'__typename'`).
+
+[↑ all examples](#examples)
+
+#### Subscription (with operation name):
+
+```javascript
+import { subscription } from 'gql-query-builder'
+
+const q = subscription({
+  operation: 'postAdded',
+  variables: { topic: 'news' },
+  fields: ['id']
+}, null, {
+  operationName: 'OnPostAdded'
+})
+
+// Output
+subscription OnPostAdded ($topic: String) {
+  postAdded (topic: $topic) {
+    id
+  }
+}
+```
+
+[↑ all examples](#examples)
+
+#### Example with [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+
+No extra dependencies needed — `fetch` is built into modern browsers, Node.js >= 18, Deno, and Bun. Unlike Axios, you serialize the body and set the `Content-Type` header yourself.
+
+**Query:**
+
+```javascript
+import { query } from "gql-query-builder";
+
+async function getThoughts() {
+  try {
+    const response = await fetch("http://api.example.com/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        query({
+          operation: "thoughts",
+          fields: ["id", "name", "thought"],
+        })
+      ),
+    });
+
+    const result = await response.json();
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
+
+[↑ all examples](#examples)
+
+**Mutation:**
+
+```javascript
+import { mutation } from "gql-query-builder";
+
+async function saveThought() {
+  try {
+    const response = await fetch("http://api.example.com/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        mutation({
+          operation: "thoughtCreate",
+          variables: {
+            name: "Tyrion Lannister",
+            thought: "I drink and I know things.",
+          },
+          fields: ["id"],
+        })
+      ),
+    });
+
+    const result = await response.json();
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
 
 [↑ all examples](#examples)
 
@@ -761,43 +938,32 @@ async function saveThought() {
 
 [↑ all examples](#examples)
 
-# Showcase
+## 🛝 Interactive playground
 
-Following projects are using [gql-query-builder](https://github.com/atulmy/gql-query-builder)
+Prefer to learn by poking at it? [**`example/`**](example) is a runnable single-page app that turns every feature below into a live, editable recipe — nested selections, aliases, fragments, the full variable-descriptor vocabulary, mutations, subscriptions and custom adapters. The query recipes **run against a real GraphQL server** (the public [Rick & Morty API](https://rickandmortyapi.com/)), so you can watch the generated string come back with real data.
 
-- Crate - Get monthly subscription of trendy clothes and accessories - [GitHub](https://github.com/atulmy/crate)
-- Fullstack GraphQL Application - [GitHub](https://github.com/atulmy/fullstack-graphql)
-- Would really appreciate if you add your project to this list by sending a PR
+```bash
+cd example
+pnpm install && pnpm dev   # → http://localhost:5173
+```
 
-## Author
+# Development
 
-- Atul Yadav - [GitHub](https://github.com/atulmy) · [Twitter](https://twitter.com/atulmy)
+This repo uses [pnpm](https://pnpm.io), [Biome](https://biomejs.dev) for lint/format, [Vitest](https://vitest.dev) for tests, [tsup](https://tsup.egg.sh) for the dual ESM/CJS build, and [Changesets](https://github.com/changesets/changesets) for releases.
 
-## Contributors
+```bash
+pnpm install       # install dependencies
+pnpm test          # run the test suite
+pnpm lint          # lint + format check
+pnpm typecheck     # TypeScript, no emit
+pnpm build         # build ESM + CJS + types into dist/
+pnpm changeset     # describe your change for the next release
+```
 
-**If you are interested in actively maintaining / enhancing this project, get in <a href="mailto:atul.12788@gmail.com">touch</a>.**
+Every user-facing PR should include a changeset. Merging to `main` opens/updates an automated "Version Packages" PR; merging that publishes to npm. Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC).
 
-- Juho Vepsäläinen - [GitHub](https://github.com/bebraw) · [Twitter](https://twitter.com/bebraw)
-- Daniel Hreben - [GitHub](https://github.com/DanielHreben) · [Twitter](https://twitter.com/DanielHreben)
-- Todd Baur - [GitHub](https://github.com/toadkicker) · [Twitter](https://twitter.com/toadkicker)
-- Alireza Hariri - [GitHub](https://github.com/ARHariri)
-- Cédric - [GitHub](https://github.com/cbonaudo)
-- Clayton Collie - [GitHub](https://github.com/ccollie)
-- Devon Reid - [GitHub](https://github.com/Devorein)
-- Harry Brundage - [GitHub](https://github.com/airhorns) · [Twitter](https://twitter.com/harrybrundage)
-- Clément Berard - [GitHub](https://github.com/clement-berard) · [Twitter](https://twitter.com/clementberard)
-- Lee Rose - [GitHub](https://github.com/leeroyrose)
-- Christian Westgaard - [GitHub](https://github.com/ComLock)
-- [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
-
-## Donate
-
-If you liked this project, you can donate to support it ❤️
-
-[![Donate via PayPal](https://raw.githubusercontent.com/atulmy/atulmy.github.io/master/images/mix/paypal-me-smaller.png)](http://paypal.me/atulmy)
+A compact, machine-friendly API reference lives in [docs/api.md](docs/api.md); agent/LLM entry points are [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
 
 ## License
-
-Copyright (c) 2018 Atul Yadav <http://github.com/atulmy>
 
 The MIT License (<http://www.opensource.org/licenses/mit-license.php>)

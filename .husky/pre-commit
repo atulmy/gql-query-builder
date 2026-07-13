@@ -1,4 +1,2 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-./node_modules/lint-staged/bin/lint-staged.js
+pnpm exec biome check --write --staged --no-errors-on-unmatched
+git update-index --again
