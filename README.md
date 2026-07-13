@@ -119,9 +119,9 @@ If adapter is undefined then the default adapter (`DefaultQueryAdapter`, `Defaul
 ```
 import * as gql from 'gql-query-builder'
 
-const query = gql.query(options: object, adapter?: MyCustomQueryAdapter,config?: object)
-const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
-const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
+const query = gql.query(options: object, adapter?: MyCustomQueryAdapter, config?: object)
+const mutation = gql.mutation(options: object, adapter?: MyCustomMutationAdapter, config?: object)
+const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter, config?: object)
 ```
 
 ### Config
@@ -162,20 +162,21 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 6. <a href="#query-with-operation-name">Query (with operation name)</a>
 7. <a href="#query-with-empty-fields">Query (with empty fields)</a>
 8. <a href="#query-with-alias">Query (with alias)</a>
-9. <a href="#query-with-adapter-defined">Query (with adapter defined)</a>
-10. <a href="#mutation">Mutation</a>
-11. <a href="#mutation-with-required-variables">Mutation (with required variables)</a>
-12. <a href="#mutation-with-custom-types">Mutation (with custom types)</a>
-13. <a href="#mutation-with-adapter-defined">Mutation (with adapter defined)</a>
-14. <a href="#mutation-with-operation-name">Mutation (with operation name)</a>
-15. <a href="#subscription">Subscription</a>
-16. <a href="#subscription-with-adapter-defined">Subscription (with adapter defined)</a>
-17. <a href="#query-with-default-variable-values">Query (with default variable values)</a>
-18. <a href="#query-with-named-fragments">Query (with named fragments)</a>
-19. <a href="#query-with-directives">Query (with directives)</a>
-20. <a href="#subscription-with-operation-name">Subscription (with operation name)</a>
-21. <a href="#example-with-fetch">Example with Fetch</a>
-22. <a href="#example-with-axios">Example with Axios</a>
+9. <a href="#query-with-inline-fragment">Query (with inline fragment)</a>
+10. <a href="#query-with-adapter-defined">Query (with adapter defined)</a>
+11. <a href="#mutation">Mutation</a>
+12. <a href="#mutation-with-required-variables">Mutation (with required variables)</a>
+13. <a href="#mutation-with-custom-types">Mutation (with custom types)</a>
+14. <a href="#mutation-with-adapter-defined">Mutation (with adapter defined)</a>
+15. <a href="#mutation-with-operation-name">Mutation (with operation name)</a>
+16. <a href="#subscription">Subscription</a>
+17. <a href="#subscription-with-adapter-defined">Subscription (with adapter defined)</a>
+18. <a href="#query-with-default-variable-values">Query (with default variable values)</a>
+19. <a href="#query-with-named-fragments">Query (with named fragments)</a>
+20. <a href="#query-with-directives">Query (with directives)</a>
+21. <a href="#subscription-with-operation-name">Subscription (with operation name)</a>
+22. <a href="#example-with-fetch">Example with Fetch</a>
+23. <a href="#example-with-axios">Example with Axios</a>
 
 #### Query:
 
@@ -232,7 +233,7 @@ query ($id: Int) {
 ```javascript
 import * as gql from 'gql-query-builder'
 
-const query = gql({
+const query = gql.query({
   operation: 'orders',
   fields: [
     'id',
@@ -347,8 +348,8 @@ query($id2: ID, $id1: ID) {
 
 // Variables
 {
-  "id1": 1,
-  "id2": 1
+  "id1": 456,
+  "id2": 123
 }
 ```
 
@@ -384,17 +385,10 @@ query someoperation {
 ```javascript
 import * as gql from 'gql-query-builder'
 
-const query = gql.query([{
-  operation: "getFilteredUsersCount",
-},
-  {
-    operation: "getAllUsersCount",
-    fields: []
-  },
-  operation: "getFilteredUsers",
-  fields: [{
-  count: [],
-}, ],
+const query = gql.query([
+  { operation: "getFilteredUsersCount" },
+  { operation: "getAllUsersCount", fields: [] },
+  { operation: "getFilteredUsers", fields: [{ count: [] }] },
 ]);
 
 console.log(query)
@@ -663,27 +657,30 @@ mutation someoperation {
 #### Subscription:
 
 ```javascript
-import axios from "axios";
-import { subscription } from "gql-query-builder";
+import { subscription } from 'gql-query-builder'
 
-async function saveThought() {
-  try {
-    const response = await axios.post(
-      "http://api.example.com/graphql",
-      subscription({
-        operation: "thoughtCreate",
-        variables: {
-          name: "Tyrion Lannister",
-          thought: "I drink and I know things.",
-        },
-        fields: ["id"],
-      })
-    );
+const sub = subscription({
+  operation: 'thoughtCreate',
+  variables: {
+    name: 'Tyrion Lannister',
+    thought: 'I drink and I know things.'
+  },
+  fields: ['id']
+})
 
-    console.log(response);
-  } catch (error) {
-    console.log(error);
+console.log(sub)
+
+// Output
+subscription ($name: String, $thought: String) {
+  thoughtCreate (name: $name, thought: $thought) {
+    id
   }
+}
+
+// Variables
+{
+  "name": "Tyrion Lannister",
+  "thought": "I drink and I know things."
 }
 ```
 
