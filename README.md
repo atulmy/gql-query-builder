@@ -20,7 +20,7 @@ pnpm add gql-query-builder
 yarn add gql-query-builder
 ```
 
-Requires Node.js >= 20 (works in browsers too). The package ships both ESM (`import`) and CommonJS (`require`) builds with TypeScript types included — no extra `@types` package needed.
+Requires Node.js >= 22 (works in browsers too). The package ships both ESM (`import`) and CommonJS (`require`) builds with TypeScript types included — no extra `@types` package needed.
 
 ## Usage
 

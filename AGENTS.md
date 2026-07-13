@@ -4,7 +4,7 @@ Zero-runtime-dependency TypeScript library that generates GraphQL query/mutation
 
 ## Commands
 
-Package manager is **pnpm** (see `packageManager` in package.json). Node >= 20.
+Package manager is **pnpm** (see `packageManager` in package.json). Node >= 22.
 
 | Task | Command |
 | --- | --- |

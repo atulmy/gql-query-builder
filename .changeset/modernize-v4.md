@@ -6,7 +6,7 @@ Full modernization of the toolchain and package format.
 
 **Breaking changes:**
 
-- Node.js >= 20 is now required (`engines` field enforced).
+- Node.js >= 22 is now required (`engines` field enforced).
 - The package now ships both ESM and CJS builds with an `exports` map. Deep imports into `build/` no longer work (output moved to `dist/` and only the package root is exported).
 - Build target is now ES2022 instead of ES5.
 - Fixed mutation output indentation regression introduced in 3.8.0: generated mutation strings are indented consistently with queries and subscriptions again (2 spaces, closing brace at column 0).
