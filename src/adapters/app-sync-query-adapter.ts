@@ -9,7 +9,13 @@ import type {
   OperationResult,
   QueryBuilderOptions,
 } from "../types";
-import { queryFieldsMap, queryVariablesMap, resolveVariables } from "../utils";
+import {
+  queryDataNameAndArgumentMap,
+  queryDataTypeAndDefault,
+  queryFieldsMap,
+  queryVariablesMap,
+  resolveVariables,
+} from "../utils";
 import type { QueryAdapter } from "./types";
 
 export class DefaultAppSyncQueryAdapter implements QueryAdapter {
@@ -34,8 +40,8 @@ export class DefaultAppSyncQueryAdapter implements QueryAdapter {
 
   /** Builds one document combining several query operations. */
   public queriesBuilder(queries: QueryBuilderOptions[]): OperationResult {
-    const content = queries
-      .filter(Boolean)
+    const present = queries.filter(Boolean);
+    const content = present
       .map((query) => {
         this.#operation = query.operation;
         this.#fields = query.fields;
@@ -43,18 +49,10 @@ export class DefaultAppSyncQueryAdapter implements QueryAdapter {
         return this.#operationTemplate();
       })
       .join(" ");
+    // Declarations and the variables map must cover every operation, not just
+    // the last one iterated above.
+    this.#variables = resolveVariables(present);
     return this.#operationWrapperTemplate(content);
-  }
-
-  // Convert object to name and argument map. eg: (id: $id)
-  #queryDataNameAndArgumentMap(): string {
-    return this.#variables && Object.keys(this.#variables).length
-      ? `(${Object.keys(this.#variables).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
-          ""
-        )})`
-      : "";
   }
 
   // Convert object to argument and type map. eg: ($id: Int)
@@ -62,42 +60,12 @@ export class DefaultAppSyncQueryAdapter implements QueryAdapter {
     return this.#variables && Object.keys(this.#variables).length
       ? `(${Object.keys(this.#variables).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${this.#queryDataType(
-              this.#variables[key]
-            )}`,
+            `${dataString}${
+              i !== 0 ? ", " : ""
+            }$${key}: ${queryDataTypeAndDefault(this.#variables[key])}`,
           ""
         )})`
       : "";
-  }
-
-  #queryDataType(variable: any): string {
-    let type = "String";
-
-    const value = typeof variable === "object" ? variable.value : variable;
-
-    if (variable.type !== undefined) {
-      type = variable.type;
-    } else {
-      switch (typeof value) {
-        case "object":
-          type = "Object";
-          break;
-
-        case "boolean":
-          type = "Boolean";
-          break;
-
-        case "number":
-          type = value % 1 === 0 ? "Int" : "Float";
-          break;
-      }
-    }
-
-    if (typeof variable === "object" && variable.required) {
-      type += "!";
-    }
-
-    return type;
   }
 
   #operationWrapperTemplate(content: string): OperationResult {
@@ -120,8 +88,8 @@ export class DefaultAppSyncQueryAdapter implements QueryAdapter {
         ? this.#operation
         : `${this.#operation.alias}: ${this.#operation.name}`;
 
-    return `${operation} ${this.#queryDataNameAndArgumentMap()} { nodes { ${queryFieldsMap(
-      this.#fields
-    )} } }`;
+    return `${operation} ${
+      this.#variables ? queryDataNameAndArgumentMap(this.#variables) : ""
+    } { nodes { ${queryFieldsMap(this.#fields)} } }`;
   }
 }

@@ -15,6 +15,20 @@ import type {
   OperationResult,
   QueryBuilderOptions,
 } from "./types";
+import { queryFragmentsMap } from "./utils";
+
+/**
+ * Appends `config.fragments` definitions to the generated document. Applied at
+ * the dispatch layer so named fragments work with every adapter — default,
+ * AppSync, or custom — without each adapter reimplementing it.
+ */
+function withFragments(
+  result: OperationResult,
+  config?: AdapterConfig
+): OperationResult {
+  const fragments = queryFragmentsMap(config?.fragments);
+  return fragments ? { ...result, query: result.query + fragments } : result;
+}
 
 /**
  * Builds a GraphQL query string plus its variables object.
@@ -35,9 +49,12 @@ export function query(
 ): OperationResult {
   const AdapterClass = adapter ?? DefaultQueryAdapter;
   const queryAdapter = new AdapterClass(options, config);
-  return Array.isArray(options)
-    ? queryAdapter.queriesBuilder(options)
-    : queryAdapter.queryBuilder();
+  return withFragments(
+    Array.isArray(options)
+      ? queryAdapter.queriesBuilder(options)
+      : queryAdapter.queryBuilder(),
+    config
+  );
 }
 
 /**
@@ -58,9 +75,12 @@ export function mutation(
 ): OperationResult {
   const AdapterClass = adapter ?? DefaultMutationAdapter;
   const mutationAdapter = new AdapterClass(options, config);
-  return Array.isArray(options)
-    ? mutationAdapter.mutationsBuilder(options)
-    : mutationAdapter.mutationBuilder();
+  return withFragments(
+    Array.isArray(options)
+      ? mutationAdapter.mutationsBuilder(options)
+      : mutationAdapter.mutationBuilder(),
+    config
+  );
 }
 
 /**
@@ -81,9 +101,12 @@ export function subscription(
 ): OperationResult {
   const AdapterClass = adapter ?? DefaultSubscriptionAdapter;
   const subscriptionAdapter = new AdapterClass(options, config);
-  return Array.isArray(options)
-    ? subscriptionAdapter.subscriptionsBuilder(options)
-    : subscriptionAdapter.subscriptionBuilder();
+  return withFragments(
+    Array.isArray(options)
+      ? subscriptionAdapter.subscriptionsBuilder(options)
+      : subscriptionAdapter.subscriptionBuilder(),
+    config
+  );
 }
 
 export {

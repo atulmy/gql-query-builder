@@ -37,6 +37,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Publishing must never outrun a red test suite: the changesets action
+      # below publishes independently of the CI workflow's status.
+      - name: Verify before release
+        run: pnpm lint && pnpm typecheck && pnpm test
+
       - name: Create release PR or publish to npm
         uses: changesets/action@v1
         with:

@@ -15,7 +15,6 @@ import {
   queryDataNameAndArgumentMap,
   queryDataTypeAndDefault,
   queryFieldsMap,
-  queryFragmentsMap,
   queryVariablesMap,
   resolveVariables,
 } from "../utils";
@@ -97,8 +96,6 @@ export class DefaultMutationAdapter implements MutationAdapter {
         `mutation ${this.#config.operationName}`
       );
     }
-
-    query += queryFragmentsMap(this.#config.fragments);
 
     return {
       query,

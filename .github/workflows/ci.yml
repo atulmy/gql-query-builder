@@ -42,4 +42,6 @@ jobs:
         run: pnpm build
 
       - name: Validate package exports
+        # The packed artifact is identical across Node versions; validate once.
+        if: matrix.node-version == 24
         run: pnpm check-package

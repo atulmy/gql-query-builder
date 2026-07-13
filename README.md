@@ -10,10 +10,6 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 <img src="https://github.com/atulmy/gql-query-builder/actions/workflows/ci.yml/badge.svg" alt="CI status" />
 </a>
 
-<a href="https://replit.com/@atulmy/gql-query-builder#index.js">
-<img src="https://img.shields.io/badge/Demo-replit-blue" alt="demo" />
-</a>
-
 ## Install
 
 ```bash
@@ -178,7 +174,8 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 18. <a href="#query-with-named-fragments">Query (with named fragments)</a>
 19. <a href="#query-with-directives">Query (with directives)</a>
 20. <a href="#subscription-with-operation-name">Subscription (with operation name)</a>
-21. <a href="#example-with-axios">Example with Axios</a>
+21. <a href="#example-with-fetch">Example with Fetch</a>
+22. <a href="#example-with-axios">Example with Axios</a>
 
 #### Query:
 
@@ -818,6 +815,70 @@ const q = subscription({
 subscription OnPostAdded ($topic: String) {
   postAdded (topic: $topic) {
     id
+  }
+}
+```
+
+[↑ all examples](#examples)
+
+#### Example with [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+
+No extra dependencies needed — `fetch` is built into modern browsers, Node.js >= 18, Deno, and Bun. Unlike Axios, you serialize the body and set the `Content-Type` header yourself.
+
+**Query:**
+
+```javascript
+import { query } from "gql-query-builder";
+
+async function getThoughts() {
+  try {
+    const response = await fetch("http://api.example.com/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        query({
+          operation: "thoughts",
+          fields: ["id", "name", "thought"],
+        })
+      ),
+    });
+
+    const result = await response.json();
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
+
+[↑ all examples](#examples)
+
+**Mutation:**
+
+```javascript
+import { mutation } from "gql-query-builder";
+
+async function saveThought() {
+  try {
+    const response = await fetch("http://api.example.com/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        mutation({
+          operation: "thoughtCreate",
+          variables: {
+            name: "Tyrion Lannister",
+            thought: "I drink and I know things.",
+          },
+          fields: ["id"],
+        })
+      ),
+    });
+
+    const result = await response.json();
+    console.log(result);
+  } catch (error) {
+    console.log(error);
   }
 }
 ```

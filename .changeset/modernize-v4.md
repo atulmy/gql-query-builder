@@ -11,6 +11,12 @@ Full modernization of the toolchain and package format.
 - Build target is now ES2022 instead of ES5.
 - Fixed mutation output indentation regression introduced in 3.8.0: generated mutation strings are indented consistently with queries and subscriptions again (2 spaces, closing brace at column 0).
 - Fixed a crash when calling `subscription()` without `variables`.
+- Fixed a crash on `null` variable values (`variables: { id: null }` now emits `$id: String` and keeps the `null` in the variables map).
+- Fixed a crash in the AppSync mutation adapter when called without variables.
+- Subscriptions now render nested operations, inline fragments, and the `name` variable descriptor exactly like queries/mutations (previously crashed or were silently ignored).
+- AppSync adapters now honor `list` and `default` variable descriptors, declare every operation's variables in multi-operation documents (previously only the last operation's), and work with `config.fragments` — fragment definitions are appended by the dispatch layer, so they work with any adapter.
+- `rawGraphQL()` values are recognized across the dual CJS/ESM builds (registry-symbol brand instead of `instanceof`).
+- Sourcemaps are no longer shipped to npm (~100KB of a ~190KB payload).
 
 **New GraphQL spec features:**
 

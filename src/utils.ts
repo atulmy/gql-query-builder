@@ -10,9 +10,24 @@ import type {
 } from "./types";
 import { isNestedField } from "./types";
 
+/**
+ * Registry-scoped brand so raw values survive crossing the dual CJS/ESM builds:
+ * `instanceof` fails when the class is duplicated per bundle, `Symbol.for` does not.
+ */
+const GRAPHQL_RAW: unique symbol = Symbol.for("gql-query-builder.raw");
+
 /** A raw GraphQL snippet inserted verbatim into the document. Create with {@link rawGraphQL}. */
 export class GraphQLRaw {
+  readonly [GRAPHQL_RAW] = true;
   constructor(readonly value: string) {}
+}
+
+function isGraphQLRaw(value: unknown): value is GraphQLRaw {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as Record<PropertyKey, unknown>)[GRAPHQL_RAW] === true
+  );
 }
 
 /**
@@ -28,8 +43,8 @@ export function rawGraphQL(value: string): GraphQLRaw {
  * input object keys are unquoted, and {@link GraphQLRaw} values pass through.
  */
 export function toGraphQLLiteral(value: unknown): string {
-  if (value instanceof GraphQLRaw) {
-    return value.value;
+  if (isGraphQLRaw(value)) {
+    return String(value.value);
   }
   if (value === null) {
     return "null";
@@ -146,7 +161,9 @@ export function queryVariablesMap(variables: any, fields?: Fields) {
     if (vars) {
       Object.keys(vars).forEach((key) => {
         variablesMapped[key] =
-          typeof vars[key] === "object" ? vars[key].value : vars[key];
+          vars[key] !== null && typeof vars[key] === "object"
+            ? vars[key].value
+            : vars[key];
       });
     }
   };
@@ -217,30 +234,35 @@ export function queryFragmentsMap(fragments?: FragmentDefinition[]): string {
 export function queryDataType(variable: any) {
   let type = "String";
 
-  const value = typeof variable === "object" ? variable.value : variable;
+  const value =
+    variable !== null && typeof variable === "object"
+      ? variable.value
+      : variable;
 
   if (variable?.type != null) {
     type = variable.type;
   } else {
     // TODO: Should handle the undefined value (either in array value or single value)
     const candidateValue = Array.isArray(value) ? value[0] : value;
-    switch (typeof candidateValue) {
-      case "object":
-        type = "Object";
-        break;
+    if (candidateValue != null) {
+      switch (typeof candidateValue) {
+        case "object":
+          type = "Object";
+          break;
 
-      case "boolean":
-        type = "Boolean";
-        break;
+        case "boolean":
+          type = "Boolean";
+          break;
 
-      case "number":
-        type = candidateValue % 1 === 0 ? "Int" : "Float";
-        break;
+        case "number":
+          type = candidateValue % 1 === 0 ? "Int" : "Float";
+          break;
+      }
     }
   }
 
   // set object based variable properties
-  if (typeof variable === "object") {
+  if (variable !== null && typeof variable === "object") {
     if (variable.list === true) {
       type = `[${type}]`;
     } else if (Array.isArray(variable.list)) {

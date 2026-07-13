@@ -16,7 +16,6 @@ import {
   queryDataNameAndArgumentMap,
   queryDataTypeAndDefault,
   queryFieldsMap,
-  queryFragmentsMap,
   queryVariablesMap,
   resolveVariables,
 } from "../utils";
@@ -92,12 +91,9 @@ export class DefaultQueryAdapter implements QueryAdapter {
     query = query.replace(
       "query",
       `query${
-        this.#config.operationName !== ""
-          ? ` ${this.#config.operationName}`
-          : ""
+        this.#config.operationName ? ` ${this.#config.operationName}` : ""
       }`
     );
-    query += queryFragmentsMap(this.#config.fragments);
     return {
       query,
       variables: queryVariablesMap(this.#variables, this.#fields),

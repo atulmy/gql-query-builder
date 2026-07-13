@@ -88,6 +88,8 @@ query(
 // fragment heroFields on Character { name }
 ```
 
+Fragment definitions are appended by the dispatch layer, so they work with any adapter (default, AppSync, or custom). Limitation: variables used by nested operations *inside* fragment fields are not auto-collected into the operation's variable definitions — declare any variable a fragment references in the operation's own `variables`.
+
 ### Directives, field aliases, meta fields (string passthrough)
 
 Field strings are inserted verbatim, so any field-level GraphQL syntax works:

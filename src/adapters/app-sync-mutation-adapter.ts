@@ -9,7 +9,13 @@ import type {
   OperationResult,
   QueryBuilderOptions,
 } from "../types";
-import { queryDataType, queryVariablesMap, resolveVariables } from "../utils";
+import {
+  queryDataNameAndArgumentMap,
+  queryDataTypeAndDefault,
+  queryFieldsMap,
+  queryVariablesMap,
+  resolveVariables,
+} from "../utils";
 import type { MutationAdapter } from "./types";
 
 export class DefaultAppSyncMutationAdapter implements MutationAdapter {
@@ -49,25 +55,14 @@ export class DefaultAppSyncMutationAdapter implements MutationAdapter {
     );
   }
 
-  // Convert object to name and argument map. eg: (id: $id)
-  #queryDataNameAndArgumentMap(): string {
-    return this.#variables && Object.keys(this.#variables).length
-      ? `(${Object.keys(this.#variables).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
-          ""
-        )})`
-      : "";
-  }
-
   // Convert object to argument and type map. eg: ($id: Int)
   #queryDataArgumentAndTypeMap(variables: any): string {
-    return Object.keys(variables).length
+    return variables && Object.keys(variables).length
       ? `(${Object.keys(variables).reduce(
           (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
-              variables[key]
-            )}`,
+            `${dataString}${
+              i !== 0 ? ", " : ""
+            }$${key}: ${queryDataTypeAndDefault(variables[key])}`,
           ""
         )})`
       : "";
@@ -95,23 +90,10 @@ export class DefaultAppSyncMutationAdapter implements MutationAdapter {
         ? operation
         : `${operation.alias}: ${operation.name}`;
 
-    return `${operationName} ${this.#queryDataNameAndArgumentMap()} {
-    ${this.#queryFieldsMap(this.#fields)}
+    return `${operationName} ${
+      this.#variables ? queryDataNameAndArgumentMap(this.#variables) : ""
+    } {
+    ${queryFieldsMap(this.#fields)}
   }`;
-  }
-
-  // Fields selection map. eg: { id, name }
-  #queryFieldsMap(fields?: Fields): string {
-    return Array.isArray(fields)
-      ? fields
-          .map((field) =>
-            typeof field === "object"
-              ? `${Object.keys(field)[0]} { ${this.#queryFieldsMap(
-                  Object.values(field)[0]
-                )} }`
-              : `${field}`
-          )
-          .join(", ")
-      : "";
   }
 }

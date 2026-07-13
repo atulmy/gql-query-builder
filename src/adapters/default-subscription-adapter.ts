@@ -12,8 +12,9 @@ import type {
   QueryBuilderOptions,
 } from "../types";
 import {
+  queryDataNameAndArgumentMap,
   queryDataTypeAndDefault,
-  queryFragmentsMap,
+  queryFieldsMap,
   queryVariablesMap,
   resolveVariables,
 } from "../utils";
@@ -67,17 +68,6 @@ export class DefaultSubscriptionAdapter implements SubscriptionAdapter {
     );
   }
 
-  // Convert object to name and argument map. eg: (id: $id)
-  #queryDataNameAndArgumentMap(): string {
-    return this.#variables && Object.keys(this.#variables).length
-      ? `(${Object.keys(this.#variables).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
-          ""
-        )})`
-      : "";
-  }
-
   // Convert object to argument and type map. eg: ($id: Int)
   #queryDataArgumentAndTypeMap(variables: any): string {
     return variables && Object.keys(variables).length
@@ -103,8 +93,6 @@ export class DefaultSubscriptionAdapter implements SubscriptionAdapter {
       );
     }
 
-    query += queryFragmentsMap(this.#config.fragments);
-
     return {
       query,
       variables: queryVariablesMap(variables),
@@ -117,23 +105,10 @@ export class DefaultSubscriptionAdapter implements SubscriptionAdapter {
         ? this.#operation
         : `${this.#operation.alias}: ${this.#operation.name}`;
 
-    return `${operationName} ${this.#queryDataNameAndArgumentMap()} {
-    ${this.#queryFieldsMap(this.#fields)}
+    return `${operationName} ${
+      this.#variables ? queryDataNameAndArgumentMap(this.#variables) : ""
+    } {
+    ${queryFieldsMap(this.#fields)}
   }`;
-  }
-
-  // Fields selection map. eg: { id, name }
-  #queryFieldsMap(fields?: Fields): string {
-    return fields
-      ? fields
-          .map((field) =>
-            typeof field === "object"
-              ? `${Object.keys(field)[0]} { ${this.#queryFieldsMap(
-                  Object.values(field)[0]
-                )} }`
-              : `${field}`
-          )
-          .join(", ")
-      : "";
   }
 }
