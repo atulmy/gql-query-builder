@@ -10,15 +10,6 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 <img src="https://github.com/atulmy/gql-query-builder/actions/workflows/ci.yml/badge.svg" alt="CI status" />
 </a>
 
-## 🛝 Interactive playground
-
-Prefer to learn by poking at it? [**`example/`**](example) is a runnable single-page app that turns every feature below into a live, editable recipe — nested selections, aliases, fragments, the full variable-descriptor vocabulary, mutations, subscriptions and custom adapters. The query recipes **run against a real GraphQL server** (the public [Rick & Morty API](https://rickandmortyapi.com/)), so you can watch the generated string come back with real data.
-
-```bash
-cd example
-pnpm install && pnpm dev   # → http://localhost:5173
-```
-
 ## Install
 
 ```bash
@@ -946,6 +937,15 @@ async function saveThought() {
 ```
 
 [↑ all examples](#examples)
+
+## 🛝 Interactive playground
+
+Prefer to learn by poking at it? [**`example/`**](example) is a runnable single-page app that turns every feature below into a live, editable recipe — nested selections, aliases, fragments, the full variable-descriptor vocabulary, mutations, subscriptions and custom adapters. The query recipes **run against a real GraphQL server** (the public [Rick & Morty API](https://rickandmortyapi.com/)), so you can watch the generated string come back with real data.
+
+```bash
+cd example
+pnpm install && pnpm dev   # → http://localhost:5173
+```
 
 # Development
 

@@ -63,7 +63,7 @@ const app = document.querySelector<HTMLDivElement>("#app")!;
 app.append(
   el("header", { className: "site-header" }, [
     el("div", { className: "brand" }, [
-      el("span", { className: "logo", textContent: "◆" }),
+      el("span", { className: "logo", textContent: "🔧" }),
       el("div", {}, [
         el("h1", { textContent: "gql-query-builder" }),
         el("p", {
@@ -146,7 +146,12 @@ function renderMain() {
     spellcheck: false,
     value: drafts.get(recipe.id)!,
   });
-  editor.style.height = `${Math.max(6, editor.value.split("\n").length + 1) * 1.55}em`;
+  // Grow the textarea to fit its content so it never scrolls internally —
+  // an internal scrollbar would swallow the wheel and block the main pane.
+  const autosize = () => {
+    editor.style.height = "auto";
+    editor.style.height = `${editor.scrollHeight}px`;
+  };
 
   const resetBtn = el("button", {
     className: "ghost-btn",
@@ -154,6 +159,7 @@ function renderMain() {
     onclick: () => {
       drafts.set(recipe.id, recipe.source);
       editor.value = recipe.source;
+      autosize();
       update();
     },
   });
@@ -245,10 +251,10 @@ function renderMain() {
   }
 
   editor.addEventListener("input", () => {
-    editor.style.height = "auto";
-    editor.style.height = `${editor.scrollHeight + 2}px`;
+    autosize();
     update();
   });
+  autosize(); // editor is in the DOM now, so scrollHeight is valid
   update();
 }
 

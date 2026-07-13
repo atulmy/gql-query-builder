@@ -1,10 +1,10 @@
 :root {
-  --bg: #0f1117;
-  --bg-elev: #171a23;
-  --bg-inset: #0b0d13;
-  --border: #262b38;
-  --text: #e6e9f0;
-  --text-dim: #9aa3b5;
+  --bg: #101010;
+  --bg-elev: #1a1a1a;
+  --bg-inset: #0b0b0b;
+  --border: #2c2c2c;
+  --text: #eaeaea;
+  --text-dim: #9e9e9e;
   --accent: #e535ab; /* GraphQL pink */
   --accent-soft: rgba(229, 53, 171, 0.14);
   --green: #4ade80;
@@ -39,6 +39,14 @@ code {
   border-radius: 4px;
 }
 
+/* App shell: a fixed-height column so the sidebar and main pane each scroll
+   independently instead of the whole page scrolling as one. */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 /* ── header ─────────────────────────────────────────────────────────────── */
 .site-header {
   display: flex;
@@ -46,9 +54,8 @@ code {
   justify-content: space-between;
   padding: 18px 28px;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, #14161f, var(--bg));
-  position: sticky;
-  top: 0;
+  background: linear-gradient(180deg, #1c1c1c, var(--bg));
+  flex: 0 0 auto;
   z-index: 10;
 }
 
@@ -102,7 +109,8 @@ code {
 .layout {
   display: grid;
   grid-template-columns: 288px 1fr;
-  min-height: calc(100vh - 71px);
+  flex: 1 1 auto;
+  min-height: 0; /* let grid children shrink so they can scroll */
 }
 
 .sidebar {
@@ -190,8 +198,14 @@ code {
 /* ── main ───────────────────────────────────────────────────────────────── */
 .main {
   padding: 28px 32px 64px;
-  max-width: 960px;
+  overflow-y: auto; /* scrolls independently; scrollbar sits at the column's right edge */
   overflow-x: hidden;
+}
+
+/* Cap the reading width of the content while .main fills the whole column, so
+   the vertical scrollbar stays flush to the right instead of hugging the text. */
+.main > * {
+  max-width: 960px;
 }
 
 .recipe-head {
@@ -247,7 +261,8 @@ code {
   font-size: 13px;
   line-height: 1.55;
   padding: 14px 16px;
-  resize: vertical;
+  resize: none;
+  overflow: hidden; /* auto-sized in JS; never scroll internally */
   outline: none;
   tab-size: 2;
   display: block;
@@ -277,7 +292,7 @@ code {
 }
 
 .doc-out {
-  color: #d7dbe6;
+  color: #d8d8d8;
 }
 
 .tok-kw {
@@ -363,15 +378,20 @@ code {
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 760px) {
+  /* On narrow screens drop the fixed shell and let the page scroll as one. */
+  #app {
+    height: auto;
+  }
   .layout {
     grid-template-columns: 1fr;
   }
   .sidebar {
     border-right: none;
     border-bottom: 1px solid var(--border);
-    max-height: 40vh;
+    overflow-y: visible;
   }
   .main {
     padding: 20px 16px 48px;
+    overflow-y: visible;
   }
 }
