@@ -960,7 +960,7 @@ pnpm build         # build ESM + CJS + types into dist/
 pnpm changeset     # describe your change for the next release
 ```
 
-Every user-facing PR should include a changeset. Merging to `master` opens/updates an automated "Version Packages" PR; merging that publishes to npm. Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC).
+Every user-facing PR should include a changeset. Merging to `main` opens/updates an automated "Version Packages" PR; merging that publishes to npm. Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC).
 
 A compact, machine-friendly API reference lives in [docs/api.md](docs/api.md); agent/LLM entry points are [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
 
