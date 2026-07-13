@@ -44,5 +44,5 @@ Package manager is **pnpm** (see `packageManager` in package.json). Node >= 20.
 
 - Strict TypeScript; Biome enforces lint + format (config in `biome.json`). Run `pnpm format` before committing.
 - Tests use Vitest with `globals: true`; add tests next to the feature in `src/__tests__/`.
-- Releases via **Changesets**: every user-facing change needs a changeset file (`pnpm changeset`). Merging the auto-generated "Version Packages" PR publishes to npm from CI.
+- Releases via **Changesets**: every user-facing change needs a changeset file (`pnpm changeset`). Merging the auto-generated "Version Packages" PR publishes to npm from CI via OIDC trusted publishing (no `NPM_TOKEN`; provenance is automatic). Requires a Trusted Publisher configured on npmjs.com pointing at this repo + `release.yml`.
 - Git hooks (husky): pre-commit runs Biome on staged files; pre-push runs lint + typecheck + tests.

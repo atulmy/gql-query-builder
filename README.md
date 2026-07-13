@@ -893,7 +893,7 @@ pnpm build         # build ESM + CJS + types into dist/
 pnpm changeset     # describe your change for the next release
 ```
 
-Every user-facing PR should include a changeset. Merging to `master` opens/updates an automated "Version Packages" PR; merging that publishes to npm with provenance.
+Every user-facing PR should include a changeset. Merging to `master` opens/updates an automated "Version Packages" PR; merging that publishes to npm. Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC) — no `NPM_TOKEN` secret — and provenance attestations are generated automatically. A one-time [Trusted Publisher](https://docs.npmjs.com/trusted-publishers/) must be configured on npmjs.com for this package, pointing at this repo and `release.yml`.
 
 A compact, machine-friendly API reference lives in [docs/api.md](docs/api.md); agent/LLM entry points are [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
 
