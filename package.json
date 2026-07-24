@@ -60,11 +60,11 @@
   "homepage": "https://github.com/atulmy/gql-query-builder",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
-    "@biomejs/biome": "^2.5.3",
-    "@changesets/cli": "^2.31.0",
+    "@biomejs/biome": "^2.5.5",
+    "@changesets/cli": "^2.31.1",
     "@vitest/coverage-v8": "^4.1.10",
     "husky": "^9.1.7",
-    "publint": "^0.3.21",
+    "publint": "^0.3.22",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"
