@@ -1,5 +1,11 @@
 # gql-query-builder
 
+## 4.0.1
+
+### Patch Changes
+
+- Bump development tooling (Biome, Changesets, publint) and add an AI disclosure note to the README. No changes to the published library's runtime code or public API.
+
 ## 4.0.0
 
 ### Major Changes
