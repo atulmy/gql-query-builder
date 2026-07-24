@@ -964,6 +964,10 @@ Every user-facing PR should include a changeset. Merging to `main` opens/updates
 
 A compact, machine-friendly API reference lives in [docs/api.md](docs/api.md); agent/LLM entry points are [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
 
+## AI disclosure
+
+Parts of this project were written with the help of AI tools.
+
 ## License
 
 The MIT License (<http://www.opensource.org/licenses/mit-license.php>)
